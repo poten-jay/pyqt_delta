@@ -1,7 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QPushButton
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QSize
 
 # function.py 에서 class 호출
 from function import xyz_button
@@ -44,15 +44,17 @@ class MyApp(QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    # 버튼 
+    # 버튼 위치 및 사이즈 결정
     def button(self):
         # 타이머 설정
         # self.timer = QTimer(self)
         # self.timer.setInterval(100)  # 간격을 100밀리초로 설정
 
         # Z-Up 버튼
-        self.btnZUp = QPushButton('Z-Up', self)
+        self.btnZUp = QPushButton('', self)
         self.btnZUp.setGeometry(100, 20, 90, 30)
+        self.btnZUp.setIcon(QIcon('/media/ssd/workspace/jay/pyqt_delta/eth.png'))  # 이미지 경로 설정
+        self.btnZUp.setIconSize(QSize(80, 25))  # 아이콘 크기
         self.btnZUp.pressed.connect(lambda: self.startTimer(self.zUp))
         self.btnZUp.released.connect(self.stopTimer)
 
@@ -70,7 +72,7 @@ class MyApp(QWidget):
 
         # X-Down 버튼
         self.btnXDown = QPushButton('X-Down', self)
-        self.btnXDown.setGeometry(190, 70, 90, 30)
+        self.btnXDown.setGeometry(190, 120, 90, 30)
         self.btnXDown.pressed.connect(lambda: self.startTimer(self.xDown))
         self.btnXDown.released.connect(self.stopTimer)
 
@@ -82,7 +84,7 @@ class MyApp(QWidget):
 
         # Y-Down 버튼
         self.btnYDown = QPushButton('Y-Down', self)
-        self.btnYDown.setGeometry(190, 120, 90, 30)
+        self.btnYDown.setGeometry(190, 70, 90, 30)
         self.btnYDown.pressed.connect(lambda: self.startTimer(self.yDown))
         self.btnYDown.released.connect(self.stopTimer)
 
