@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from PyQt5.QtWidgets import QApplication, QWidget, QDesktopWidget, QVBoxLayout, QHBoxLayout, QPushButton
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QTimer, QSize
@@ -50,6 +50,18 @@ class MyApp(QWidget):
         # self.timer = QTimer(self)
         # self.timer.setInterval(100)  # 간격을 100밀리초로 설정
 
+        imagePath = '/eth.png'
+        if os.path.exists(imagePath):
+            print("이미지 파일이 존재합니다.")
+        else:
+            print("이미지 파일이 존재하지 않습니다:", imagePath)
+
+        icon = QIcon(imagePath)
+        if not icon.isNull():
+            print("아이콘이 성공적으로 로드되었습니다.")
+        else:
+            print("아이콘 로드 실패")
+
         # Z-Up 버튼
         self.btnZUp = QPushButton('', self)
         self.btnZUp.setGeometry(100, 20, 90, 30)
@@ -57,6 +69,12 @@ class MyApp(QWidget):
         self.btnZUp.setIconSize(QSize(80, 25))  # 아이콘 크기
         self.btnZUp.pressed.connect(lambda: self.startTimer(self.zUp))
         self.btnZUp.released.connect(self.stopTimer)
+
+        # # Z-Up 버튼
+        # self.btnZUp = QPushButton('Z-Up', self)
+        # self.btnZUp.setGeometry(100, 20, 90, 30)
+        # self.btnZUp.pressed.connect(lambda: self.startTimer(self.zUp))
+        # self.btnZUp.released.connect(self.stopTimer)
 
         # Z-Down 버튼
         self.btnZDown = QPushButton('Z-Down', self)
