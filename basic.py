@@ -44,23 +44,31 @@ class MyApp(QWidget):
         self.btnUp.setGeometry(100, 20, 90, 30)  # 버튼 위치와 크기 설정
         self.btnUp.clicked.connect(self.zUp)
 
-        # Left 버튼
-        self.btnLeft = QPushButton('Left', self)
+        # xUp 버튼
+        self.btnLeft = QPushButton('X-Up', self)
         self.btnLeft.setGeometry(10, 70, 90, 30)  # 버튼 위치와 크기 설정
-        self.btnLeft.clicked.connect(self.onLeft)
+        self.btnLeft.clicked.connect(self.xUp)
 
-        # Right 버튼
-        self.btnRight = QPushButton('Right', self)
+        # xDown 버튼
+        self.btnRight = QPushButton('X-Down', self)
         self.btnRight.setGeometry(190, 70, 90, 30)  # 버튼 위치와 크기 설정
-        self.btnRight.clicked.connect(self.onRight)
+        self.btnRight.clicked.connect(self.xDown)
+
+        # yUp버튼
+        self.btnLeft = QPushButton('Y-Up', self)
+        self.btnLeft.setGeometry(10, 120, 90, 30)  # 버튼 위치와 크기 설정
+        self.btnLeft.clicked.connect(self.yUp)
+
+        # yDown 버튼
+        self.btnRight = QPushButton('Y-Down', self)
+        self.btnRight.setGeometry(190, 120, 90, 30)  # 버튼 위치와 크기 설정
+        self.btnRight.clicked.connect(self.yDown)
 
         # zDown 버튼
         self.btnDown = QPushButton('Z-Down', self)
-        self.btnDown.setGeometry(100, 120, 90, 30)  # 버튼 위치와 크기 설정
+        self.btnDown.setGeometry(100, 170, 90, 30)  # 버튼 위치와 크기 설정
         self.btnDown.clicked.connect(self.zDown)
 
-        # self.setLayout(vLayout)
-        self.setWindowTitle('Arrow Key Buttons')
     
     def zUp(self):
         btn.z_up()
@@ -78,11 +86,13 @@ class MyApp(QWidget):
         btn.x_down()
         print('X Down', btn.input_x)
 
-    def onLeft(self):
-        print('Left arrow pressed')
+    def yUp(self):
+        btn.y_up()
+        print('Y Up', btn.input_y)
 
-    def onRight(self):
-        print('Right arrow pressed')
+    def yDown(self):
+        btn.y_down()
+        print('Y Down', btn.input_y)
 
 def main():
     app = QApplication(sys.argv)
