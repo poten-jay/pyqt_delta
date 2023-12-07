@@ -7,13 +7,17 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import QTimer, QSize, Qt
 from geometry_msgs.msg import Point
 
+
 # function.py 에서 class 호출
 from function import xyz_button
 
+# setting.py 에서 값 호출
+import setting
+
 # 현재 좌표 값 받아오기
-x = 0
-y = 0
-z = 350
+x = setting.x
+y = setting.y
+z = setting.z
 
 class MyApp(QWidget):
     # 현재 좌표 값 받아오기
@@ -74,10 +78,32 @@ class MyApp(QWidget):
 
     # x,y,z 값 창 업데이트
     def updateLabels(self):
+        # xzy 값 한도에서 붉게 변경
+        if self.btn.input_x == setting.x_max or self.btn.input_x == setting.x_min:
+            self.labelX.setStyleSheet("Color : red")
+            self.labelX.setText(f'Limit {self.btn.input_x}')
+        else:
+            self.labelX.setStyleSheet("Color : white")
+            self.labelX.setText(f'{self.btn.input_x}')
+        
+        if self.btn.input_y == setting.y_max or self.btn.input_y == setting.y_min:
+            self.labelY.setStyleSheet("Color : red")
+            self.labelY.setText(f'Limit {self.btn.input_y}')
+        else:
+            self.labelY.setStyleSheet("Color : white")
+            self.labelY.setText(f'{self.btn.input_y}')
+
+        if self.btn.input_z == setting.z_max or self.btn.input_z == setting.z_min:
+            self.labelZ.setStyleSheet("Color : red")
+            self.labelZ.setText(f'Limit {self.btn.input_z}')
+        else:
+            self.labelZ.setStyleSheet("Color : white")
+            self.labelZ.setText(f'{self.btn.input_z}')
+
         # Update the labels with the current XYZ values
-        self.labelX.setText(f'{self.btn.input_x}')
-        self.labelY.setText(f'{self.btn.input_y}')
-        self.labelZ.setText(f'{self.btn.input_z}')
+        # self.labelX.setText(f'{self.btn.input_x}')
+        # self.labelY.setText(f'{self.btn.input_y}')
+        # self.labelZ.setText(f'{self.btn.input_z}')
 
 
     # 버튼 위치 및 사이즈 결정
@@ -162,6 +188,18 @@ class MyApp(QWidget):
 
     # start 버튼 누르면 수동 번튼 활성화
     def startOperation(self):
+        # Increment initial XYZ values by 10
+        self.btn.input_x = x
+        self.btn.input_y = y
+        self.btn.input_z = z
+
+        self.btn.publish_xyz()
+
+
+
+        # Update labels with new values
+        self.updateLabels()
+
         # Enable XYZ buttons
         self.btnZUp.setDisabled(False)
         self.btnZDown.setDisabled(False)
