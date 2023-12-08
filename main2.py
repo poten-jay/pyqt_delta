@@ -55,6 +55,29 @@ class MyApp(QWidget):
         self.labelZ.setAlignment(Qt.AlignRight)
         self.labelZ.setGeometry(590, 445, 100, 30)  # Adjust position and size as needed
 
+
+        ### 직접 입력 창들
+        # LineEdit for X value
+        self.lineEditX = QLineEdit(self)
+        self.lineEditX.setGeometry(305, 510, 90, 25)  # Adjust position and size as needed
+        self.lineEditX.setText(str(x))
+        self.lineEditX.setAlignment(Qt.AlignRight) # 우측정렬
+        # LineEdit for Y value
+        self.lineEditY = QLineEdit(self)
+        self.lineEditY.setGeometry(460, 510, 90, 25)  # Adjust position and size as needed
+        self.lineEditY.setText(str(y))
+        self.lineEditY.setAlignment(Qt.AlignRight)
+        # LineEdit for Z value
+        self.lineEditZ = QLineEdit(self)
+        self.lineEditZ.setGeometry(615, 510, 90, 25)  # Adjust position and size as needed
+        self.lineEditZ.setText(str(z))
+        self.lineEditZ.setAlignment(Qt.AlignRight)
+        # Update Button
+        self.btnUpdate = QPushButton('>', self)
+        self.btnUpdate.setGeometry(750, 510, 25, 25)  # Adjust as needed
+        self.btnUpdate.clicked.connect(self.updateXYZ)
+
+
         # 배경 이미지 설정
         self.setBackgroundImage('/workspace/pyqt_delta/img/main2.png')
 
@@ -170,6 +193,8 @@ class MyApp(QWidget):
         self.btnXDown.setDisabled(True)
         self.btnYUp.setDisabled(True)
         self.btnYDown.setDisabled(True)
+        self.btnUpdate.setDisabled(True)
+        
 
         # Start Button
         self.btnStart = QPushButton('Start', self)
@@ -181,6 +206,40 @@ class MyApp(QWidget):
         self.btnStop.setGeometry(175, 515, 80, 50)  # Adjust as needed
         self.btnStop.clicked.connect(self.stopOperation)
 
+    def updateXYZ(self):
+        # Read values from LineEdits and update XYZ
+        try:
+            x_val = float(self.lineEditX.text())
+            y_val = float(self.lineEditY.text())
+            z_val = float(self.lineEditZ.text())
+            
+            # Add any necessary validation for range
+            if setting.x_min <= x_val <= setting.x_max and \
+               setting.y_min <= y_val <= setting.y_max and \
+               setting.z_min <= z_val <= setting.z_max:
+                self.btn.input_x = x_val
+                self.btn.input_y = y_val
+                self.btn.input_z = z_val
+                self.updateLabels()
+                self.btn.publish_xyz()
+                # Add any other necessary updates or method calls
+            else:
+                # Handle out of range values
+                print("Values out of range")
+                self.lineEditX.setText("Out of Rnage")
+                self.lineEditX.setStyleSheet("color: red;")
+                self.lineEditX.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.lineEditY.setText("Out of Rnage")
+                self.lineEditY.setStyleSheet("color: red;")
+                self.lineEditY.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.lineEditZ.setText("Out of Rnage")
+                self.lineEditZ.setStyleSheet("color: red;")
+                self.lineEditZ.setAlignment(Qt.AlignRight)
+        except ValueError:
+            # Handle invalid input
+            print("Invalid input")
 
     def startTimer(self, func):
         if self.timer.isActive():  # 타이머가 활성화되어 있다면 연결을 해제
@@ -205,8 +264,6 @@ class MyApp(QWidget):
 
         self.btn.publish_xyz()
 
-
-
         # Update labels with new values
         self.updateLabels()
 
@@ -217,8 +274,13 @@ class MyApp(QWidget):
         self.btnXDown.setDisabled(False)
         self.btnYUp.setDisabled(False)
         self.btnYDown.setDisabled(False)
+        self.btnUpdate.setDisabled(False)
         print("Operation started")
 
+#  # Update Button
+#         self.btnUpdate = QPushButton('>', self)
+#         self.btnUpdate.setGeometry(750, 510, 25, 25)  # Adjust as needed
+#         self.btnUpdate.clicked.connect(self.updateXYZ)
     # stop 누르면 비활성화
     def stopOperation(self):
         # Disable XYZ buttons
@@ -228,6 +290,7 @@ class MyApp(QWidget):
         self.btnXDown.setDisabled(True)
         self.btnYUp.setDisabled(True)
         self.btnYDown.setDisabled(True)
+        self.btnUpdate.setDisabled(True)
         print("Operation stopped")
 
     def zUp(self):
