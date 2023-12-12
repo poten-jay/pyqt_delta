@@ -73,9 +73,13 @@ class MyApp(QWidget):
         self.lineEditZ.setText(str(z))
         self.lineEditZ.setAlignment(Qt.AlignRight)
         # Update Button
-        self.btnUpdate = QPushButton('>', self)
-        self.btnUpdate.setGeometry(750, 510, 25, 25)  # Adjust as needed
+        self.btnUpdate = QPushButton('Run', self)
+        self.btnUpdate.setGeometry(680, 540, 50, 30)  # Adjust as needed
         self.btnUpdate.clicked.connect(self.updateXYZ)
+        # Reset Button
+        self.btnReset = QPushButton('Reset', self)
+        self.btnReset.setGeometry(615, 540, 50, 30)  # Adjust position and size as needed
+        self.btnReset.clicked.connect(self.resetFields)
 
 
         # 배경 이미지 설정
@@ -194,6 +198,7 @@ class MyApp(QWidget):
         self.btnYUp.setDisabled(True)
         self.btnYDown.setDisabled(True)
         self.btnUpdate.setDisabled(True)
+        self.btnReset.setDisabled(True)
         
 
         # Start Button
@@ -241,6 +246,18 @@ class MyApp(QWidget):
             # Handle invalid input
             print("Invalid input")
 
+    # 직접 입력창 리셋
+    def resetFields(self):
+        # Reset the QLineEdit fields to initial settings
+        self.lineEditX.setText(str(setting.x))
+        self.lineEditY.setText(str(setting.y))
+        self.lineEditZ.setText(str(setting.z))
+        # Optionally, reset the style if it's changed when values are out of range
+        self.lineEditX.setStyleSheet("color: black;")
+        self.lineEditY.setStyleSheet("color: black;")
+        self.lineEditZ.setStyleSheet("color: black;")
+
+
     def startTimer(self, func):
         if self.timer.isActive():  # 타이머가 활성화되어 있다면 연결을 해제
             self.timer.timeout.disconnect()
@@ -275,6 +292,7 @@ class MyApp(QWidget):
         self.btnYUp.setDisabled(False)
         self.btnYDown.setDisabled(False)
         self.btnUpdate.setDisabled(False)
+        self.btnReset.setDisabled(False)
         print("Operation started")
 
 #  # Update Button
@@ -291,6 +309,7 @@ class MyApp(QWidget):
         self.btnYUp.setDisabled(True)
         self.btnYDown.setDisabled(True)
         self.btnUpdate.setDisabled(True)
+        self.btnReset.setDisabled(True)
         print("Operation stopped")
 
     def zUp(self):

@@ -1,12 +1,11 @@
 import sys
 import os
 import rclpy
-from rclpy.node import Node
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget, QStackedWidget, QLabel, QLineEdit, QPushButton, QDesktopWidget
+from PyQt5.QtGui import QIcon, QPixmap, QPalette, QBrush
 from PyQt5.QtCore import QTimer, QSize, Qt
 from geometry_msgs.msg import Point
-
+from rclpy.node import Node
 
 # function.py 에서 class 호출
 from function import xyz_button
@@ -14,10 +13,13 @@ from function import xyz_button
 # setting.py 에서 값 호출
 import setting
 
+
 # 현재 좌표 값 받아오기
 x = setting.x
 y = setting.y
 z = setting.z
+
+# 여기에 function.py 및 setting.py에서 가져온 필요한 클래스 및 변수를 정의합니다.
 
 class MyApp(QWidget):
     # 현재 좌표 값 받아오기
@@ -342,6 +344,44 @@ class MyApp(QWidget):
         self.updateLabels()
         print('Y Down', self.btn.input_y)
 
+class StartWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle('Start Window')
+        startButton = QPushButton('Go to Main Application', self)
+        startButton.clicked.connect(self.gotoMain)
+
+        layout = QVBoxLayout()
+        layout.addWidget(startButton)
+        self.setLayout(layout)
+
+    def gotoMain(self):
+        main_window = self.parent().findChild(MyApp)
+        self.parent().setCurrentWidget(main_window)
+
+class MainApplication(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.mainApp = MyApp(None)
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self.mainApp)
+
+def start():
+    app = QApplication(sys.argv)
+    stack = QStackedWidget()
+
+    start_window = StartWindow()
+    main_application = MainApplication()
+
+    stack.addWidget(start_window)
+    stack.addWidget(main_application.mainApp)
+
+    stack.show()
+    sys.exit(app.exec_())
+
 class GUI_Node(Node):
     def __init__(self):
         super().__init__('gui_node')
@@ -352,7 +392,6 @@ class GUI_Node(Node):
 
     def timer_callback(self):
         pass
-
 
 def main(args=None):
     rclpy.init(args=args)
@@ -366,4 +405,4 @@ def main(args=None):
     sys.exit(exit_code)
 
 if __name__ == '__main__':
-    main()
+    start()
