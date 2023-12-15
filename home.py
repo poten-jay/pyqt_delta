@@ -4,7 +4,7 @@ import rclpy
 from rclpy.node import Node
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5.QtCore import QTimer, QSize, Qt
+from PyQt5.QtCore import QTimer, QSize, Qt, pyqtSignal
 from geometry_msgs.msg import Point
 
 
@@ -19,9 +19,10 @@ x = setting.x
 y = setting.y
 z = setting.z
 
-class MyApp(QWidget):
+class MyHome(QWidget):
     # 현재 좌표 값 받아오기
     # btn = xyz_button(x, y, z)
+    goToStartScreen = pyqtSignal()
 
     def __init__(self, node):
         super().__init__()
@@ -29,15 +30,21 @@ class MyApp(QWidget):
         self.btn = xyz_button(node, x, y, z)
         self.initUI()
         self.timer = QTimer(self)
-        # self.initUI
+        self.initUI
 
     def initUI(self):
-        self.setWindowTitle('W-DELTABOT Application')
-        # 창 시작점 (center def 가져옴)
-        self.center()
-        # 창 타이틀 아이콘 - 윈도우에서는 가능
-        self.setWindowIcon(QIcon('/workspace/pyqt_delta/img/eth.png'))
-        # self.resize(400, 200)
+        # # 배경 이미지 설정
+        # self.setStyleSheet("QWidget {background-image: url('/workspace/pyqt_delta/img/main2.png');}")
+
+
+        # 이미지 넣기
+        original_pixmap = QPixmap("/workspace/pyqt_delta/img/test.png")
+        scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # QLabel 생성 및 QPixmap 설정
+        lbl_img = QLabel(self)
+        lbl_img.setPixmap(scaled_pixmap)
+        lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
+
         # 창 크기 고정
         self.setFixedSize(800,600)
 
@@ -81,9 +88,37 @@ class MyApp(QWidget):
         self.btnReset.setGeometry(615, 540, 50, 30)  # Adjust position and size as needed
         self.btnReset.clicked.connect(self.resetFields)
 
+        # Listup Button
+        self.btnListup = QPushButton('List', self)
+        self.btnListup.setGeometry(715, 510, 50, 25)  # Adjust position and size as needed
+        self.btnListup.clicked.connect(self.resetFields)
 
-        # 배경 이미지 설정
-        self.setBackgroundImage('/workspace/pyqt_delta/img/main2.png')
+        # Create a ComboBox
+        self.comboBox = QComboBox(self)
+        self.comboBox.setGeometry(100, 510, 120, 25)  # Adjust position and size as needed
+
+        # # Populate the ComboBox with items
+        # self.comboBox.addItem("Option 1")
+        # self.comboBox.addItem("Option 2")
+        # self.comboBox.addItem("Option 3")
+        # # Connect a slot (function) to handle item selection
+        # self.comboBox.currentIndexChanged.connect(self.comboBoxIndexChanged)
+        # Read items from the file and add them to the ComboBox
+        with open('/workspace/pyqt_delta/vision/labels.txt', 'r') as file:
+            items = file.read().splitlines()
+            self.comboBox.addItems(items)
+
+
+
+        # Create a QLabel to display the image
+        self.imageLabel = QLabel(self)
+        pixmap = QPixmap('/media/ssd/workspace/jay/pyqt_delta/img/kbs1.png')
+        self.imageLabel.setPixmap(pixmap)
+        self.imageLabel.resize(pixmap.width(), pixmap.height())
+
+        # Position the label where you want the image to appear
+        self.imageLabel.move(100, 100)  # Adjust the position as needed
+
 
         # 버튼
         self.button()
@@ -127,89 +162,23 @@ class MyApp(QWidget):
             self.labelZ.setStyleSheet("Color : white")
             self.labelZ.setText(f'{self.btn.input_z}')
 
-        # Update the labels with the current XYZ values
-        # self.labelX.setText(f'{self.btn.input_x}')
-        # self.labelY.setText(f'{self.btn.input_y}')
-        # self.labelZ.setText(f'{self.btn.input_z}')
-
+    def comboBoxIndexChanged(self, index):
+        # Handle the ComboBox item selection here
+        selected_item = self.comboBox.currentText()
+        print(f"Selected item: {selected_item}")
 
     # 버튼 위치 및 사이즈 결정
     def button(self):
 
-        # Z-Up 버튼
-        self.btnZUp = QPushButton('', self)
-        self.btnZUp.setGeometry(135, 100, 60, 60)
-        self.btnZUp.setIcon(QIcon('/workspace/pyqt_delta/img/zu.png'))  # 이미지 경로 설정
-        self.btnZUp.setIconSize(QSize(60, 60))  # 아이콘 크기
-        self.btnZUp.pressed.connect(lambda: self.startTimer(self.zUp))
-        self.btnZUp.released.connect(self.stopTimer)
+        # 뒤로 가기 버튼
+        self.btnback = QPushButton('<<', self)
+        self.btnback.clicked.connect(self.goToStartScreen.emit)
+        self.btnback.setGeometry(10, 100, 50, 50)
 
-        # # Z-Up 버튼
-        # self.btnZUp = QPushButton('Z-Up', self)
-        # self.btnZUp.setGeometry(100, 20, 90, 30)
-        # self.btnZUp.pressed.connect(lambda: self.startTimer(self.zUp))
-        # self.btnZUp.released.connect(self.stopTimer)
 
-        # Z-Down 버튼
-        self.btnZDown = QPushButton('', self)
-        self.btnZDown.setGeometry(135, 280, 60, 60)
-        self.btnZDown.setIcon(QIcon('/workspace/pyqt_delta/img/zd.png'))  # 이미지 경로 설정
-        self.btnZDown.setIconSize(QSize(60, 60))  # 아이콘 크기
-        self.btnZDown.pressed.connect(lambda: self.startTimer(self.zDown))
-        self.btnZDown.released.connect(self.stopTimer)
-
-        # X-Up 버튼
-        self.btnXUp = QPushButton('', self)
-        self.btnXUp.setGeometry(75, 160, 60, 60)
-        self.btnXUp.setIcon(QIcon('/workspace/pyqt_delta/img/xu.png'))  # 이미지 경로 설정
-        self.btnXUp.setIconSize(QSize(60, 60))  # 아이콘 크기
-        self.btnXUp.pressed.connect(lambda: self.startTimer(self.xUp))
-        self.btnXUp.released.connect(self.stopTimer)
-
-        # X-Down 버튼
-        self.btnXDown = QPushButton('', self)
-        self.btnXDown.setGeometry(195, 220, 60, 60)
-        self.btnXDown.setIcon(QIcon('/workspace/pyqt_delta/img/xd.png'))  # 이미지 경로 설정
-        self.btnXDown.setIconSize(QSize(60, 60))  # 아이콘 크기
-        self.btnXDown.pressed.connect(lambda: self.startTimer(self.xDown))
-        self.btnXDown.released.connect(self.stopTimer)
-
-        # Y-Up 버튼
-        self.btnYUp = QPushButton('', self)
-        self.btnYUp.setGeometry(75, 220, 60, 60)
-        self.btnYUp.setIcon(QIcon('/workspace/pyqt_delta/img/yu.png'))  # 이미지 경로 설정
-        self.btnYUp.setIconSize(QSize(60, 60))  # 아이콘 크기
-        self.btnYUp.pressed.connect(lambda: self.startTimer(self.yUp))
-        self.btnYUp.released.connect(self.stopTimer)
-
-        # Y-Down 버튼
-        self.btnYDown = QPushButton('', self)
-        self.btnYDown.setGeometry(195, 160, 60, 60)
-        self.btnYDown.setIcon(QIcon('/workspace/pyqt_delta/img/yd.png'))  # 이미지 경로 설정
-        self.btnYDown.setIconSize(QSize(60, 60))  # 아이콘 크기
-        self.btnYDown.pressed.connect(lambda: self.startTimer(self.yDown))
-        self.btnYDown.released.connect(self.stopTimer)
-        
-        # Initially disable XYZ buttons
-        self.btnZUp.setDisabled(True)
-        self.btnZDown.setDisabled(True)
-        self.btnXUp.setDisabled(True)
-        self.btnXDown.setDisabled(True)
-        self.btnYUp.setDisabled(True)
-        self.btnYDown.setDisabled(True)
-        self.btnUpdate.setDisabled(True)
-        self.btnReset.setDisabled(True)
-        
-
-        # Start Button
-        self.btnStart = QPushButton('Start', self)
-        self.btnStart.setGeometry(75, 515, 80, 50)  # Adjust as needed
-        self.btnStart.clicked.connect(self.startOperation)
-
-        # Stop Button
-        self.btnStop = QPushButton('Stop', self)
-        self.btnStop.setGeometry(175, 515, 80, 50)  # Adjust as needed
-        self.btnStop.clicked.connect(self.stopOperation)
+    def onBackButtonClick(self):
+        # Emit the signal when the button is clicked
+        self.goToStartScreen.emit()
 
     def updateXYZ(self):
         # Read values from LineEdits and update XYZ
@@ -258,96 +227,14 @@ class MyApp(QWidget):
         self.lineEditZ.setStyleSheet("color: black;")
 
 
-    def startTimer(self, func):
-        if self.timer.isActive():  # 타이머가 활성화되어 있다면 연결을 해제
-            self.timer.timeout.disconnect()
-        self.timer.timeout.connect(func)
-        self.timer.start(setting.ms) # 1000 밀리초 = 1초
-        
-    def stopTimer(self):
-        self.timer.stop()
-        try:
-            self.timer.timeout.disconnect()
-        except TypeError:
-            # 연결이 없을 경우 발생하는 TypeError를 처리
-            pass
-
-    # start 버튼 누르면 수동 번튼 활성화
-    def startOperation(self):
-        # Increment initial XYZ values by 10
-        self.btn.input_x = x
-        self.btn.input_y = y
-        self.btn.input_z = z
-
-        self.btn.publish_xyz()
-
-        # Update labels with new values
-        self.updateLabels()
-
-        # Enable XYZ buttons
-        self.btnZUp.setDisabled(False)
-        self.btnZDown.setDisabled(False)
-        self.btnXUp.setDisabled(False)
-        self.btnXDown.setDisabled(False)
-        self.btnYUp.setDisabled(False)
-        self.btnYDown.setDisabled(False)
-        self.btnUpdate.setDisabled(False)
-        self.btnReset.setDisabled(False)
-        print("Operation started")
-
-#  # Update Button
-#         self.btnUpdate = QPushButton('>', self)
-#         self.btnUpdate.setGeometry(750, 510, 25, 25)  # Adjust as needed
-#         self.btnUpdate.clicked.connect(self.updateXYZ)
-    # stop 누르면 비활성화
-    def stopOperation(self):
-        # Disable XYZ buttons
-        self.btnZUp.setDisabled(True)
-        self.btnZDown.setDisabled(True)
-        self.btnXUp.setDisabled(True)
-        self.btnXDown.setDisabled(True)
-        self.btnYUp.setDisabled(True)
-        self.btnYDown.setDisabled(True)
-        self.btnUpdate.setDisabled(True)
-        self.btnReset.setDisabled(True)
-        print("Operation stopped")
-
-    def zUp(self):
-        self.btn.z_up()
-        self.updateLabels() # 화면에 보이는 좌표 업데이트
-        print('Z Up', self.btn.input_z)
-    
-    def zDown(self):
-        self.btn.z_down()
-        self.updateLabels()
-        print('Z Down', self.btn.input_z)
-
-    def xUp(self):
-        self.btn.x_up()
-        self.updateLabels()
-        print('X Up', self.btn.input_x)
-
-    def xDown(self):
-        self.btn.x_down()
-        self.updateLabels()
-        print('X Down', self.btn.input_x)
-
-    def yUp(self):
-        self.btn.y_up()
-        self.updateLabels()
-        print('Y Up', self.btn.input_y)
-
-    def yDown(self):
-        self.btn.y_down()
-        self.updateLabels()
-        print('Y Down', self.btn.input_y)
+########### start.py를 실행하면 아래는 필요 없음 #####################
 
 class GUI_Node(Node):
     def __init__(self):
         super().__init__('gui_node')
         self.publisher_xyz = self.create_publisher(Point, 'input_xyz', 10)
         self.app = QApplication(sys.argv)
-        self.gui = MyApp(self)
+        self.gui = MyHome(self)
         self.timer = self.create_timer(0.1, self.timer_callback)
 
     def timer_callback(self):

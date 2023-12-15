@@ -4,7 +4,7 @@ import rclpy
 from rclpy.node import Node
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
-from PyQt5.QtCore import QTimer, QSize, Qt
+from PyQt5.QtCore import QTimer, QSize, Qt, pyqtSignal
 from geometry_msgs.msg import Point
 
 
@@ -22,6 +22,7 @@ z = setting.z
 class MyApp(QWidget):
     # 현재 좌표 값 받아오기
     # btn = xyz_button(x, y, z)
+    goToStartScreen = pyqtSignal()
 
     def __init__(self, node):
         super().__init__()
@@ -29,15 +30,21 @@ class MyApp(QWidget):
         self.btn = xyz_button(node, x, y, z)
         self.initUI()
         self.timer = QTimer(self)
-        # self.initUI
+        self.initUI
 
     def initUI(self):
-        self.setWindowTitle('W-DELTABOT Application')
-        # 창 시작점 (center def 가져옴)
-        self.center()
-        # 창 타이틀 아이콘 - 윈도우에서는 가능
-        self.setWindowIcon(QIcon('/workspace/pyqt_delta/img/eth.png'))
-        # self.resize(400, 200)
+        # # 배경 이미지 설정
+        # self.setStyleSheet("QWidget {background-image: url('/workspace/pyqt_delta/img/main2.png');}")
+
+
+        # 이미지 넣기
+        original_pixmap = QPixmap("/workspace/pyqt_delta/img/main2.png")
+        scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # QLabel 생성 및 QPixmap 설정
+        lbl_img = QLabel(self)
+        lbl_img.setPixmap(scaled_pixmap)
+        lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
+
         # 창 크기 고정
         self.setFixedSize(800,600)
 
@@ -81,9 +88,15 @@ class MyApp(QWidget):
         self.btnReset.setGeometry(615, 540, 50, 30)  # Adjust position and size as needed
         self.btnReset.clicked.connect(self.resetFields)
 
+        # Create a QLabel to display the image
+        self.imageLabel = QLabel(self)
+        pixmap = QPixmap('/media/ssd/workspace/jay/pyqt_delta/img/kbs1.png')
+        self.imageLabel.setPixmap(pixmap)
+        self.imageLabel.resize(pixmap.width(), pixmap.height())
 
-        # 배경 이미지 설정
-        self.setBackgroundImage('/workspace/pyqt_delta/img/main2.png')
+        # Position the label where you want the image to appear
+        self.imageLabel.move(100, 100)  # Adjust the position as needed
+
 
         # 버튼
         self.button()
@@ -135,6 +148,12 @@ class MyApp(QWidget):
 
     # 버튼 위치 및 사이즈 결정
     def button(self):
+
+        self.btnback = QPushButton('<<', self)
+        self.btnback.clicked.connect(self.goToStartScreen.emit)
+        self.btnback.setGeometry(10, 10, 50, 50)
+        # self.btnback.clicked.connect(self.onBackButtonClick)
+        # self.btnback.clicked.connect(self.goBack.emit)
 
         # Z-Up 버튼
         self.btnZUp = QPushButton('', self)
@@ -210,6 +229,10 @@ class MyApp(QWidget):
         self.btnStop = QPushButton('Stop', self)
         self.btnStop.setGeometry(175, 515, 80, 50)  # Adjust as needed
         self.btnStop.clicked.connect(self.stopOperation)
+
+    def onBackButtonClick(self):
+        # Emit the signal when the button is clicked
+        self.goToStartScreen.emit()
 
     def updateXYZ(self):
         # Read values from LineEdits and update XYZ
@@ -299,6 +322,7 @@ class MyApp(QWidget):
 #         self.btnUpdate = QPushButton('>', self)
 #         self.btnUpdate.setGeometry(750, 510, 25, 25)  # Adjust as needed
 #         self.btnUpdate.clicked.connect(self.updateXYZ)
+
     # stop 누르면 비활성화
     def stopOperation(self):
         # Disable XYZ buttons
@@ -341,6 +365,8 @@ class MyApp(QWidget):
         self.btn.y_down()
         self.updateLabels()
         print('Y Down', self.btn.input_y)
+
+########### start.py를 실행하면 아래는 필요 없음 #####################
 
 class GUI_Node(Node):
     def __init__(self):
