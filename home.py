@@ -7,6 +7,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import QTimer, QSize, Qt, pyqtSignal
 from geometry_msgs.msg import Point
 
+from main import MyApp
 
 # function.py 에서 class 호출
 from function import xyz_button
@@ -38,7 +39,7 @@ class MyHome(QWidget):
 
 
         # 이미지 넣기
-        original_pixmap = QPixmap("/workspace/pyqt_delta/img/test.png")
+        original_pixmap = QPixmap("/workspace/pyqt_delta/img/home.png")
         scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # QLabel 생성 및 QPixmap 설정
         lbl_img = QLabel(self)
@@ -61,6 +62,77 @@ class MyHome(QWidget):
         self.labelZ.setStyleSheet("Color : white")
         self.labelZ.setAlignment(Qt.AlignRight)
         self.labelZ.setGeometry(590, 445, 100, 30)  # Adjust position and size as needed
+
+        
+        # lebel 정보 창
+        self.label1_label = QLabel(f"{x}", self)
+        self.label1_label.setStyleSheet("Color : white")
+        self.label1_label.setAlignment(Qt.AlignRight)
+        self.label1_label.setGeometry(313, 116, 100, 30)  # Adjust position and size as needed
+        self.label1_x = QLabel(f"{y}", self)
+        self.label1_x.setStyleSheet("Color : white")
+        self.label1_x.setAlignment(Qt.AlignRight)
+        self.label1_x.setGeometry(412, 116, 100, 30)  # Adjust position and size as needed
+        self.label1_y = QLabel(f"{z}", self)
+        self.label1_y.setStyleSheet("Color : white")
+        self.label1_y.setAlignment(Qt.AlignRight)
+        self.label1_y.setGeometry(531, 116, 100, 30)  # Adjust position and size as needed
+        self.label1_z = QLabel(f"{z}", self)
+        self.label1_z.setStyleSheet("Color : white")
+        self.label1_z.setAlignment(Qt.AlignRight)
+        self.label1_z.setGeometry(649, 116, 100, 30)  # Adjust position and size as needed
+
+        self.label2_label = QLabel(f"{x}", self)
+        self.label2_label.setStyleSheet("Color : white")
+        self.label2_label.setAlignment(Qt.AlignRight)
+        self.label2_label.setGeometry(313, 153, 100, 30)  # Adjust position and size as needed
+        self.label2_x = QLabel(f"{y}", self)
+        self.label2_x.setStyleSheet("Color : white")
+        self.label2_x.setAlignment(Qt.AlignRight)
+        self.label2_x.setGeometry(412, 153, 100, 30)  # Adjust position and size as needed
+        self.label2_y = QLabel(f"{z}", self)
+        self.label2_y.setStyleSheet("Color : white")
+        self.label2_y.setAlignment(Qt.AlignRight)
+        self.label2_y.setGeometry(531, 153, 100, 30)  # Adjust position and size as needed
+        self.label2_z = QLabel(f"{z}", self)
+        self.label2_z.setStyleSheet("Color : white")
+        self.label2_z.setAlignment(Qt.AlignRight)
+        self.label2_z.setGeometry(649, 153, 100, 30)  # Adjust position and size as needed
+
+        self.label3_label = QLabel(f"{x}", self)
+        self.label3_label.setStyleSheet("Color : white")
+        self.label3_label.setAlignment(Qt.AlignRight)
+        self.label3_label.setGeometry(313, 189, 100, 30)  # Adjust position and size as needed
+        self.label3_x = QLabel(f"{y}", self)
+        self.label3_x.setStyleSheet("Color : white")
+        self.label3_x.setAlignment(Qt.AlignRight)
+        self.label3_x.setGeometry(412, 189, 100, 30)  # Adjust position and size as needed
+        self.label3_y = QLabel(f"{z}", self)
+        self.label3_y.setStyleSheet("Color : white")
+        self.label3_y.setAlignment(Qt.AlignRight)
+        self.label3_y.setGeometry(531, 189, 100, 30)  # Adjust position and size as needed
+        self.label3_z = QLabel(f"{z}", self)
+        self.label3_z.setStyleSheet("Color : white")
+        self.label3_z.setAlignment(Qt.AlignRight)
+        self.label3_z.setGeometry(649, 189, 100, 30)  # Adjust position and size as needed
+
+        self.label4_label = QLabel(f"{x}", self)
+        self.label4_label.setStyleSheet("Color : white")
+        self.label4_label.setAlignment(Qt.AlignRight)
+        self.label4_label.setGeometry(313, 225, 100, 30)  # Adjust position and size as needed
+        self.label4_x = QLabel(f"{y}", self)
+        self.label4_x.setStyleSheet("Color : white")
+        self.label4_x.setAlignment(Qt.AlignRight)
+        self.label4_x.setGeometry(412, 225, 100, 30)  # Adjust position and size as needed
+        self.label4_y = QLabel(f"{z}", self)
+        self.label4_y.setStyleSheet("Color : white")
+        self.label4_y.setAlignment(Qt.AlignRight)
+        self.label4_y.setGeometry(531, 225, 100, 30)  # Adjust position and size as needed
+        self.label4_z = QLabel(f"{z}", self)
+        self.label4_z.setStyleSheet("Color : white")
+        self.label4_z.setAlignment(Qt.AlignRight)
+        self.label4_z.setGeometry(649, 225, 100, 30)  # Adjust position and size as needed
+
 
 
         ### 직접 입력 창들
@@ -91,25 +163,101 @@ class MyHome(QWidget):
         # Listup Button
         self.btnListup = QPushButton('List', self)
         self.btnListup.setGeometry(715, 510, 50, 25)  # Adjust position and size as needed
-        self.btnListup.clicked.connect(self.resetFields)
+        self.btnListup.clicked.connect(self.listupClicked)
 
-        # Create a ComboBox
+        # 뒤로가기 버튼 (순서가 밀리면 안보일 수도 있음)
+        self.button()
+
+        # 1,2,3,4 를 보여주는 콤보박스
+        self.comboBox1 = QComboBox(self)
+        self.comboBox1.setGeometry(100, 450, 120, 25)  # Adjust position and size as needed
+        items = ["1", "2", "3", "4"]
+        self.comboBox1.addItems(items)
+
+        # lable 종류 txt애서 읽어와 보여주기
         self.comboBox = QComboBox(self)
         self.comboBox.setGeometry(100, 510, 120, 25)  # Adjust position and size as needed
 
-        # # Populate the ComboBox with items
-        # self.comboBox.addItem("Option 1")
-        # self.comboBox.addItem("Option 2")
-        # self.comboBox.addItem("Option 3")
-        # # Connect a slot (function) to handle item selection
-        # self.comboBox.currentIndexChanged.connect(self.comboBoxIndexChanged)
         # Read items from the file and add them to the ComboBox
         with open('/workspace/pyqt_delta/vision/labels.txt', 'r') as file:
             items = file.read().splitlines()
             self.comboBox.addItems(items)
 
 
+        # # Create a QTextEdit widget
+        # self.textEdit = QTextEdit(self)
+        # self.textEdit.setGeometry(100, 300, 300, 100)  # Adjust position and size as needed
 
+
+    # 리스트업 클릭시 보낼 정보
+    def listupClicked(self):
+        selected_num = self.comboBox1.currentText()
+        selected_item = self.comboBox.currentText()
+        x_val = float(self.lineEditX.text())
+        y_val = float(self.lineEditY.text())
+        z_val = float(self.lineEditZ.text())
+
+        if selected_num == "1":
+            self.label1_label.setText(selected_item)
+            self.label1_x.setText(str(x_val))
+            self.label1_y.setText(str(y_val))
+            self.label1_z.setText(str(z_val))
+        elif selected_num == "2":
+            self.label2_label.setText(selected_item)
+            self.label2_x.setText(str(x_val))
+            self.label2_y.setText(str(y_val))
+            self.label2_z.setText(str(z_val))
+        elif selected_num == "3":
+            self.label3_label.setText(selected_item)
+            self.label3_x.setText(str(x_val))
+            self.label3_y.setText(str(y_val))
+            self.label3_z.setText(str(z_val))
+        elif selected_num == "4":
+            self.label4_label.setText(selected_item)
+            self.label4_x.setText(str(x_val))
+            self.label4_y.setText(str(y_val))
+            self.label4_z.setText(str(z_val))
+
+        # # Append the information to the QTextEdit widget
+        # info_text = f'{selected_num}. {selected_item}, X: [{x_val}], Y: [{y_val}], Z: [{z_val}]'
+        # self.textEdit.append(info_text)
+
+        # 리스트업 버튼 클릭 후 txt 로 만들기
+        file_path = "/workspace/pyqt_delta/document/home_list.txt"
+
+
+        # 기존 파일 내용 읽어오기
+        existing_lines = []
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as file:
+                existing_lines = file.readlines()
+
+        # 파일이 없을 경우 초기값 생성
+        while len(existing_lines) < 4:
+            existing_lines.append(f'{len(existing_lines) + 1}\n')
+
+
+        # 선택된 번호에 해당하는 줄 덮어쓰기 또는 추가하기
+        if selected_num == "1":
+            existing_lines[0] = f'{selected_item} {x_val} {y_val} {z_val}\n'
+        elif selected_num == "2":
+            existing_lines[1] = f'{selected_item} {x_val} {y_val} {z_val}\n'
+        elif selected_num == "3":
+            existing_lines[2] = f'{selected_item} {x_val} {y_val} {z_val}\n'
+        elif selected_num == "4":
+            existing_lines[3] = f'{selected_item} {x_val} {y_val} {z_val}\n'
+
+        # 파일에 덮어쓴 내용 저장
+        with open(file_path, 'w') as file:
+            file.writelines(existing_lines)
+
+        # 확인 메시지 표시
+        QMessageBox.information(self, "Info", "Data updated in home_list.txt")
+
+
+
+
+########## 이미지 삽입 #####################################
         # Create a QLabel to display the image
         self.imageLabel = QLabel(self)
         pixmap = QPixmap('/media/ssd/workspace/jay/pyqt_delta/img/kbs1.png')
@@ -118,10 +266,8 @@ class MyHome(QWidget):
 
         # Position the label where you want the image to appear
         self.imageLabel.move(100, 100)  # Adjust the position as needed
+##########################################################
 
-
-        # 버튼
-        self.button()
 
         self.show()
 
@@ -174,6 +320,7 @@ class MyHome(QWidget):
         self.btnback = QPushButton('<<', self)
         self.btnback.clicked.connect(self.goToStartScreen.emit)
         self.btnback.setGeometry(10, 100, 50, 50)
+        # self.btnback.raise_()  # Raise the button to the top of the widget stack
 
 
     def onBackButtonClick(self):

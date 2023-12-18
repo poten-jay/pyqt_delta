@@ -6,8 +6,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QTimer, QSize, Qt, pyqtSignal
 from geometry_msgs.msg import Point
+from shared_updates import global_update_xyz
 
-# from home import MyHome
+
+from home import MyHome
 # function.py 에서 class 호출
 from function import xyz_button
 
@@ -122,6 +124,7 @@ class MyApp(QWidget):
         if self.btn.input_x == setting.x_max or self.btn.input_x == setting.x_min:
             self.labelX.setStyleSheet("Color : red")
             self.labelX.setText(f'Limit {self.btn.input_x}')
+            # MyHome.initUI.labelX.setText(f'Limit {self.btn.input_x}')
         else:
             self.labelX.setStyleSheet("Color : white")
             self.labelX.setText(f'{self.btn.input_x}')
@@ -249,8 +252,10 @@ class MyApp(QWidget):
                 self.btn.input_y = y_val
                 self.btn.input_z = z_val
                 self.updateLabels()
-                # MyHome.updateLabels()
+                MyApp.updateLabels()
+                MyHome.updateLabels()
                 self.btn.publish_xyz()
+                
                 # Add any other necessary updates or method calls
             else:
                 # Handle out of range values
