@@ -9,6 +9,7 @@ from geometry_msgs.msg import Point
 
 # function.py 에서 class 호출
 from function import xyz_button
+from home import MyHome
 
 # setting.py 에서 값 호출
 import setting
@@ -19,14 +20,14 @@ y = setting.y
 z = setting.z
 
 # 리스트업 버튼 클릭 후 txt 로 만들기
-file_path = "/workspace/pyqt_delta/document/home_list.txt"
-# home_list.txt 파일 만들기
-if not os.path.exists(file_path):
-    with open(file_path, 'w') as file:
-        for _ in range(4):
-            file.write('0 0 0 0\n')
+# file_path = "/workspace/pyqt_delta/document/move_list.txt"
+# # home_list.txt 파일 만들기
+# if not os.path.exists(file_path):
+#     with open(file_path, 'w') as file:
+#         for _ in range(4):
+#             file.write('0 0 0 0\n')
 
-class MyHome(QWidget):
+class MyMove2(QWidget):
     goToStartScreen = pyqtSignal()
 
     def __init__(self, node):
@@ -39,7 +40,7 @@ class MyHome(QWidget):
 
     def initUI(self):
 ######## 이미지 넣기 #######################################################
-        original_pixmap = QPixmap("/workspace/pyqt_delta/img/home2.png")
+        original_pixmap = QPixmap("/workspace/pyqt_delta/img/test.png")
         scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # QLabel 생성 및 QPixmap 설정
         lbl_img = QLabel(self)
@@ -73,7 +74,8 @@ class MyHome(QWidget):
         self.labelZ.setGeometry(590, 410, 100, 30)  # Adjust position and size as needed
 
         # home_list.txt 의 정보 읽어오기
-        with open(file_path, 'r') as file:
+        file_path_home = '/workspace/pyqt_delta/document/home_list.txt'
+        with open(file_path_home, 'r') as file:
             lines = file.readlines()
         # 각 줄의 데이터를 변수에 저장합니다.
         if len(lines) <= 4 :
@@ -156,32 +158,32 @@ class MyHome(QWidget):
         self.label4_z.setGeometry(649, 225, 100, 30)  # Adjust position and size as needed
 
         # workspace 정보
-        self.workspace_x = QLabel(f"Max : {setting.x_max}", self)
-        self.workspace_x.setStyleSheet("Color : white")
-        self.workspace_x.setAlignment(Qt.AlignRight)
-        self.workspace_x.setGeometry(5, 360, 100, 30)  # Adjust position and size as needed
-        self.workspace_xn = QLabel(f"Min : {setting.x_min}", self)
-        self.workspace_xn.setStyleSheet("Color : white")
-        self.workspace_xn.setAlignment(Qt.AlignRight)
-        self.workspace_xn.setGeometry(150, 360, 100, 30)  # Adjust position and size as needed
+        # self.workspace_x = QLabel(f"Max : {setting.x_max}", self)
+        # self.workspace_x.setStyleSheet("Color : white")
+        # self.workspace_x.setAlignment(Qt.AlignRight)
+        # self.workspace_x.setGeometry(5, 360, 100, 30)  # Adjust position and size as needed
+        # self.workspace_xn = QLabel(f"Min : {setting.x_min}", self)
+        # self.workspace_xn.setStyleSheet("Color : white")
+        # self.workspace_xn.setAlignment(Qt.AlignRight)
+        # self.workspace_xn.setGeometry(150, 360, 100, 30)  # Adjust position and size as needed
         
-        self.workspace_y = QLabel(f"Max : {setting.y_max}", self)
-        self.workspace_y.setStyleSheet("Color : white")
-        self.workspace_y.setAlignment(Qt.AlignRight)
-        self.workspace_y.setGeometry(70, 395, 100, 30)  # Adjust position and size as needed
-        self.workspace_yn = QLabel(f"Min : {setting.y_min}", self)
-        self.workspace_yn.setStyleSheet("Color : white")
-        self.workspace_yn.setAlignment(Qt.AlignRight)
-        self.workspace_yn.setGeometry(110, 335, 100, 30)  # Adjust position and size as needed
+        # self.workspace_y = QLabel(f"Max : {setting.y_max}", self)
+        # self.workspace_y.setStyleSheet("Color : white")
+        # self.workspace_y.setAlignment(Qt.AlignRight)
+        # self.workspace_y.setGeometry(70, 395, 100, 30)  # Adjust position and size as needed
+        # self.workspace_yn = QLabel(f"Min : {setting.y_min}", self)
+        # self.workspace_yn.setStyleSheet("Color : white")
+        # self.workspace_yn.setAlignment(Qt.AlignRight)
+        # self.workspace_yn.setGeometry(110, 335, 100, 30)  # Adjust position and size as needed
         
         self.workspace_z = QLabel(f"Max : {setting.z_max}", self)
         self.workspace_z.setStyleSheet("Color : white")
         self.workspace_z.setAlignment(Qt.AlignRight)
-        self.workspace_z.setGeometry(5, 415, 100, 30)  # Adjust position and size as needed
+        self.workspace_z.setGeometry(190, 300, 100, 30)  # Adjust position and size as needed
         self.workspace_zn = QLabel(f"Min : {setting.z_min}", self)
         self.workspace_zn.setStyleSheet("Color : white")
         self.workspace_zn.setAlignment(Qt.AlignRight)
-        self.workspace_zn.setGeometry(5, 470, 100, 30)  # Adjust position and size as needed
+        self.workspace_zn.setGeometry(190, 470, 100, 30)  # Adjust position and size as needed
         
 
         ### 직접 입력 창들
@@ -372,7 +374,7 @@ class MyHome(QWidget):
         # 뒤로 가기 버튼
         self.btnback = QPushButton('<<', self)
         self.btnback.clicked.connect(self.goToStartScreen.emit)
-        self.btnback.setGeometry(10, 100, 50, 50)
+        self.btnback.setGeometry(10, 190, 50, 50)
         # self.btnback.raise_()  # Raise the button to the top of the widget stack
 
 
@@ -434,7 +436,7 @@ class GUI_Node(Node):
         super().__init__('gui_node')
         self.publisher_xyz = self.create_publisher(Point, 'input_xyz', 10)
         self.app = QApplication(sys.argv)
-        self.gui = MyHome(self)
+        self.gui = MyMove2(self)
         self.timer = self.create_timer(0.1, self.timer_callback)
 
     def timer_callback(self):

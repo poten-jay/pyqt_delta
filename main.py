@@ -38,7 +38,7 @@ class MyApp(QWidget):
 
 
         # 이미지 넣기
-        original_pixmap = QPixmap("/workspace/pyqt_delta/img/main2.png")
+        original_pixmap = QPixmap("/workspace/pyqt_delta/img/main3.png")
         scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # QLabel 생성 및 QPixmap 설정
         lbl_img = QLabel(self)

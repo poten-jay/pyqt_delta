@@ -10,6 +10,7 @@ from datetime import datetime
 
 from main import MyApp
 from home import MyHome
+from move import MyMove
 
 
 
@@ -34,15 +35,38 @@ class StartWindow(QWidget):
         lbl_img.setPixmap(scaled_pixmap)
         lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
 
-####### 버튼1 ######################################################################
-        startButton = QPushButton('Go1', self)
-        startButton.clicked.connect(self.gotoMain)
-        startButton.setGeometry(10, 10, 50, 50)
+####### start ######################################################################
+        self.startButton = QPushButton('START', self)
+        self.startButton.clicked.connect(self.startOperation)
+        self.startButton.setGeometry(200, 300, 100, 100)
 
-####### 버튼2 ######################################################################
-        homingButton = QPushButton('Go2', self)
-        homingButton.clicked.connect(self.gotoHome)
-        homingButton.setGeometry(10, 100, 50, 50)
+####### stop ######################################################################
+        self.stopButton = QPushButton('STOP', self)
+        self.stopButton.clicked.connect(self.stopOperation)
+        self.stopButton.setGeometry(400, 300, 100, 100)
+    
+####### go main ######################################################################
+        self.mainButton = QPushButton('Go1', self)
+        self.mainButton.clicked.connect(self.gotoMain)
+        self.mainButton.setGeometry(10, 10, 50, 50)
+
+####### go home ######################################################################
+        self.homingButton = QPushButton('Go2', self)
+        self.homingButton.clicked.connect(self.gotoHome)
+        self.homingButton.setGeometry(10, 100, 50, 50)
+
+####### go move ######################################################################
+        self.movingButton = QPushButton('Go3', self)
+        self.movingButton.clicked.connect(self.gotoMove)
+        self.movingButton.setGeometry(10, 190, 50, 50)
+
+####### # Initially disable XYZ buttons ######################################
+        # self.startButton.setDisabled(True)
+        # self.stopButton.setDisabled(True)
+        self.mainButton.setDisabled(True)
+        self.homingButton.setDisabled(True)
+        self.movingButton.setDisabled(True)
+
 
 ####### 시간 ######################################################################
         # 시간을 표시할 QLabel 생성
@@ -62,11 +86,17 @@ class StartWindow(QWidget):
         main_window = self.parent().findChild(MyApp)
         self.parent().setCurrentWidget(main_window)
 
-####### main 으로 #################################################################
+####### home 으로 #################################################################
 
     def gotoHome(self):
         home_window = self.parent().findChild(MyHome)
         self.parent().setCurrentWidget(home_window)
+
+####### home 으로 #################################################################
+
+    def gotoMove(self):
+        move_window = self.parent().findChild(MyMove)
+        self.parent().setCurrentWidget(move_window)
 
 ####### 시간 #################################################################
     def update_time(self):
@@ -75,7 +105,22 @@ class StartWindow(QWidget):
         self.time_label.setText(current_time)
 
 
+    def startOperation(self):
+        # self.startButton.setDisabled(False)
+        # self.stopButton.setDisabled(False)
+        self.mainButton.setDisabled(False)
+        self.homingButton.setDisabled(False)
+        self.movingButton.setDisabled(False)
+        print("Operation started")
 
+    # stop 누르면 비활성화
+    def stopOperation(self):
+        # self.startButton.setDisabled(True)
+        # self.stopButton.setDisabled(True)
+        self.mainButton.setDisabled(True)
+        self.homingButton.setDisabled(True)
+        self.movingButton.setDisabled(True)
+        print("Operation stopped")
 
 
 
@@ -84,7 +129,7 @@ class GUI_Node(Node):
         super().__init__('gui_node')
         # Publisher 생성
         self.publisher_xyz = self.create_publisher(Point, 'input_xyz', 10)
-        
+
         # PyQT 생성을 위함
         self.app = QApplication(sys.argv)
         self.stack = QStackedWidget() # Stack을 통한 Widget 띄우기에 필요한 것. 
@@ -96,6 +141,10 @@ class GUI_Node(Node):
         # Homing page 불러옴
         self.homeApp = MyHome(self)
         self.homeApp.goToStartScreen.connect(self.showStartWindow)
+
+        # Homing page 불러옴
+        self.moveApp = MyMove(self)
+        self.moveApp.goToStartScreen.connect(self.showStartWindow)
 
         # 추가할 page 불러옴
         # ~~~~~~~~~~~~~~
@@ -110,12 +159,11 @@ class GUI_Node(Node):
         self.stack.addWidget(self.start_window)
         self.stack.addWidget(self.mainApp)
         self.stack.addWidget(self.homeApp)
-
-
+        self.stack.addWidget(self.moveApp)
 
 
         # stack의 타이틀을 설정함 (예: 첫 번째 위젯이 표시될 때) - 부모에 설정
-        self.stack.setWindowTitle('W-DELTA BOT Application')
+        self.stack.setWindowTitle('W-ECOBOT Application')
         # 창 타이틀 아이콘 - 윈도우에서는 가능
         self.stack.setWindowIcon(QIcon('/workspace/pyqt_delta/img/eth.png'))
         # self.resize(400, 200)
