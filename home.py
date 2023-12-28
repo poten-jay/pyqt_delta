@@ -372,7 +372,7 @@ class MyHome(QWidget):
         # 뒤로 가기 버튼
         self.btnback = QPushButton('<<', self)
         self.btnback.clicked.connect(self.goToStartScreen.emit)
-        self.btnback.setGeometry(10, 100, 50, 50)
+        self.btnback.setGeometry(0, 528, 50, 50)
         # self.btnback.raise_()  # Raise the button to the top of the widget stack
 
 

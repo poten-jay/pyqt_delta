@@ -8,7 +8,7 @@ from PyQt5.QtCore import QTimer, QSize, Qt, pyqtSignal
 from geometry_msgs.msg import Point
 
 # function.py 에서 class 호출
-from function import xyz_button
+# from function import xyz_button
 from home import MyHome
 
 
@@ -21,10 +21,10 @@ y = setting.y
 z = setting.z
 
 # 리스트업 버튼 클릭 후 txt 로 만들기
-file_path = "/workspace/pyqt_delta/document/move_list.txt"
+file_path_move = "/workspace/pyqt_delta/document/move_list.txt"
 # home_list.txt 파일 만들기
-if not os.path.exists(file_path):
-    with open(file_path, 'w') as file:
+if not os.path.exists(file_path_move):
+    with open(file_path_move, 'w') as file:
         for _ in range(4):
             file.write('0 0 0 0 0 0 0\n')
 
@@ -34,7 +34,7 @@ class MyMove(QWidget):
     def __init__(self, node):
         super().__init__()
         self.node = node
-        self.btn = xyz_button(node, x, y, z)
+        # self.btn = xyz_button(node, x, y, z)
         self.initUI()
         self.timer = QTimer(self)
         self.initUI
@@ -60,28 +60,7 @@ class MyMove(QWidget):
         # 창 크기 고정
         self.setFixedSize(800,600)
 
-        # 화면에 표시되는 xyz 좌표
-        self.labelX = QLabel(f"{x}", self)
-        self.labelX.setStyleSheet("Color : white")
-        self.labelX.setAlignment(Qt.AlignRight)
-        self.labelX.setGeometry(275, 410, 100, 30)  # Adjust position and size as needed
-        self.labelY = QLabel(f"{y}", self)
-        self.labelY.setStyleSheet("Color : white")
-        self.labelY.setAlignment(Qt.AlignRight)
-        self.labelY.setGeometry(430, 410, 100, 30)  # Adjust position and size as needed
-        self.labelZ = QLabel(f"{z}", self)
-        self.labelZ.setStyleSheet("Color : white")
-        self.labelZ.setAlignment(Qt.AlignRight)
-        self.labelZ.setGeometry(590, 410, 100, 30)  # Adjust position and size as needed
-
-
-
-
-
-
-
         # home_list.txt 의 정보 읽어오기
-
         file_path_move = '/workspace/pyqt_delta/document/move_list.txt'
         with open(file_path_move, 'r') as file:
             lines = file.readlines()
@@ -89,7 +68,6 @@ class MyMove(QWidget):
         if len(lines) <= 4 :
             # 1번째 줄 데이터 저장
             first_line = lines[0].split()
-            print(first_line)
             # 2번째 줄 데이터 저장
             second_line = lines[1].split()
             # 3번째 줄 데이터 저장
@@ -128,19 +106,18 @@ class MyMove(QWidget):
 
 
         file_path_home = '/workspace/pyqt_delta/document/home_list.txt'
-        with open(file_path_home, 'r') as file:
-            lines = file.readlines()
+        with open(file_path_home, 'r') as file1:
+            lines_home = file1.readlines()
         # 각 줄의 데이터를 변수에 저장합니다.
-        if len(lines) <= 4 :
+        if len(lines_home) <= 4 :
             # 1번째 줄 데이터 저장
-            first_line_1 = lines[0].split()
-            print(first_line)
+            first_line_1 = lines_home[0].split()
             # 2번째 줄 데이터 저장
-            second_line_2 = lines[1].split()
+            second_line_2 = lines_home[1].split()
             # 3번째 줄 데이터 저장
-            third_line_3 = lines[2].split()
+            third_line_3 = lines_home[2].split()
             # 4번째 줄 데이터 저장
-            fourth_line_4 = lines[3].split()
+            fourth_line_4 = lines_home[3].split()
 
         # lebel 정보 창
         self.label1_label = QLabel(f"{first_line_1[0]}", self)
@@ -240,23 +217,6 @@ class MyMove(QWidget):
         self.workspace_zn.setGeometry(190, 470, 100, 30)  # Adjust position and size as needed
         
 
-        ### 직접 입력 창들
-        # LineEdit for X value
-        self.lineEditX = QLineEdit(self)
-        self.lineEditX.setGeometry(305, 510, 90, 25)  # Adjust position and size as needed
-        self.lineEditX.setText(str(x))
-        self.lineEditX.setAlignment(Qt.AlignRight) # 우측정렬
-        # LineEdit for Y value
-        self.lineEditY = QLineEdit(self)
-        self.lineEditY.setGeometry(460, 510, 90, 25)  # Adjust position and size as needed
-        self.lineEditY.setText(str(y))
-        self.lineEditY.setAlignment(Qt.AlignRight)
-        # LineEdit for Z value
-        self.lineEditZ = QLineEdit(self)
-        self.lineEditZ.setGeometry(615, 510, 90, 25)  # Adjust position and size as needed
-        self.lineEditZ.setText(str(z))
-        self.lineEditZ.setAlignment(Qt.AlignRight)
-
         # path_spped_a1
         self.path_spped_a1 = QLineEdit(self)
         self.path_spped_a1.setGeometry(10, 100, 90, 25)  # Adjust position and size as needed
@@ -265,32 +225,32 @@ class MyMove(QWidget):
         # path_spped_a2
         self.path_spped_a2 = QLineEdit(self)
         self.path_spped_a2.setGeometry(110, 100, 90, 25)  # Adjust position and size as needed
-        self.path_spped_a2.setText(str(2))
+        self.path_spped_a2.setText(str(1))
         self.path_spped_a2.setAlignment(Qt.AlignRight)
         # path_spped_a3
         self.path_spped_a3 = QLineEdit(self)
         self.path_spped_a3.setGeometry(210, 100, 90, 25)  # Adjust position and size as needed
-        self.path_spped_a3.setText(str(3))
+        self.path_spped_a3.setText(str(1))
         self.path_spped_a3.setAlignment(Qt.AlignRight)
         # bending_b
         self.bending_b = QLineEdit(self)
         self.bending_b.setGeometry(310, 100, 90, 25)  # Adjust position and size as needed
-        self.bending_b.setText(str(4))
+        self.bending_b.setText(str(50))
         self.bending_b.setAlignment(Qt.AlignRight)
         # bending_c
         self.bending_c = QLineEdit(self)
         self.bending_c.setGeometry(410, 100, 90, 25)  # Adjust position and size as needed
-        self.bending_c.setText(str(5))
+        self.bending_c.setText(str(50))
         self.bending_c.setAlignment(Qt.AlignRight)
         # pick_height
         self.pick_height = QLineEdit(self)
         self.pick_height.setGeometry(510, 100, 90, 25)  # Adjust position and size as needed
-        self.pick_height.setText(str(6))
+        self.pick_height.setText(str(-350))
         self.pick_height.setAlignment(Qt.AlignRight)
         # place_height
         self.place_height = QLineEdit(self)
         self.place_height.setGeometry(610, 100, 90, 25)  # Adjust position and size as needed
-        self.place_height.setText(str(7))
+        self.place_height.setText(str(-350))
         self.place_height.setAlignment(Qt.AlignRight)
 
 
@@ -299,10 +259,7 @@ class MyMove(QWidget):
         self.btnReset = QPushButton('Reset', self)
         self.btnReset.setGeometry(615, 540, 50, 30)  # Adjust position and size as needed
         self.btnReset.clicked.connect(self.resetFields)
-        # # Update Button
-        # self.btnUpdate = QPushButton('Run', self)
-        # self.btnUpdate.setGeometry(680, 540, 50, 30)  # Adjust as needed
-        # self.btnUpdate.clicked.connect(self.updateXYZ)
+
         # Listup Button
         self.btnListup = QPushButton('List Up', self)
         self.btnListup.setGeometry(640, 480, 90, 25)  # Adjust position and size as needed
@@ -317,35 +274,15 @@ class MyMove(QWidget):
         # 뒤로가기 버튼 (순서가 밀리면 안보일 수도 있음)
         self.button()
 
-        # # 1,2,3,4 를 보여주는 콤보박스
-        # self.comboBox1 = QComboBox(self)
-        # self.comboBox1.setGeometry(305, 480, 90, 25)  # Adjust position and size as needed
-        # items = ["1", "2", "3", "4"]
-        # self.comboBox1.addItems(items)
-
-        # # lable 종류 txt애서 읽어와 보여주기
-        # self.comboBox = QComboBox(self)
-        # self.comboBox.setGeometry(460, 480, 90, 25)  # Adjust position and size as needed
-
         # Read items from the file and add them to the ComboBox
         with open('/workspace/pyqt_delta/vision/labels.txt', 'r') as file:
             items = file.read().splitlines()
             # self.comboBox.addItems(items)
 
 
-        # # Create a QTextEdit widget
-        # self.textEdit = QTextEdit(self)
-        # self.textEdit.setGeometry(100, 300, 300, 100)  # Adjust position and size as needed
-
-
     # 리스트업 클릭시 보낼 정보
     def listupClicked(self):
         try:
-            # selected_num = self.comboBox1.currentText()
-            # selected_item = self.comboBox.currentText()
-            # x_val = float(self.lineEditX.text())
-            # y_val = float(self.lineEditY.text())
-            # z_val = float(self.lineEditZ.text())
             path_a1 = float(self.path_spped_a1.text())
             path_a2 = float(self.path_spped_a2.text())
             path_a3 = float(self.path_spped_a3.text())
@@ -353,46 +290,20 @@ class MyMove(QWidget):
             bending_c = float(self.bending_c.text())
             pick = float(self.pick_height.text())
             place = float(self.place_height.text())
-            self.updateLabels()
-
-            # # home_list.txt 기존 파일 내용 읽어오기
-            # existing_lines = []
-            # if os.path.exists(file_path):
-            #     with open(file_path, 'r') as file:
-            #         existing_lines = file.readlines()
-
-            # # 파일이 없을 경우 초기값 생성
-            # while len(existing_lines) < 4:
-            #     # existing_lines.append(f'{len(existing_lines) + 1}\n')
-            #     existing_lines.append('0 0 0 0 0 0 0\n')
-
-
-            # # 선택된 번호에 해당하는 줄 덮어쓰기 또는 추가하기
-            # existing_lines[0] = f'{path_a1} {path_a2} {path_a3} {bending_b} {bending_c} {pick} {place}\n'
-
-            # # 파일에 덮어쓴 내용 저장
-            # with open(file_path, 'w') as file:
-            #     file.writelines(existing_lines)
-
-            # # 확인 메시지 표시
-            # QMessageBox.information(self, "Info", "Data updated in move_list.txt")
             
-            if setting.path_speed_min <= path_a1 and path_a2 and path_a3 <= setting.path_speed_max and \
-               setting.bending_min <= bending_b and bending_c <= setting.bending_max and \
-               setting.z_min <= pick and place <= setting.z_max:
-                self.btn.path_a1 = path_a1
-                self.btn.path_a2 = path_a2
-                self.btn.path_a3 = path_a3
-                self.btn.bending_b = bending_b
-                self.btn.bending_c = bending_c
-                self.btn.pick = pick
-                self.btn.place = place
+            if setting.path_speed_min <= path_a1 <= setting.path_speed_max and \
+               setting.path_speed_min <= path_a2 <= setting.path_speed_max and \
+               setting.path_speed_min <= path_a3 <= setting.path_speed_max and \
+               setting.bending_min <= bending_b <= setting.bending_max and \
+               setting.bending_min <= bending_c <= setting.bending_max and \
+               setting.z_min <= pick <= setting.z_max and\
+               setting.z_min <= place <= setting.z_max:
                 self.updateLabels()
 
                 # move_list.txt 기존 파일 내용 읽어오기
                 existing_lines = []
-                if os.path.exists(file_path):
-                    with open(file_path, 'r') as file:
+                if os.path.exists(file_path_move):
+                    with open(file_path_move, 'r') as file:
                         existing_lines = file.readlines()
 
                 # 파일이 없을 경우 초기값 생성
@@ -405,25 +316,52 @@ class MyMove(QWidget):
                 existing_lines[0] = f'{path_a1} {path_a2} {path_a3} {bending_b} {bending_c} {pick} {place}\n'
 
                 # 파일에 덮어쓴 내용 저장
-                with open(file_path, 'w') as file:
+                with open(file_path_move, 'w') as file:
                     file.writelines(existing_lines)
+
+                self.label_spped_a1.setText(str(path_a1))
+                self.label_spped_a2.setText(str(path_a2))
+                self.label_spped_a3.setText(str(path_a3))
+                self.label_bending_b.setText(str(bending_b))
+                self.label_bending_c.setText(str(bending_c))
+                self.label_pick.setText(str(pick))
+                self.label_place.setText(str(place))
+
 
                 # 확인 메시지 표시
                 QMessageBox.information(self, "Info", "Data updated in home_list.txt")
-            # else:
-            #     # Handle out of range values
-            #     print("Values out of range")
-            #     self.lineEditX.setText("Out of Rnage")
-            #     self.lineEditX.setStyleSheet("color: red;")
-            #     self.lineEditX.setAlignment(Qt.AlignRight)
-            #     print("Values out of range")
-            #     self.lineEditY.setText("Out of Rnage")
-            #     self.lineEditY.setStyleSheet("color: red;")
-            #     self.lineEditY.setAlignment(Qt.AlignRight)
-            #     print("Values out of range")
-            #     self.lineEditZ.setText("Out of Rnage")
-            #     self.lineEditZ.setStyleSheet("color: red;")
-            #     self.lineEditZ.setAlignment(Qt.AlignRight)
+            else:
+                # Handle out of range values
+                print("Values out of range")
+                self.path_spped_a1.setText("Out of Rnage")
+                self.path_spped_a1.setStyleSheet("color: red;")
+                self.path_spped_a1.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.path_spped_a2.setText("Out of Rnage")
+                self.path_spped_a2.setStyleSheet("color: red;")
+                self.path_spped_a2.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.path_spped_a3.setText("Out of Rnage")
+                self.path_spped_a3.setStyleSheet("color: red;")
+                self.path_spped_a3.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.bending_b.setText("Out of Rnage")
+                self.bending_b.setStyleSheet("color: red;")
+                self.bending_b.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.bending_c.setText("Out of Rnage")
+                self.bending_c.setStyleSheet("color: red;")
+                self.bending_c.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.pick_height.setText("Out of Rnage")
+                self.pick_height.setStyleSheet("color: red;")
+                self.pick_height.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.place_height.setText("Out of Rnage")
+                self.place_height.setStyleSheet("color: red;")
+                self.place_height.setAlignment(Qt.AlignRight)
+
+
         except ValueError:
             print("Error")
 
@@ -436,75 +374,63 @@ class MyMove(QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft()) 
 
-    def setBackgroundImage(self, imagePath):
-        pixmap = QPixmap(imagePath)
-        palette = QPalette()
-        palette.setBrush(QPalette.Background, QBrush(pixmap))
-        self.setPalette(palette)
+    # def setBackgroundImage(self, imagePath):
+    #     pixmap = QPixmap(imagePath)
+    #     palette = QPalette()
+    #     palette.setBrush(QPalette.Background, QBrush(pixmap))
+    #     self.setPalette(palette)
 
     # x,y,z 값 창 업데이트
     def updateLabels(self):
         # xzy 값 한도에서 붉게 변경
-                # self.btn.path_a1 = path_a1
-                # self.btn.path_a2 = path_a2
-                # self.btn.path_a3 = path_a3
-                # self.btn.bending_b = bending_b
-                # self.btn.bending_c = bending_c
-                # self.btn.pick = pick
-                # self.btn.place = place
-        if self.btn.path_a1 == setting.path_speed_max or self.btn.path_a1 == setting.path_speed_min:
-            self.path_spped_a1.setStyleSheet("Color : red")
-            self.path_spped_a1.setText(f'Limit {self.btn.path_a1}')
+        if self.label_spped_a1 == setting.path_speed_max or self.label_spped_a1 == setting.path_speed_min:
+            self.label_spped_a1.setStyleSheet("Color : red")
+            self.label_spped_a1.setText(f'Limit {self.label_spped_a1}')
         else:
-            self.path_spped_a1.setStyleSheet("Color : white")
-            self.path_spped_a1.setText(f'{self.btn.path_a1}')
-        
-        if self.btn.path_a2 == setting.path_speed_max or self.btn.path_a2 == setting.path_speed_min:
-            self.path_spped_a2.setStyleSheet("Color : red")
-            self.path_spped_a2.setText(f'Limit {self.btn.path_a2}')
-        else:
-            self.path_spped_a2.setStyleSheet("Color : white")
-            self.path_spped_a2.setText(f'{self.btn.path_a2}')
+            self.label_spped_a1.setStyleSheet("Color : white")
+            self.label_spped_a1.setText(f'{self.label_spped_a1}')
 
-        if self.btn.path_a3 == setting.path_speed_max or self.btn.path_a3 == setting.path_speed_min:
-            self.path_spped_a3.setStyleSheet("Color : red")
-            self.path_spped_a3.setText(f'Limit {self.btn.path_a3}')
+        if self.label_spped_a2 == setting.path_speed_max or self.label_spped_a2 == setting.path_speed_min:
+            self.label_spped_a2.setStyleSheet("Color : red")
+            self.label_spped_a2.setText(f'Limit {self.label_spped_a2}')
         else:
-            self.path_spped_a3.setStyleSheet("Color : white")
-            self.path_spped_a3.setText(f'{self.btn.path_a3}')
+            self.label_spped_a2.setStyleSheet("Color : white")
+            self.label_spped_a2.setText(f'{self.label_spped_a2}')
+
+        if self.label_spped_a3 == setting.path_speed_max or self.label_spped_a3 == setting.path_speed_min:
+            self.label_spped_a3.setStyleSheet("Color : red")
+            self.label_spped_a3.setText(f'Limit {self.label_spped_a3}')
+        else:
+            self.label_spped_a3.setStyleSheet("Color : white")
+            self.label_spped_a3.setText(f'{self.label_spped_a3}')
 ##############
-        if self.btn.bending_b == setting.bending_max or self.btn.bending_b == setting.bending_min:
-            self.bending_b.setStyleSheet("Color : red")
-            self.bending_b.setText(f'Limit {self.btn.bending_b}')
+        if self.label_bending_b == setting.bending_max or self.label_bending_b == setting.bending_min:
+            self.label_bending_b.setStyleSheet("Color : red")
+            self.label_bending_b.setText(f'Limit {self.label_bending_b}')
         else:
-            self.bending_b.setStyleSheet("Color : white")
-            self.bending_b.setText(f'{self.btn.bending_b}')
+            self.label_bending_b.setStyleSheet("Color : white")
+            self.label_bending_b.setText(f'{self.label_bending_b}')
 
-        if self.btn.bending_c == setting.bending_max or self.btn.bending_c == setting.bending_min:
-            self.bending_c.setStyleSheet("Color : red")
-            self.bending_c.setText(f'Limit {self.btn.bending_c}')
+        if self.label_bending_c == setting.bending_max or self.label_bending_c == setting.bending_min:
+            self.label_bending_c.setStyleSheet("Color : red")
+            self.label_bending_c.setText(f'Limit {self.label_bending_c}')
         else:
-            self.bending_c.setStyleSheet("Color : white")
-            self.bending_c.setText(f'{self.btn.bending_c}')
+            self.label_bending_c.setStyleSheet("Color : white")
+            self.label_bending_c.setText(f'{self.label_bending_c}')
 ##################
-        if self.btn.pick == setting.z_max or self.btn.pick == setting.z_min:
-            self.pick_height.setStyleSheet("Color : red")
-            self.pick_height.setText(f'Limit {self.btn.pick}')
+        if self.label_pick == setting.z_max or self.label_pick == setting.z_min:
+            self.label_pick.setStyleSheet("Color : red")
+            self.label_pick.setText(f'Limit {self.label_pick}')
         else:
-            self.pick_height.setStyleSheet("Color : white")
-            self.pick_height.setText(f'{self.btn.pick}')
+            self.label_pick.setStyleSheet("Color : white")
+            self.label_pick.setText(f'{self.label_pick}')
 
-        if self.btn.place == setting.z_max or self.btn.place == setting.z_min:
-            self.place_height.setStyleSheet("Color : red")
-            self.place_height.setText(f'Limit {self.btn.place}')
+        if self.label_place == setting.z_max or self.label_place == setting.z_min:
+            self.label_place.setStyleSheet("Color : red")
+            self.label_place.setText(f'Limit {self.label_place}')
         else:
-            self.place_height.setStyleSheet("Color : white")
-            self.place_height.setText(f'{self.btn.place}')
-
-
-
-
-
+            self.label_place.setStyleSheet("Color : white")
+            self.label_place.setText(f'{self.label_place}')
 
 
     def comboBoxIndexChanged(self, index):
@@ -552,94 +478,18 @@ class MyMove(QWidget):
         # Emit the signal when the button is clicked
         self.goToStartScreen.emit()
 
-    def updateXYZ(self):
-        # Read values from LineEdits and update XYZ
-        try:
-            x_val = float(self.lineEditX.text())
-            y_val = float(self.lineEditY.text())
-            z_val = float(self.lineEditZ.text())
-            
-            # Add any necessary validation for range
-            if setting.x_min <= x_val <= setting.x_max and \
-               setting.y_min <= y_val <= setting.y_max and \
-               setting.z_min <= z_val <= setting.z_max:
-                self.btn.input_x = x_val
-                self.btn.input_y = y_val
-                self.btn.input_z = z_val
-                self.updateLabels()
-                self.btn.publish_xyz()
-                # Add any other necessary updates or method calls
-            else:
-                # Handle out of range values
-                print("Values out of range")
-                self.lineEditX.setText("Out of Rnage")
-                self.lineEditX.setStyleSheet("color: red;")
-                self.lineEditX.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.lineEditY.setText("Out of Rnage")
-                self.lineEditY.setStyleSheet("color: red;")
-                self.lineEditY.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.lineEditZ.setText("Out of Rnage")
-                self.lineEditZ.setStyleSheet("color: red;")
-                self.lineEditZ.setAlignment(Qt.AlignRight)
-        except ValueError:
-            # Handle invalid input
-            print("Invalid input")
-
-    def updateXYZ(self):
-        # Read values from LineEdits and update XYZ
-        try:
-            path_spped_a = float(self.line)
-            x_val = float(self.lineEditX.text())
-            y_val = float(self.lineEditY.text())
-            z_val = float(self.lineEditZ.text())
-            
-            # Add any necessary validation for range
-            if setting.x_min <= x_val <= setting.x_max and \
-               setting.y_min <= y_val <= setting.y_max and \
-               setting.z_min <= z_val <= setting.z_max:
-                self.btn.input_x = x_val
-                self.btn.input_y = y_val
-                self.btn.input_z = z_val
-                self.updateLabels()
-                self.btn.publish_xyz()
-                # Add any other necessary updates or method calls
-            else:
-                # Handle out of range values
-                print("Values out of range")
-                self.lineEditX.setText("Out of Rnage")
-                self.lineEditX.setStyleSheet("color: red;")
-                self.lineEditX.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.lineEditY.setText("Out of Rnage")
-                self.lineEditY.setStyleSheet("color: red;")
-                self.lineEditY.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.lineEditZ.setText("Out of Rnage")
-                self.lineEditZ.setStyleSheet("color: red;")
-                self.lineEditZ.setAlignment(Qt.AlignRight)
-        except ValueError:
-            # Handle invalid input
-            print("Invalid input")
 
     # 직접 입력창 리셋
     def resetFields(self):
-        # Reset the QLineEdit fields to initial settings
-        self.lineEditX.setText(str(setting.x))
-        self.lineEditY.setText(str(setting.y))
-        self.lineEditZ.setText(str(setting.z))
+
         self.path_spped_a1.setText(str(1))
-        self.path_spped_a2.setText(str(2))
-        self.path_spped_a3.setText(str(3))
-        self.bending_b.setText(str(4))
-        self.bending_c.setText(str(5))
-        self.pick_height.setText(str(6))
-        self.place_height.setText(str(7))
+        self.path_spped_a2.setText(str(1))
+        self.path_spped_a3.setText(str(1))
+        self.bending_b.setText(str(50))
+        self.bending_c.setText(str(50))
+        self.pick_height.setText(str(-350))
+        self.place_height.setText(str(-350))
         # Optionally, reset the style if it's changed when values are out of range
-        self.lineEditX.setStyleSheet("color: black;")
-        self.lineEditY.setStyleSheet("color: black;")
-        self.lineEditZ.setStyleSheet("color: black;")
         self.path_spped_a1.setStyleSheet("color: black;")
         self.path_spped_a2.setStyleSheet("color: black;")
         self.path_spped_a3.setStyleSheet("color: black;")

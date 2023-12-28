@@ -151,7 +151,7 @@ class MyApp(QWidget):
 
         self.btnback = QPushButton('<<', self)
         self.btnback.clicked.connect(self.goToStartScreen.emit)
-        self.btnback.setGeometry(10, 10, 50, 50)
+        self.btnback.setGeometry(0, 528, 50, 50)
         # self.btnback.clicked.connect(self.onBackButtonClick)
         # self.btnback.clicked.connect(self.goBack.emit)
 
