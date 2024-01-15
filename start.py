@@ -1,106 +1,30 @@
 import sys
-import main
 import rclpy
-from rclpy.node import Node
-from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget, QStackedWidget, QLabel
-from PyQt5.QtGui import *
-from PyQt5.QtCore import Qt, QTimer
-from geometry_msgs.msg import Point
+import json
+from PyQt5.QtWidgets import QApplication, QPushButton, QMainWindow, QStackedWidget, QLabel, QRadioButton
+from PyQt5.QtCore import  Qt, QTimer, pyqtSignal
+from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor, QFont, QPen, QBrush, QPainterPath
 from datetime import datetime
 
-
-from main import MyApp
+from publisher import GUI_Node
+from manual import MyApp
 from home import MyHome
 from move import MyMove
 from info import MyInfo
+
 import receive
-import setting
 
 
-class StartWindow(QWidget):
-    def __init__(self, MyApp):
+class StartWindow(QMainWindow):
+    def __init__(self, parent=None, io_data=None):
         super().__init__()
+        self.parent = parent
+        self.io_data = io_data  # io_data 매개변수를 추가하여 저장
         self.initUI()
-        self.MyApp = MyApp
         
-
     def initUI(self):
-        # 창 제목
-        # self.setWindowTitle('Start Window')
-        # 이 부분이 child로 존재하므로 parents 에 작성을 해야 적용이 됨
+        # UI 초기화 코드
 
-####### 이미지 추가 삽입 ################################################################
-
-        # original_pixmap = QPixmap("/workspace/pyqt_delta/img/start.png")
-        # scaled_pixmap = original_pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        # # QLabel 생성 및 QPixmap 설정
-        # lbl_img = QLabel(self)
-        # lbl_img.setPixmap(scaled_pixmap)
-        # lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
-
-####### I/O 신호 관련 텍스트 ###################################################
-        self.sig_robot = QLabel(f"Robot", self)
-        self.sig_robot.setStyleSheet("Color : white")
-        self.sig_robot.setAlignment(Qt.AlignRight)
-        self.sig_robot.setGeometry(300, 100, 60, 30)
-
-        self.sig_conveyor = QLabel(f"conveyor", self)
-        self.sig_conveyor.setStyleSheet("Color : white")
-        self.sig_conveyor.setAlignment(Qt.AlignRight)
-        self.sig_conveyor.setGeometry(300, 130, 60, 30)
-
-        self.sig_vision = QLabel(f"vision", self)
-        self.sig_vision.setStyleSheet("Color : white")
-        self.sig_vision.setAlignment(Qt.AlignRight)
-        self.sig_vision.setGeometry(300, 160, 60, 30)
-
-        self.sig_encoder = QLabel(f"encoder", self)
-        self.sig_encoder.setStyleSheet("Color : white")
-        self.sig_encoder.setAlignment(Qt.AlignRight)
-        self.sig_encoder.setGeometry(300, 190, 60, 30)
-
-        self.loadIoImages()
-
-    def loadIoImages(self):
-        import receive
-####### I/O 신호 관련 이미지 #######################################################
-        if receive.robot == True:
-            self.input_image(370, 100, 17, 17, "/workspace/pyqt_delta/img/on.png")
-            print("OK")
-        else:
-            self.input_image(370, 100, 17, 17, "/workspace/pyqt_delta/img/off.png")
-            print("No")
-
-        if receive.conveyor == True:
-            self.input_image(370, 130, 17, 17, "/workspace/pyqt_delta/img/on.png")
-            print("OK")
-        else:
-            self.input_image(370, 130, 17, 17, "/workspace/pyqt_delta/img/off.png")
-            print("No")
-
-        if receive.vision == True:
-            self.input_image(370, 160, 17, 17, "/workspace/pyqt_delta/img/on.png")
-            print("OK")
-        else:
-            self.input_image(370, 160, 17, 17, "/workspace/pyqt_delta/img/off.png")
-            print("No")
-
-        if receive.encoder == True:
-            self.input_image(370, 190, 17, 17, "/workspace/pyqt_delta/img/on.png")
-            print("OK")
-        else:
-            self.input_image(370, 190, 17, 17, "/workspace/pyqt_delta/img/off.png")
-            print("No")
-
-####### 이미지 삽입 ################################################################
-        
-    def input_image(self, x, y, w, h, img_path):
-        pixmap = QPixmap(img_path)
-        scaled_pixmap = pixmap.scaled(w, h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        # QLabel 생성 및 QPixmap 설정
-        lbl_img = QLabel(self)
-        lbl_img.setPixmap(scaled_pixmap)
-        lbl_img.setGeometry(x, y, scaled_pixmap.width(), scaled_pixmap.height())
 
 ####### start ######################################################################
         self.startButton = QPushButton('START', self)
@@ -128,23 +52,23 @@ class StartWindow(QWidget):
         self.connectButton.setGeometry(600, 300, 100, 50)
 
 ####### go main ######################################################################
-        self.mainButton = QPushButton('main', self)
-        self.mainButton.clicked.connect(self.gotoMain)
+        self.mainButton = QPushButton('Manual', self)
+        self.mainButton.clicked.connect(self.parent.gotoMain)
         self.mainButton.setGeometry(10, 100, 100, 50)
 
 ####### go home ######################################################################
-        self.homingButton = QPushButton('homing', self)
-        self.homingButton.clicked.connect(self.gotoHome)
+        self.homingButton = QPushButton('Home', self)
+        self.homingButton.clicked.connect(self.parent.gotoHome)
         self.homingButton.setGeometry(10, 150, 100, 50)
 
 ####### go move ######################################################################
-        self.movingButton = QPushButton('moving', self)
-        self.movingButton.clicked.connect(self.gotoMove)
+        self.movingButton = QPushButton('Move', self)
+        self.movingButton.clicked.connect(self.parent.gotoMove)
         self.movingButton.setGeometry(10, 200, 100, 50)
 
 ####### go Info ######################################################################
-        self.infoButton = QPushButton('Infomation', self)
-        self.infoButton.clicked.connect(self.gotoInfo)
+        self.infoButton = QPushButton('Information', self)
+        self.infoButton.clicked.connect(self.parent.gotoInfo)
         self.infoButton.setGeometry(10, 250, 100, 50)
 
 ####### # Initially disable XYZ buttons ######################################
@@ -156,50 +80,226 @@ class StartWindow(QWidget):
         self.infoButton.setDisabled(True)
         self.connectButton.setDisabled(True)
 
-
 ####### 시간 ######################################################################
-        # 시간을 표시할 QLabel 생성
+        # 시간 표시 라벨 설정
         self.time_label = QLabel(self)
-        self.time_label.setGeometry(660, 585, 200, 10)  # 위치와 크기 설정
-        self.time_label.setStyleSheet("font-size: 14px;")  # 폰트 크기 설정
+        self.time_label.setGeometry(660, 585, 200, 10)
+        self.time_label.setStyleSheet("font-size: 14px;")
         self.time_label.setStyleSheet("Color : white")
 
         # QTimer 설정
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_time)
-        self.timer.start(1000)  # 1초마다 update_time 함수 호출
+        self.timer.start(1000)
 
-####### main 으로 #################################################################
+####### I/O 신호 관련 텍스트 ###################################################
+        self.sig_robot = QLabel(f"Robot", self)
+        self.sig_robot.setStyleSheet("Color : white")
+        self.sig_robot.setAlignment(Qt.AlignRight)
+        self.sig_robot.setGeometry(300, 100, 60, 30)
 
-    def gotoMain(self):
-        main_window = self.parent().findChild(MyApp)
-        self.parent().setCurrentWidget(main_window)
+        self.sig_conveyor = QLabel(f"conveyor", self)
+        self.sig_conveyor.setStyleSheet("Color : white")
+        self.sig_conveyor.setAlignment(Qt.AlignRight)
+        self.sig_conveyor.setGeometry(300, 130, 60, 30)
 
-####### home 으로 #################################################################
+        self.sig_vision = QLabel(f"vision", self)
+        self.sig_vision.setStyleSheet("Color : white")
+        self.sig_vision.setAlignment(Qt.AlignRight)
+        self.sig_vision.setGeometry(300, 160, 60, 30)
 
-    def gotoHome(self):
-        home_window = self.parent().findChild(MyHome)
-        self.parent().setCurrentWidget(home_window)
+        self.sig_encoder = QLabel(f"encoder", self)
+        self.sig_encoder.setStyleSheet("Color : white")
+        self.sig_encoder.setAlignment(Qt.AlignRight)
+        self.sig_encoder.setGeometry(300, 190, 60, 30)
 
-####### move 로 #################################################################
+        # io update 설정 - 시간 설정은 이미 위에서 했음
+        # self.timer = QTimer(self)
+        # self.timer.timeout.connect(self.update_io)  ### 살리면 1초당 업뎃
+        # self.timer.timeout.connect(self.connectToReceiver)
+        # self.timer.start(1000)  # 1초마다 업데이트
 
-    def gotoMove(self):
-        move_window = self.parent().findChild(MyMove)
-        self.parent().setCurrentWidget(move_window)
+        with open("document/io.json", "r") as io_file:
+            self.io_data = json.load(io_file)
 
-####### info 로 #################################################################
+        # self.ioPoint()
 
-    def gotoInfo(self):
-        info_window = self.parent().findChild(MyInfo)
-        self.parent().setCurrentWidget(info_window)
+        self.loadIoImages()
 
+        self.radiobuttons()
+
+
+###
+### def###
+###
+        
+
+###### if drawpoint #####################################################
+    def ioPoint(self):
+        if self.io_data is not None: 
+            if self.io_data["robot"] == True:
+                self.drawPoint(700, 100, 'green')
+                print('conneted')
+            else:
+                self.drawPoint(700, 100, 'red')
+                print('Caution! : Disconneted - Robot')
+
+            if self.io_data["conveyor"] == True:
+                self.drawPoint(700, 130, 'green')
+            else:
+                self.drawPoint(700, 130, 'red')
+                print('Caution! : Disconneted - Conveyor')
+
+            if self.io_data["vision"] == True:
+                self.drawPoint(700, 160, 'green')
+            else:
+                self.drawPoint(700, 160, 'red')
+                print('Caution! : Disconneted - Vision')
+
+            if self.io_data["encoder"] == True:
+                self.drawPoint(700, 190, 'green')
+            else:
+                self.drawPoint(700, 190, 'red')
+                print('Caution! : Disconneted - Encoder')
+
+
+####### 점 찍기 #########################################################
+    def drawPoint(self, x, y, color):
+        # 점 찍을 좌표 계산
+        point_x = x  # 예시: x 좌표 계산
+        point_y = y  # 예시: y 좌표 계산
+
+
+        # QLabel을 생성하여 점을 표시
+        # point_label = setPen(Qpen)
+
+        point_label = QLabel(self)
+        point_label.setGeometry(point_x, point_y, 5, 5)  # 점의 크기와 위치 설정
+        point_label.setStyleSheet("background-color: "+color+"; border-radius: 10px;")  # 점의 스타일 설정
+
+
+######## 주기적으로 io.json 파일을 읽고 UI를 업데이트 ##########################
+    def update_io(self):
+        with open("document/io.json", "r") as io_file:
+            # updated_io_data = json.load(io_file)
+            self.io_data = json.load(io_file)
+            print('open documents')
+
+        # if self.io_data != updated_io_data:
+        #     self.io_data = updated_io_data
+            # I/O 신호 이미지 업데이트
+            self.loadIoImages()
+
+            # 점찍기
+            self.ioPoint()
+
+            # 라디오 버튼 업데이트
+            self.radiobuttons()
+
+            # UI 업데이트
+            # self.update()
+
+
+
+####### connect ##########################################################
+    def connectToReceiver(self):
+        # io.json 파일 읽기
+        with open("document/io.json", "r") as io_file:
+            self.io_data = json.load(io_file)
+
+            # I/O 신호 이미지 업데이트
+            self.loadIoImages()
+
+            # 점찍기
+            self.ioPoint()
+
+            # 라디오 버튼 업데이트
+            self.radiobuttons()
+
+            # new_start_window = StartWindow(parent=self.parent, io_data=self.io_data)
+            # new_start_window.show()
+            # UI 업데이트
+            # self.update()
+
+            # pyqtSignal()
+            print("Connected to receiver")
+
+### radio buttons #######################################################
+    def radiobuttons(self):
+        if self.io_data is not None:  # io_data가 None이 아닌 경우에만 처리
+            rbtn1 = QRadioButton('robot', self)
+            rbtn1.move(400, 100)
+            rbtn1.setAutoExclusive(False)
+            rbtn1.repaint()
+            if self.io_data["robot"]:
+                rbtn1.setChecked(True)
+            else:
+                rbtn1.setChecked(False)
+            
+            rbtn2 = QRadioButton(self)
+            rbtn2.move(400, 130)
+            rbtn2.setText('conveyor')
+            rbtn2.setAutoExclusive(False)
+            rbtn2.repaint()
+            if self.io_data["conveyor"]:
+                rbtn2.setChecked(True)
+            else:
+                rbtn2.setChecked(False)
+
+            rbtn3 = QRadioButton(self)
+            rbtn3.move(400, 160)
+            rbtn3.setText('vision')
+            rbtn3.setAutoExclusive(False)
+            rbtn3.repaint()
+            if self.io_data["vision"]:
+                rbtn3.setChecked(True)
+            else:
+                rbtn3.setChecked(False)
+
+            rbtn4 = QRadioButton(self)
+            rbtn4.move(400, 190)
+            rbtn4.setText('encoder')
+            rbtn4.setAutoExclusive(False)
+            rbtn4.repaint()
+            if self.io_data["encoder"]:
+                rbtn4.setChecked(True)
+            else:
+                rbtn4.setChecked(False)
+
+####### I/O 신호 관련 이미지 #######################################################
+    def loadIoImages(self):
+        if self.io_data is not None:  # io_data가 None이 아닌 경우에만 처리
+            if self.io_data["robot"] == True:
+                self.input_image(370, 100, 17, 17, "img/on.png")
+            else:
+                self.input_image(370, 100, 17, 17, "img/off.png")
+            if self.io_data["conveyor"] == True:
+                self.input_image(370, 130, 17, 17, "img/on.png")
+            else:
+                self.input_image(370, 130, 17, 17, "img/off.png")
+            if self.io_data["vision"] == True:
+                self.input_image(370, 160, 17, 17, "img/on.png")
+            else:
+                self.input_image(370, 160, 17, 17, "img/off.png")
+            if self.io_data["encoder"] == True:
+                self.input_image(370, 190, 17, 17, "img/on.png")
+            else:
+                self.input_image(370, 190, 17, 17, "img/off.png")
+
+####### 이미지 삽입 ################################################################
+        
+    def input_image(self, x, y, w, h, img_path):
+        pixmap = QPixmap(img_path)
+        scaled_pixmap = pixmap.scaled(w, h, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # QLabel 생성 및 QPixmap 설정
+        lbl_img = QLabel(self)
+        lbl_img.setPixmap(scaled_pixmap)
+        lbl_img.setGeometry(x, y, scaled_pixmap.width(), scaled_pixmap.height())
 
 ####### 시간 #################################################################
     def update_time(self):
-        # 현재 시간을 가져와서 QLabel에 표시
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.time_label.setText(current_time)
-
 
 ####### on / off ##########################################################
     def onOperation(self):
@@ -250,88 +350,77 @@ class StartWindow(QWidget):
         self.offButton.setDisabled(False)
         print("Operation stopped...")
 
-####### connect ##########################################################
-    def connectToReceiver(self):
-        # 특정 내용을 넣어햐함....
-        # importlib.reload(receive)
-        # self.loadIoImages()
-        print("Connected to receiver")
 
 
 
 
 
-class GUI_Node(Node):
-    def __init__(self):
-        super().__init__('gui_node')
-        # Publisher 생성
-        self.publisher_xyz = self.create_publisher(Point, 'input_xyz', 10)
+# class AppManager(QStackedWidget):
+#     def __init__(self):
+#         super().__init__()
+#         self.setWindowTitle('W-ECOBOT Application')
+#         self.setWindowIcon(QIcon('img/eth.png'))
+#         self.setFixedSize(800, 600)
+#         self.setStyleSheet("QStackedWidget {background-image: url('img/start.png');}")
+#         self.node = GUI_Node()  # GUI_Node 객체 생성
+#         self.initUI()
+        
+#     def initUI(self):
+#         # MyApp, MyHome, MyMove, MyInfo 등 모든 페이지를 생성
+        
+#         self.my_app = MyApp(self.node)  # MyApp 객체 생성 시 노드 객체 전달
+#         self.home_app = MyHome(self.node)  # MyHome 객체 생성 시 노드 객체 전달
+#         # self.move_app = MyMove(self.node)  # MyMove 객체 생성 시 노드 객체 전달
+#         self.info_app = MyInfo(self.node)  # MyInfo 객체 생성 시 노드 객체 전달
+#         self.move_app = None  # 초기에 None으로 설정 (애러서 버튼 호출 할때마다 새로운 창을 열기 위함)
+        
+#         # StartWindow를 생성하고 스택에 추가
+#         self.start_window = StartWindow(parent=self)
+#         self.addWidget(self.start_window)
 
-        # PyQT 생성을 위함
-        self.app = QApplication(sys.argv)
-        self.stack = QStackedWidget() # Stack을 통한 Widget 띄우기에 필요한 것. 
+#         # 나머지 페이지들도 스택에 추가
+#         self.addWidget(self.my_app)
+#         self.addWidget(self.home_app)
+#         # self.addWidget(self.move_app)
+#         self.addWidget(self.info_app)
 
-        # Main page 불러옴
-        self.mainApp = MyApp(self)
-        self.mainApp.goToStartScreen.connect(self.showStartWindow)
+#         # 뒤로가기 버튼에서 돌아오는 길 지정
+#         self.my_app.goToStartScreen.connect(self.gotoStart)
+#         self.home_app.goToStartScreen.connect(self.gotoStart)
+#         # 
+#         self.info_app.goToStartScreen.connect(self.gotoStart)
 
-        # Homing page 불러옴
-        self.homeApp = MyHome(self)
-        self.homeApp.goToStartScreen.connect(self.showStartWindow)
+#     # 시작 페이지
+#     def gotoStart(self):
+#         self.setCurrentWidget(self.start_window)
 
-        # Move page 불러옴
-        self.moveApp = MyMove(self)
-        self.moveApp.goToStartScreen.connect(self.showStartWindow)
+#     # 메인 페이지
+#     def gotoMain(self):
+#         self.setCurrentWidget(self.my_app)
+        
+#     # 호밍페이지
+#     def gotoHome(self):
+#         self.setCurrentWidget(self.home_app)
 
-        # Info page 불러옴
-        self.infoApp = MyInfo(self)
-        self.infoApp.goToStartScreen.connect(self.showStartWindow)
-
-        # 추가할 page 불러옴
-        # ~~~~~~~~~~~~~~
-
-
-
-
-        # Start page 불러옴. 여기서 Child page들이 필요함
-        self.start_window = StartWindow(self.mainApp)
-
-        # stack에 위젯을 추가함. 
-        self.stack.addWidget(self.start_window)
-        self.stack.addWidget(self.mainApp)
-        self.stack.addWidget(self.homeApp)
-        self.stack.addWidget(self.moveApp)
-        self.stack.addWidget(self.infoApp)
-
-
-        # stack의 타이틀을 설정함 (예: 첫 번째 위젯이 표시될 때) - 부모에 설정
-        self.stack.setWindowTitle('W-ECOBOT Application')
-        # 창 타이틀 아이콘 - 윈도우에서는 가능
-        self.stack.setWindowIcon(QIcon('/workspace/pyqt_delta/img/eth.png'))
-        # self.resize(400, 200)
-        # 창 크기 고정
-        self.stack.setFixedSize(800,600)
-
-        self.stack.setObjectName("mainStack")
-        # self.stack.setStyleSheet("#mainStack {background-image: url('/workspace/pyqt_delta/img/main2.png');}")
-        # # QStackedWidget 은 전체 배경 / QWidget 배경 버튼 전부
-        self.stack.setStyleSheet("QStackedWidget {background-image: url('/workspace/pyqt_delta/img/start.png');}")
+#     # 무빙(수동)페이지
+#     def gotoMove(self):
+#         # self.setCurrentWidget(self.move_app)
+#         if self.move_app is None:
+#             # node = GUI_Node()  # 새로운 GUI_Node 객체 생성
+#             self.move_app = MyMove()  # MyMove 객체 생성 시 새로운 노드 객체 전달
+#             self.addWidget(self.move_app)  # 스택에 페이지 추가
     
-        # stack을 보여줌. 
-        self.stack.show()
+#         self.setCurrentWidget(self.move_app)
+#         self.move_app.goToStartScreen.connect(self.gotoStart)
 
-    def showStartWindow(self):
-        # Switch to the StartWindow widget
-        self.stack.setCurrentWidget(self.start_window)
+#     # 인포메이션 페이지
+#     def gotoInfo(self):
+#         self.setCurrentWidget(self.info_app)
 
-
-def main(args=None):
-    rclpy.init(args=args)
-    gui_node = GUI_Node()
-    exit_code = gui_node.app.exec_()
-    gui_node.destroy_node()
-    rclpy.shutdown()
-    sys.exit(exit_code)
-
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     app = QApplication(sys.argv) # QApplication : 프로그램을 실행시켜주는 클래스
+#     rclpy.init(args=None)
+#     app_manager = AppManager()
+#     app_manager.show()
+#     sys.exit(app.exec_())
+#     rclpy.shutdown()

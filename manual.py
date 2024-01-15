@@ -1,15 +1,14 @@
 import sys
 import os
 import rclpy
+from datetime import datetime
 from rclpy.node import Node
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import QTimer, QSize, Qt, pyqtSignal
 from geometry_msgs.msg import Point
-from shared_updates import global_update_xyz
 
-
-from home import MyHome
+# from home import MyHome
 # function.py 에서 class 호출
 from function import xyz_button
 
@@ -36,11 +35,11 @@ class MyApp(QWidget):
 
     def initUI(self):
         # # 배경 이미지 설정
-        # self.setStyleSheet("QWidget {background-image: url('/workspace/pyqt_delta/img/main2.png');}")
+        # self.setStyleSheet("QWidget {background-image: url('img/main2.png');}")
 
 
         # 이미지 넣기
-        original_pixmap = QPixmap("/workspace/pyqt_delta/img/main2.png")
+        original_pixmap = QPixmap("img/main3.png")
         scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # QLabel 생성 및 QPixmap 설정
         lbl_img = QLabel(self)
@@ -90,14 +89,14 @@ class MyApp(QWidget):
         self.btnReset.setGeometry(615, 540, 50, 30)  # Adjust position and size as needed
         self.btnReset.clicked.connect(self.resetFields)
 
-        # Create a QLabel to display the image
-        self.imageLabel = QLabel(self)
-        pixmap = QPixmap('/media/ssd/workspace/jay/pyqt_delta/img/kbs1.png')
-        self.imageLabel.setPixmap(pixmap)
-        self.imageLabel.resize(pixmap.width(), pixmap.height())
+        # # Create a QLabel to display the image
+        # self.imageLabel = QLabel(self)
+        # pixmap = QPixmap('/media/ssd/workspace/jay/pyqt_delta/img/kbs1.png')
+        # self.imageLabel.setPixmap(pixmap)
+        # self.imageLabel.resize(pixmap.width(), pixmap.height())
 
-        # Position the label where you want the image to appear
-        self.imageLabel.move(100, 100)  # Adjust the position as needed
+        # # Position the label where you want the image to appear
+        # self.imageLabel.move(100, 100)  # Adjust the position as needed
 
 
         # 버튼
@@ -124,7 +123,6 @@ class MyApp(QWidget):
         if self.btn.input_x == setting.x_max or self.btn.input_x == setting.x_min:
             self.labelX.setStyleSheet("Color : red")
             self.labelX.setText(f'Limit {self.btn.input_x}')
-            # MyHome.initUI.labelX.setText(f'Limit {self.btn.input_x}')
         else:
             self.labelX.setStyleSheet("Color : white")
             self.labelX.setText(f'{self.btn.input_x}')
@@ -154,14 +152,14 @@ class MyApp(QWidget):
 
         self.btnback = QPushButton('<<', self)
         self.btnback.clicked.connect(self.goToStartScreen.emit)
-        self.btnback.setGeometry(10, 10, 50, 50)
+        self.btnback.setGeometry(0, 528, 50, 50)
         # self.btnback.clicked.connect(self.onBackButtonClick)
         # self.btnback.clicked.connect(self.goBack.emit)
 
         # Z-Up 버튼
         self.btnZUp = QPushButton('', self)
         self.btnZUp.setGeometry(135, 100, 60, 60)
-        self.btnZUp.setIcon(QIcon('/workspace/pyqt_delta/img/zu.png'))  # 이미지 경로 설정
+        self.btnZUp.setIcon(QIcon('img/zu.png'))  # 이미지 경로 설정
         self.btnZUp.setIconSize(QSize(60, 60))  # 아이콘 크기
         self.btnZUp.pressed.connect(lambda: self.startTimer(self.zUp))
         self.btnZUp.released.connect(self.stopTimer)
@@ -175,7 +173,7 @@ class MyApp(QWidget):
         # Z-Down 버튼
         self.btnZDown = QPushButton('', self)
         self.btnZDown.setGeometry(135, 280, 60, 60)
-        self.btnZDown.setIcon(QIcon('/workspace/pyqt_delta/img/zd.png'))  # 이미지 경로 설정
+        self.btnZDown.setIcon(QIcon('img/zd.png'))  # 이미지 경로 설정
         self.btnZDown.setIconSize(QSize(60, 60))  # 아이콘 크기
         self.btnZDown.pressed.connect(lambda: self.startTimer(self.zDown))
         self.btnZDown.released.connect(self.stopTimer)
@@ -183,7 +181,7 @@ class MyApp(QWidget):
         # X-Up 버튼
         self.btnXUp = QPushButton('', self)
         self.btnXUp.setGeometry(75, 160, 60, 60)
-        self.btnXUp.setIcon(QIcon('/workspace/pyqt_delta/img/xu.png'))  # 이미지 경로 설정
+        self.btnXUp.setIcon(QIcon('img/xu.png'))  # 이미지 경로 설정
         self.btnXUp.setIconSize(QSize(60, 60))  # 아이콘 크기
         self.btnXUp.pressed.connect(lambda: self.startTimer(self.xUp))
         self.btnXUp.released.connect(self.stopTimer)
@@ -191,7 +189,7 @@ class MyApp(QWidget):
         # X-Down 버튼
         self.btnXDown = QPushButton('', self)
         self.btnXDown.setGeometry(195, 220, 60, 60)
-        self.btnXDown.setIcon(QIcon('/workspace/pyqt_delta/img/xd.png'))  # 이미지 경로 설정
+        self.btnXDown.setIcon(QIcon('img/xd.png'))  # 이미지 경로 설정
         self.btnXDown.setIconSize(QSize(60, 60))  # 아이콘 크기
         self.btnXDown.pressed.connect(lambda: self.startTimer(self.xDown))
         self.btnXDown.released.connect(self.stopTimer)
@@ -199,7 +197,7 @@ class MyApp(QWidget):
         # Y-Up 버튼
         self.btnYUp = QPushButton('', self)
         self.btnYUp.setGeometry(75, 220, 60, 60)
-        self.btnYUp.setIcon(QIcon('/workspace/pyqt_delta/img/yu.png'))  # 이미지 경로 설정
+        self.btnYUp.setIcon(QIcon('img/yu.png'))  # 이미지 경로 설정
         self.btnYUp.setIconSize(QSize(60, 60))  # 아이콘 크기
         self.btnYUp.pressed.connect(lambda: self.startTimer(self.yUp))
         self.btnYUp.released.connect(self.stopTimer)
@@ -207,7 +205,7 @@ class MyApp(QWidget):
         # Y-Down 버튼
         self.btnYDown = QPushButton('', self)
         self.btnYDown.setGeometry(195, 160, 60, 60)
-        self.btnYDown.setIcon(QIcon('/workspace/pyqt_delta/img/yd.png'))  # 이미지 경로 설정
+        self.btnYDown.setIcon(QIcon('img/yd.png'))  # 이미지 경로 설정
         self.btnYDown.setIconSize(QSize(60, 60))  # 아이콘 크기
         self.btnYDown.pressed.connect(lambda: self.startTimer(self.yDown))
         self.btnYDown.released.connect(self.stopTimer)
@@ -233,6 +231,27 @@ class MyApp(QWidget):
         self.btnStop.setGeometry(175, 515, 80, 50)  # Adjust as needed
         self.btnStop.clicked.connect(self.stopOperation)
 
+
+####### 시간 ######################################################################
+        # 시간을 표시할 QLabel 생성
+        self.time_label = QLabel(self)
+        self.time_label.setGeometry(660, 585, 200, 10)  # 위치와 크기 설정
+        self.time_label.setStyleSheet("font-size: 14px;")  # 폰트 크기 설정
+        self.time_label.setStyleSheet("Color : white")
+
+        # QTimer 설정
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_time)
+        self.timer.start(1000)  # 1초마다 update_time 함수 호출
+        
+    def update_time(self):
+        # 현재 시간을 가져와서 QLabel에 표시
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.time_label.setText(current_time)
+
+####### 시간 #################################################################
+
+
     def onBackButtonClick(self):
         # Emit the signal when the button is clicked
         self.goToStartScreen.emit()
@@ -252,10 +271,8 @@ class MyApp(QWidget):
                 self.btn.input_y = y_val
                 self.btn.input_z = z_val
                 self.updateLabels()
-                MyApp.updateLabels()
-                MyHome.updateLabels()
+                # MyHome.updateLabels()
                 self.btn.publish_xyz()
-                
                 # Add any other necessary updates or method calls
             else:
                 # Handle out of range values
@@ -374,28 +391,28 @@ class MyApp(QWidget):
 
 ########### start.py를 실행하면 아래는 필요 없음 #####################
 
-class GUI_Node(Node):
-    def __init__(self):
-        super().__init__('gui_node')
-        self.publisher_xyz = self.create_publisher(Point, 'input_xyz', 10)
-        self.app = QApplication(sys.argv)
-        self.gui = MyApp(self)
-        self.timer = self.create_timer(0.1, self.timer_callback)
+# class GUI_Node(Node):
+#     def __init__(self):
+#         super().__init__('gui_node')
+#         self.publisher_xyz = self.create_publisher(Point, 'input_xyz', 10)
+#         self.app = QApplication(sys.argv)
+#         self.gui = MyApp(self)
+#         self.timer = self.create_timer(0.1, self.timer_callback)
 
-    def timer_callback(self):
-        pass
+#     def timer_callback(self):
+#         pass
 
 
-def main(args=None):
-    rclpy.init(args=args)
-    gui_node = GUI_Node()
+# def main(args=None):
+#     rclpy.init(args=args)
+#     gui_node = GUI_Node()
 
-    exit_code = gui_node.app.exec_()
+#     exit_code = gui_node.app.exec_()
 
-    gui_node.destroy_node()
-    rclpy.shutdown()
+#     gui_node.destroy_node()
+#     rclpy.shutdown()
 
-    sys.exit(exit_code)
+#     sys.exit(exit_code)
 
-if __name__ == '__main__':
-    main()
+# if __name__ == '__main__':
+#     main()

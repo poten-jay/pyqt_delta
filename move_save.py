@@ -1,6 +1,7 @@
 import sys
 import os
 import rclpy
+from datetime import datetime
 from rclpy.node import Node
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -21,7 +22,7 @@ y = setting.y
 z = setting.z
 
 # 리스트업 버튼 클릭 후 txt 로 만들기
-file_path_move = "/workspace/pyqt_delta/document/move_list.txt"
+file_path_move = "document/move_list.txt"
 # home_list.txt 파일 만들기
 if not os.path.exists(file_path_move):
     with open(file_path_move, 'w') as file:
@@ -41,7 +42,7 @@ class MyMove(QWidget):
 
     def initUI(self):
 ######## 이미지 넣기 #######################################################
-        original_pixmap = QPixmap("/workspace/pyqt_delta/img/move.png")
+        original_pixmap = QPixmap("img/move2.png")
         scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # QLabel 생성 및 QPixmap 설정
         lbl_img = QLabel(self)
@@ -49,7 +50,7 @@ class MyMove(QWidget):
         lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
 ########################################################################
 ######## 이미지 추가 #######################################################
-#         original_pixmap1 = QPixmap("/workspace/pyqt_delta/img/kbs1.png")
+#         original_pixmap1 = QPixmap("img/kbs1.png")
 #         scaled_pixmap1 = original_pixmap1.scaled(800, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 #         # QLabel 생성 및 QPixmap 설정
 #         lbl_img = QLabel(self)
@@ -61,7 +62,7 @@ class MyMove(QWidget):
         self.setFixedSize(800,600)
 
         # home_list.txt 의 정보 읽어오기
-        file_path_move = '/workspace/pyqt_delta/document/move_list.txt'
+        file_path_move = 'document/move_list.txt'
         with open(file_path_move, 'r') as file:
             lines = file.readlines()
         # 각 줄의 데이터를 변수에 저장합니다.
@@ -75,37 +76,39 @@ class MyMove(QWidget):
             # 4번째 줄 데이터 저장
             fourth_line = lines[3].split()
 
+        # txt 에서 읽어온 현재 상태 (now)
+        # 좌표 표시 수정 => (x-5, y+4)
         self.label_spped_a1 = QLabel(f"{first_line[0]}", self)
         self.label_spped_a1.setStyleSheet("Color : white")
         self.label_spped_a1.setAlignment(Qt.AlignRight)
-        self.label_spped_a1.setGeometry(10, 75, 100, 30)  # Adjust position and size as needed
+        self.label_spped_a1.setGeometry(325, 410, 55, 25)  # Adjust position and size as needed
         self.label_spped_a2 = QLabel(f"{first_line[1]}", self)
         self.label_spped_a2.setStyleSheet("Color : white")
         self.label_spped_a2.setAlignment(Qt.AlignRight)
-        self.label_spped_a2.setGeometry(110, 75, 100, 30)  # Adjust position and size as needed
+        self.label_spped_a2.setGeometry(412, 258, 55, 25)  # Adjust position and size as needed
         self.label_spped_a3 = QLabel(f"{first_line[2]}", self)
         self.label_spped_a3.setStyleSheet("Color : white")
         self.label_spped_a3.setAlignment(Qt.AlignRight)
-        self.label_spped_a3.setGeometry(210, 75, 100, 30)  # Adjust position and size as needed
+        self.label_spped_a3.setGeometry(508, 410, 55, 25)  # Adjust position and size as needed
         self.label_bending_b = QLabel(f"{first_line[3]}", self)
         self.label_bending_b.setStyleSheet("Color : white")
         self.label_bending_b.setAlignment(Qt.AlignRight)
-        self.label_bending_b.setGeometry(310, 75, 100, 30)  # Adjust position and size as needed
+        self.label_bending_b.setGeometry(253, 246, 55, 25)  # Adjust position and size as needed
         self.label_bending_c = QLabel(f"{first_line[4]}", self)
         self.label_bending_c.setStyleSheet("Color : white")
         self.label_bending_c.setAlignment(Qt.AlignRight)
-        self.label_bending_c.setGeometry(410, 75, 100, 30)  # Adjust position and size as needed
+        self.label_bending_c.setGeometry(578, 246, 55, 25)  # Adjust position and size as needed
         self.label_pick = QLabel(f"{first_line[5]}", self)
         self.label_pick.setStyleSheet("Color : white")
         self.label_pick.setAlignment(Qt.AlignRight)
-        self.label_pick.setGeometry(510, 75, 100, 30)  # Adjust position and size as needed
+        self.label_pick.setGeometry(155, 390, 55, 25)  # Adjust position and size as needed
         self.label_place = QLabel(f"{first_line[6]}", self)
         self.label_place.setStyleSheet("Color : white")
         self.label_place.setAlignment(Qt.AlignRight)
-        self.label_place.setGeometry(610, 75, 100, 30)  # Adjust position and size as needed
+        self.label_place.setGeometry(670, 405, 55, 25)  # Adjust position and size as needed
 
 
-        file_path_home = '/workspace/pyqt_delta/document/home_list.txt'
+        file_path_home = 'document/home_list.txt'
         with open(file_path_home, 'r') as file1:
             lines_home = file1.readlines()
         # 각 줄의 데이터를 변수에 저장합니다.
@@ -118,6 +121,7 @@ class MyMove(QWidget):
             third_line_3 = lines_home[2].split()
             # 4번째 줄 데이터 저장
             fourth_line_4 = lines_home[3].split()
+
 
         # lebel 정보 창
         self.label1_label = QLabel(f"{first_line_1[0]}", self)
@@ -210,46 +214,49 @@ class MyMove(QWidget):
         self.workspace_z = QLabel(f"Max : {setting.z_max}", self)
         self.workspace_z.setStyleSheet("Color : white")
         self.workspace_z.setAlignment(Qt.AlignRight)
-        self.workspace_z.setGeometry(190, 300, 100, 30)  # Adjust position and size as needed
+        self.workspace_z.setGeometry(126, 300, 100, 30)  # Adjust position and size as needed
         self.workspace_zn = QLabel(f"Min : {setting.z_min}", self)
         self.workspace_zn.setStyleSheet("Color : white")
         self.workspace_zn.setAlignment(Qt.AlignRight)
-        self.workspace_zn.setGeometry(190, 470, 100, 30)  # Adjust position and size as needed
-        
+        self.workspace_zn.setGeometry(126, 470, 100, 30)  # Adjust position and size as needed
 
-        # path_spped_a1
-        self.path_spped_a1 = QLineEdit(self)
-        self.path_spped_a1.setGeometry(10, 100, 90, 25)  # Adjust position and size as needed
-        self.path_spped_a1.setText(str(1))
-        self.path_spped_a1.setAlignment(Qt.AlignRight) # 우측정렬
-        # path_spped_a2
-        self.path_spped_a2 = QLineEdit(self)
-        self.path_spped_a2.setGeometry(110, 100, 90, 25)  # Adjust position and size as needed
-        self.path_spped_a2.setText(str(1))
-        self.path_spped_a2.setAlignment(Qt.AlignRight)
-        # path_spped_a3
-        self.path_spped_a3 = QLineEdit(self)
-        self.path_spped_a3.setGeometry(210, 100, 90, 25)  # Adjust position and size as needed
-        self.path_spped_a3.setText(str(1))
-        self.path_spped_a3.setAlignment(Qt.AlignRight)
+
+
+
+
+        # path_speed_a1
+        self.path_speed_a1 = QLineEdit(self)
+        self.path_speed_a1.setGeometry(330, 432, 55, 25)  # Adjust position and size as needed
+        self.path_speed_a1.setText(str(1))
+        self.path_speed_a1.setAlignment(Qt.AlignRight) # 우측정렬
+        # path_speed_a2
+        self.path_speed_a2 = QLineEdit(self)
+        self.path_speed_a2.setGeometry(417, 283, 55, 25)  # Adjust position and size as needed
+        self.path_speed_a2.setText(str(1))
+        self.path_speed_a2.setAlignment(Qt.AlignRight)
+        # path_speed_a3
+        self.path_speed_a3 = QLineEdit(self)
+        self.path_speed_a3.setGeometry(513, 432, 55, 25)  # Adjust position and size as needed
+        self.path_speed_a3.setText(str(1))
+        self.path_speed_a3.setAlignment(Qt.AlignRight)
         # bending_b
         self.bending_b = QLineEdit(self)
-        self.bending_b.setGeometry(310, 100, 90, 25)  # Adjust position and size as needed
+        self.bending_b.setGeometry(258, 270, 55, 25)  # Adjust position and size as needed
         self.bending_b.setText(str(50))
         self.bending_b.setAlignment(Qt.AlignRight)
         # bending_c
         self.bending_c = QLineEdit(self)
-        self.bending_c.setGeometry(410, 100, 90, 25)  # Adjust position and size as needed
+        self.bending_c.setGeometry(583, 270, 55, 25)  # Adjust position and size as needed
         self.bending_c.setText(str(50))
         self.bending_c.setAlignment(Qt.AlignRight)
         # pick_height
         self.pick_height = QLineEdit(self)
-        self.pick_height.setGeometry(510, 100, 90, 25)  # Adjust position and size as needed
+        self.pick_height.setGeometry(160, 414, 55, 25)  # Adjust position and size as needed
         self.pick_height.setText(str(-350))
         self.pick_height.setAlignment(Qt.AlignRight)
         # place_height
         self.place_height = QLineEdit(self)
-        self.place_height.setGeometry(610, 100, 90, 25)  # Adjust position and size as needed
+        self.place_height.setGeometry(675, 429, 55, 25)  # Adjust position and size as needed
         self.place_height.setText(str(-350))
         self.place_height.setAlignment(Qt.AlignRight)
 
@@ -257,14 +264,15 @@ class MyMove(QWidget):
         # 버튼
         # Reset Button
         self.btnReset = QPushButton('Reset', self)
-        self.btnReset.setGeometry(615, 540, 50, 30)  # Adjust position and size as needed
+        self.btnReset.setGeometry(580, 500, 50, 30)  # Adjust position and size as needed
         self.btnReset.clicked.connect(self.resetFields)
 
         # Listup Button
         self.btnListup = QPushButton('List Up', self)
-        self.btnListup.setGeometry(640, 480, 90, 25)  # Adjust position and size as needed
+        self.btnListup.setGeometry(640, 500, 90, 30)  # Adjust position and size as needed
         self.btnListup.clicked.connect(self.listupClicked)
 
+        self.home_t()
         # Home 1버튼
         self.home1()
         self.home2()
@@ -275,17 +283,35 @@ class MyMove(QWidget):
         self.button()
 
         # Read items from the file and add them to the ComboBox
-        with open('/workspace/pyqt_delta/vision/labels.txt', 'r') as file:
+        with open('vision/labels.txt', 'r') as file:
             items = file.read().splitlines()
             # self.comboBox.addItems(items)
 
+####### 시간 ######################################################################
+        # 시간을 표시할 QLabel 생성
+        self.time_label = QLabel(self)
+        self.time_label.setGeometry(660, 585, 200, 10)  # 위치와 크기 설정
+        self.time_label.setStyleSheet("font-size: 14px;")  # 폰트 크기 설정
+        self.time_label.setStyleSheet("Color : white")
+
+        # QTimer 설정
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_time)
+        self.timer.start(1000)  # 1초마다 update_time 함수 호출
+        
+    def update_time(self):
+        # 현재 시간을 가져와서 QLabel에 표시
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.time_label.setText(current_time)
+
+####### 시간 #################################################################
 
     # 리스트업 클릭시 보낼 정보
     def listupClicked(self):
         try:
-            path_a1 = float(self.path_spped_a1.text())
-            path_a2 = float(self.path_spped_a2.text())
-            path_a3 = float(self.path_spped_a3.text())
+            path_a1 = float(self.path_speed_a1.text())
+            path_a2 = float(self.path_speed_a2.text())
+            path_a3 = float(self.path_speed_a3.text())
             bending_b = float(self.bending_b.text())
             bending_c = float(self.bending_c.text())
             pick = float(self.pick_height.text())
@@ -298,7 +324,19 @@ class MyMove(QWidget):
                setting.bending_min <= bending_c <= setting.bending_max and \
                setting.z_min <= pick <= setting.z_max and\
                setting.z_min <= place <= setting.z_max:
+
+                if place == setting.z_max:
+                    bending_c = 0
+                    path_a3 = 0
+
                 self.updateLabels()
+
+            # if setting.path_speed_min <= path_a1 <= setting.path_speed_max and \
+            #    setting.bending_min <= bending_b <= setting.bending_max and \
+            #    setting.bending_min <= bending_c <= setting.bending_max and \
+            #    setting.z_min <= pick <= setting.z_max and\
+            #    setting.z_min <= place <= setting.z_max:
+            #     self.updateLabels()
 
                 # move_list.txt 기존 파일 내용 읽어오기
                 existing_lines = []
@@ -314,6 +352,10 @@ class MyMove(QWidget):
 
                 # 0번째 줄 덮어쓰기 또는 추가하기
                 existing_lines[0] = f'{path_a1} {path_a2} {path_a3} {bending_b} {bending_c} {pick} {place}\n'
+                
+                # # A1,2,3 통합.
+                # existing_lines[0] = f'{path_a1} {path_a1} {path_a1} {bending_b} {bending_c} {pick} {place}\n'
+
 
                 # 파일에 덮어쓴 내용 저장
                 with open(file_path_move, 'w') as file:
@@ -329,35 +371,35 @@ class MyMove(QWidget):
 
 
                 # 확인 메시지 표시
-                QMessageBox.information(self, "Info", "Data updated in home_list.txt")
+                QMessageBox.information(self, "Info", "Data updated in move_list.txt")
             else:
                 # Handle out of range values
                 print("Values out of range")
-                self.path_spped_a1.setText("Out of Rnage")
-                self.path_spped_a1.setStyleSheet("color: red;")
-                self.path_spped_a1.setAlignment(Qt.AlignRight)
+                self.path_speed_a1.setText("Out of Range")
+                self.path_speed_a1.setStyleSheet("color: red;")
+                self.path_speed_a1.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.path_spped_a2.setText("Out of Rnage")
-                self.path_spped_a2.setStyleSheet("color: red;")
-                self.path_spped_a2.setAlignment(Qt.AlignRight)
+                self.path_speed_a2.setText("Out of Range")
+                self.path_speed_a2.setStyleSheet("color: red;")
+                self.path_speed_a2.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.path_spped_a3.setText("Out of Rnage")
-                self.path_spped_a3.setStyleSheet("color: red;")
-                self.path_spped_a3.setAlignment(Qt.AlignRight)
+                self.path_speed_a3.setText("Out of Range")
+                self.path_speed_a3.setStyleSheet("color: red;")
+                self.path_speed_a3.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.bending_b.setText("Out of Rnage")
+                self.bending_b.setText("Out of Range")
                 self.bending_b.setStyleSheet("color: red;")
                 self.bending_b.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.bending_c.setText("Out of Rnage")
+                self.bending_c.setText("Out of Range")
                 self.bending_c.setStyleSheet("color: red;")
                 self.bending_c.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.pick_height.setText("Out of Rnage")
+                self.pick_height.setText("Out of Range")
                 self.pick_height.setStyleSheet("color: red;")
                 self.pick_height.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.place_height.setText("Out of Rnage")
+                self.place_height.setText("Out of Range")
                 self.place_height.setStyleSheet("color: red;")
                 self.place_height.setAlignment(Qt.AlignRight)
 
@@ -444,32 +486,38 @@ class MyMove(QWidget):
         # 뒤로 가기 버튼
         self.btnback = QPushButton('<<', self)
         self.btnback.clicked.connect(self.goToStartScreen.emit)
-        self.btnback.setGeometry(10, 190, 50, 50)
+        self.btnback.setGeometry(0, 528, 50, 50)
         # self.btnback.raise_()  # Raise the button to the top of the widget stack
 
+    def home_t(self):
+        # 뒤로 가기 버튼
+        self.btnhomet = QPushButton('Total', self)
+        self.btnhomet.clicked.connect(self.goToStartScreen.emit)
+        self.btnhomet.setGeometry(200, 86, 80, 40)
+        # self.btnhomet.raise_()  # Raise the button to the top of the widget stack
     def home1(self):
         # 뒤로 가기 버튼
         self.btnhome1 = QPushButton('Home1', self)
         self.btnhome1.clicked.connect(self.goToStartScreen.emit)
-        self.btnhome1.setGeometry(200, 50, 50, 25)
+        self.btnhome1.setGeometry(300, 86, 80, 40)
         # self.btnhome1.raise_()  # Raise the button to the top of the widget stack
     def home2(self):
         # 뒤로 가기 버튼
         self.btnhome2 = QPushButton('Home2', self)
         self.btnhome2.clicked.connect(self.goToStartScreen.emit)
-        self.btnhome2.setGeometry(300, 50, 50, 25)
+        self.btnhome2.setGeometry(400, 86, 80, 40)
         # self.btnhome2.raise_()  # Raise the button to the top of the widget stack
     def home3(self):
         # 뒤로 가기 버튼
         self.btnhome3 = QPushButton('Home3', self)
         self.btnhome3.clicked.connect(self.goToStartScreen.emit)
-        self.btnhome3.setGeometry(400, 50, 50, 25)
+        self.btnhome3.setGeometry(500, 86, 80, 40)
         # self.btnhome3.raise_()  # Raise the button to the top of the widget stack
     def home4(self):
         # 뒤로 가기 버튼
         self.btnhome4 = QPushButton('Home4', self)
         self.btnhome4.clicked.connect(self.goToStartScreen.emit)
-        self.btnhome4.setGeometry(500, 50, 50, 25)
+        self.btnhome4.setGeometry(600, 86, 80, 40)
         # self.btnhome4.raise_()  # Raise the button to the top of the widget stack
 
 
@@ -482,17 +530,17 @@ class MyMove(QWidget):
     # 직접 입력창 리셋
     def resetFields(self):
 
-        self.path_spped_a1.setText(str(1))
-        self.path_spped_a2.setText(str(1))
-        self.path_spped_a3.setText(str(1))
+        self.path_speed_a1.setText(str(1))
+        self.path_speed_a2.setText(str(1))
+        self.path_speed_a3.setText(str(1))
         self.bending_b.setText(str(50))
         self.bending_c.setText(str(50))
         self.pick_height.setText(str(-350))
         self.place_height.setText(str(-350))
         # Optionally, reset the style if it's changed when values are out of range
-        self.path_spped_a1.setStyleSheet("color: black;")
-        self.path_spped_a2.setStyleSheet("color: black;")
-        self.path_spped_a3.setStyleSheet("color: black;")
+        self.path_speed_a1.setStyleSheet("color: black;")
+        self.path_speed_a2.setStyleSheet("color: black;")
+        self.path_speed_a3.setStyleSheet("color: black;")
         self.bending_b.setStyleSheet("color: black;")
         self.bending_c.setStyleSheet("color: black;")
         self.pick_height.setStyleSheet("color: black;")

@@ -1,6 +1,7 @@
 import sys
 import os
 import rclpy
+from datetime import datetime
 from rclpy.node import Node
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -33,7 +34,7 @@ class MyInfo(QWidget):
 
     def initUI(self):
 ######## 이미지 넣기 #######################################################
-        original_pixmap = QPixmap("/workspace/pyqt_delta/img/test.png")
+        original_pixmap = QPixmap("img/test.png")
         scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # QLabel 생성 및 QPixmap 설정
         lbl_img = QLabel(self)
@@ -41,7 +42,7 @@ class MyInfo(QWidget):
         lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
 ########################################################################
 ######## 이미지 추가 #######################################################
-#         original_pixmap1 = QPixmap("/workspace/pyqt_delta/img/kbs1.png")
+#         original_pixmap1 = QPixmap("img/kbs1.png")
 #         scaled_pixmap1 = original_pixmap1.scaled(800, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 #         # QLabel 생성 및 QPixmap 설정
 #         lbl_img = QLabel(self)
@@ -109,6 +110,25 @@ class MyInfo(QWidget):
         self.btnback.clicked.connect(self.goToStartScreen.emit)
         self.btnback.setGeometry(0, 528, 50, 50)
         # self.btnback.raise_()  # Raise the button to the top of the widget stack
+
+####### 시간 ######################################################################
+        # 시간을 표시할 QLabel 생성
+        self.time_label = QLabel(self)
+        self.time_label.setGeometry(660, 585, 200, 10)  # 위치와 크기 설정
+        self.time_label.setStyleSheet("font-size: 14px;")  # 폰트 크기 설정
+        self.time_label.setStyleSheet("Color : white")
+
+        # QTimer 설정
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_time)
+        self.timer.start(1000)  # 1초마다 update_time 함수 호출
+        
+    def update_time(self):
+        # 현재 시간을 가져와서 QLabel에 표시
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.time_label.setText(current_time)
+
+####### 시간 #################################################################
 
 
     def onBackButtonClick(self):

@@ -4,7 +4,7 @@
 # encoder = True
 
 
-robot = True
+robot = False
 conveyor = False
 vision = True
 encoder = False
