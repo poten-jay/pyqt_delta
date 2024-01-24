@@ -3,12 +3,15 @@ import rclpy
 from PyQt5.QtWidgets import QApplication, QStackedWidget
 from PyQt5.QtGui import QIcon
 
+from example import MyEx
+
 from publisher import GUI_Node
 from manual import MyApp
 from home import MyHome
 from move import MyMove
 from info import MyInfo
 from start import StartWindow
+from calibration import MyCal
 
 
 class AppManager(QStackedWidget):
@@ -22,6 +25,8 @@ class AppManager(QStackedWidget):
         self.initUI()
         
     def initUI(self):
+        self.ex_app = MyEx(self.node)
+
         # MyApp, MyHome, MyMove, MyInfo 등 모든 페이지를 생성
         
         self.my_app = MyApp(self.node)  # MyApp 객체 생성 시 노드 객체 전달
@@ -29,22 +34,31 @@ class AppManager(QStackedWidget):
         # self.move_app = MyMove(self.node)  # MyMove 객체 생성 시 노드 객체 전달
         self.info_app = MyInfo(self.node)  # MyInfo 객체 생성 시 노드 객체 전달
         self.move_app = None  # 초기에 None으로 설정 (애러서 버튼 호출 할때마다 새로운 창을 열기 위함)
+        self.cal_app = MyCal(self.node)
         
         # StartWindow를 생성하고 스택에 추가
         self.start_window = StartWindow(parent=self)
         self.addWidget(self.start_window)
 
         # 나머지 페이지들도 스택에 추가
+        self.addWidget(self.ex_app)
         self.addWidget(self.my_app)
         self.addWidget(self.home_app)
         # self.addWidget(self.move_app)
         self.addWidget(self.info_app)
+        self.addWidget(self.cal_app)
 
         # 뒤로가기 버튼에서 돌아오는 길 지정
+        self.ex_app.goToStartScreen.connect(self.gotoStart)
         self.my_app.goToStartScreen.connect(self.gotoStart)
         self.home_app.goToStartScreen.connect(self.gotoStart)
         # 
         self.info_app.goToStartScreen.connect(self.gotoStart)
+        self.cal_app.goToStartScreen.connect(self.gotoStart)
+
+    # 예제 페이지
+    def gotoCalibration(self):
+        self.setCurrentWidget(self.ex_app)
 
     # 시작 페이지
     def gotoStart(self):
@@ -72,6 +86,19 @@ class AppManager(QStackedWidget):
     # 인포메이션 페이지
     def gotoInfo(self):
         self.setCurrentWidget(self.info_app)
+
+    # 칼리브레이션 페이지
+    def gotoCalibration(self):
+        self.setCurrentWidget(self.cal_app)
+        
+        
+
+
+
+
+    # 예제 폼
+    def gotoExample(self):
+        self.setCurrentWidget(self.ex_app)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv) # QApplication : 프로그램을 실행시켜주는 클래스

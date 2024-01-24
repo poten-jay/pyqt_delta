@@ -261,8 +261,8 @@ class MyApp(QWidget):
         try:
             x_val = float(self.lineEditX.text())
             y_val = float(self.lineEditY.text())
-            z_val = float(self.lineEditZ.text())
-            
+            z_val = float(self.lineEditZ.text()) 
+
             # Add any necessary validation for range
             if setting.x_min <= x_val <= setting.x_max and \
                setting.y_min <= y_val <= setting.y_max and \
@@ -270,9 +270,12 @@ class MyApp(QWidget):
                 self.btn.input_x = x_val
                 self.btn.input_y = y_val
                 self.btn.input_z = z_val
+ 
                 self.updateLabels()
                 # MyHome.updateLabels()
                 self.btn.publish_xyz()
+                print(self.btn.input_x, self.btn.input_y, self.btn.input_z)
+ 
                 # Add any other necessary updates or method calls
             else:
                 # Handle out of range values

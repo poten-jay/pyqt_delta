@@ -6,11 +6,13 @@ from PyQt5.QtCore import  Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor, QFont, QPen, QBrush, QPainterPath
 from datetime import datetime
 
+from example import MyEx
 from publisher import GUI_Node
 from manual import MyApp
 from home import MyHome
 from move import MyMove
 from info import MyInfo
+from calibration import MyCal
 
 import receive
 
@@ -70,6 +72,16 @@ class StartWindow(QMainWindow):
         self.infoButton = QPushButton('Information', self)
         self.infoButton.clicked.connect(self.parent.gotoInfo)
         self.infoButton.setGeometry(10, 250, 100, 50)
+
+####### go calibration ######################################################################
+        self.infoButton = QPushButton('calibration', self)
+        self.infoButton.clicked.connect(self.parent.gotoCalibration)
+        self.infoButton.setGeometry(10, 300, 100, 50)
+
+####### go example ######################################################################
+        self.infoButton = QPushButton('exmaple', self)
+        self.infoButton.clicked.connect(self.parent.gotoExample)
+        self.infoButton.setGeometry(10, 500, 100, 50)
 
 ####### # Initially disable XYZ buttons ######################################
         self.startButton.setDisabled(True)
