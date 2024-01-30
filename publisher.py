@@ -30,6 +30,11 @@ class GUI_Node(Node):
         super().__init__('gui_node')
         # Publisher 생성
         self.publisher_xyz = self.create_publisher(Point, 'input_xyz', 10)
+        self.publisher_x = self.create_publisher(Point, 'input_x', 10)
+        self.publisher_y = self.create_publisher(Point, 'input_y', 10)
+        self.publisher_z = self.create_publisher(Point, 'input_z', 10)
+
+
 
     def publish_xyz(self, x, y, z):
         msg = Point()
@@ -37,6 +42,24 @@ class GUI_Node(Node):
         msg.y = y
         msg.z = z
         self.publisher_xyz.publish(msg)
+
+    def publish_x(self, x):
+        # x = float(self.input_x)
+        msg_x = Point()
+        msg_x.x = x
+        self.publisher_xyz.publish(msg_x)
+
+    def publish_y(self, y):
+        # y = float(self.input_y)
+        msg_y = Point()
+        msg_y.y = y
+        self.publisher_xyz.publish(msg_y)
+
+    def publish_z(self, z):
+        # z = float(self.input_z)
+        msg_z = Point()
+        msg_z.z = z
+        self.publisher_xyz.publish(msg_z)
 
 def main():
     rclpy.init(args=None)

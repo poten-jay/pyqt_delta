@@ -17,6 +17,27 @@ class xyz_button():
         msg.z = float(self.input_z)
         self.node.publisher_xyz.publish(msg)
 
+
+    def publish_x(self):
+        x = float(self.input_x)
+        msg_x = Point()
+        msg_x.x = x
+        self.node.publisher_xyz.publish(msg_x)
+
+    def publish_y(self):
+        y = float(self.input_y)
+        msg_y = Point()
+        msg_y.y = y
+        self.node.publisher_xyz.publish(msg_y)
+
+    def publish_z(self):
+        z = float(self.input_z)
+        msg_z = Point()
+        msg_z.z = z
+        self.node.publisher_xyz.publish(msg_z)
+
+
+
     def x_up(self):
         if self.input_x < setting.x_max:
             self.input_x += 10
