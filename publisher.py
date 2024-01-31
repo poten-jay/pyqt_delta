@@ -25,7 +25,7 @@ from rclpy.node import Node
 from geometry_msgs.msg import Point
 
 class GUI_Node(Node):
-    print('gui_node')
+    # print('gui_node')
     def __init__(self):
         super().__init__('gui_node')
         # Publisher 생성

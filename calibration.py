@@ -26,12 +26,26 @@ class MyCal(QMainWindow):
         self.initUI()
         
     def initUI(self):
-        
+
+        # Excel 파일 경로 및 파일 이름 지정
+        excel_file_path = "document/cal.xlsx"
+        # 만약 Excel 파일이 없으면 기본 포멧으로 만들기
+        if not os.path.exists(excel_file_path):
+            self.create_initial_excel(excel_file_path)
+
         # UI 초기화 코드
+            
+###### 배경화면 지정 ##################################################################
+        original_pixmap = QPixmap("img/cal.png")
+        scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # QLabel 생성 및 QPixmap 설정
+        lbl_img = QLabel(self)
+        lbl_img.setPixmap(scaled_pixmap)
+        lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
 
 ####### 버튼 좌표 설정 기준 ###########################################################
-        btn_x = 0
-        btn_y = 0
+        btn_x = 100
+        btn_y = 50
 ####### bnt_1 #####################################################################
         self.cal_1 = QPushButton('01', self)
         self.cal_1.clicked.connect(partial(self.readexcel, 2))
@@ -40,108 +54,108 @@ class MyCal(QMainWindow):
 ####### btn_2 #####################################################################
         self.cal_2 = QPushButton('02', self)
         self.cal_2.clicked.connect(partial(self.readexcel, 3))
-        self.cal_2.setGeometry(btn_x+300, btn_y+100, 50, 50)
+        self.cal_2.setGeometry(btn_x+275, btn_y+100, 50, 50)
 
 ####### btn_3 #####################################################################
         self.cal_3 = QPushButton('03', self)
         self.cal_3.clicked.connect(partial(self.readexcel, 4))
-        self.cal_3.setGeometry(btn_x+400, btn_y+100, 50, 50)
+        self.cal_3.setGeometry(btn_x+350, btn_y+100, 50, 50)
 
 ####### btn_4 #####################################################################
         self.cal_4 = QPushButton('04', self)
         self.cal_4.clicked.connect(partial(self.readexcel, 5))
-        self.cal_4.setGeometry(btn_x+500, btn_y+100, 50, 50)
+        self.cal_4.setGeometry(btn_x+425, btn_y+100, 50, 50)
 
 ####### btn_5 #####################################################################
         self.cal_5 = QPushButton('05', self)
         self.cal_5.clicked.connect(partial(self.readexcel, 6))
-        self.cal_5.setGeometry(btn_x+600, btn_y+100, 50, 50)
+        self.cal_5.setGeometry(btn_x+500, btn_y+100, 50, 50)
 
 ####### bnt_6 #####################################################################
         self.cal_6 = QPushButton('06', self)
         self.cal_6.clicked.connect(partial(self.readexcel, 7))
-        self.cal_6.setGeometry(btn_x+200, btn_y+200, 50, 50)
+        self.cal_6.setGeometry(btn_x+200, btn_y+175, 50, 50)
 
 ####### btn_7 #####################################################################
         self.cal_7 = QPushButton('07', self)
         self.cal_7.clicked.connect(partial(self.readexcel, 8))
-        self.cal_7.setGeometry(btn_x+300, btn_y+200, 50, 50)
+        self.cal_7.setGeometry(btn_x+275, btn_y+175, 50, 50)
 
 ####### btn_8 ####################################################################
         self.cal_8 = QPushButton('08', self)
         self.cal_8.clicked.connect(partial(self.readexcel, 9))
-        self.cal_8.setGeometry(btn_x+400, btn_y+200, 50, 50)
+        self.cal_8.setGeometry(btn_x+350, btn_y+175, 50, 50)
 
 ####### btn_9 #####################################################################
         self.cal_9 = QPushButton('09', self)
         self.cal_9.clicked.connect(partial(self.readexcel, 10))
-        self.cal_9.setGeometry(btn_x+500, btn_y+200, 50, 50)
+        self.cal_9.setGeometry(btn_x+425, btn_y+175, 50, 50)
 
 ####### btn_10 #####################################################################
         self.cal_10 = QPushButton('10', self)
         self.cal_10.clicked.connect(partial(self.readexcel, 11))
-        self.cal_10.setGeometry(btn_x+600, btn_y+200, 50, 50)
+        self.cal_10.setGeometry(btn_x+500, btn_y+175, 50, 50)
 
 ####### 나머지 btn ####################################################################
         self.cal_11 = QPushButton('11', self)
         self.cal_11.clicked.connect(partial(self.readexcel, 12))
-        self.cal_11.setGeometry(btn_x+200, btn_y+300, 50, 50)
+        self.cal_11.setGeometry(btn_x+200, btn_y+250, 50, 50)
 
         self.cal_12 = QPushButton('12', self)
         self.cal_12.clicked.connect(partial(self.readexcel, 13))
-        self.cal_12.setGeometry(btn_x+300, btn_y+300, 50, 50)
+        self.cal_12.setGeometry(btn_x+275, btn_y+250, 50, 50)
 
         self.cal_13 = QPushButton('13', self)
         self.cal_13.clicked.connect(partial(self.readexcel, 14))
-        self.cal_13.setGeometry(btn_x+400, btn_y+300, 50, 50)
+        self.cal_13.setGeometry(btn_x+350, btn_y+250, 50, 50)
 
         self.cal_14 = QPushButton('14', self)
         self.cal_14.clicked.connect(partial(self.readexcel, 15))
-        self.cal_14.setGeometry(btn_x+500, btn_y+300, 50, 50)
+        self.cal_14.setGeometry(btn_x+425, btn_y+250, 50, 50)
 
         self.cal_15 = QPushButton('15', self)
         self.cal_15.clicked.connect(partial(self.readexcel, 16))
-        self.cal_15.setGeometry(btn_x+600, btn_y+300, 50, 50)
+        self.cal_15.setGeometry(btn_x+500, btn_y+250, 50, 50)
 
         self.cal_16 = QPushButton('16', self)
         self.cal_16.clicked.connect(partial(self.readexcel, 17))
-        self.cal_16.setGeometry(btn_x+200, btn_y+400, 50, 50)
+        self.cal_16.setGeometry(btn_x+200, btn_y+325, 50, 50)
 
         self.cal_17 = QPushButton('17', self)
         self.cal_17.clicked.connect(partial(self.readexcel, 18))
-        self.cal_17.setGeometry(btn_x+300, btn_y+400, 50, 50)
+        self.cal_17.setGeometry(btn_x+275, btn_y+325, 50, 50)
 
         self.cal_18 = QPushButton('18', self)
         self.cal_18.clicked.connect(partial(self.readexcel, 19))
-        self.cal_18.setGeometry(btn_x+400, btn_y+400, 50, 50)
+        self.cal_18.setGeometry(btn_x+350, btn_y+325, 50, 50)
 
         self.cal_19 = QPushButton('19', self)
         self.cal_19.clicked.connect(partial(self.readexcel, 20))
-        self.cal_19.setGeometry(btn_x+500, btn_y+400, 50, 50)
+        self.cal_19.setGeometry(btn_x+425, btn_y+325, 50, 50)
 
         self.cal_20 = QPushButton('20', self)
         self.cal_20.clicked.connect(partial(self.readexcel, 21))
-        self.cal_20.setGeometry(btn_x+600, btn_y+400, 50, 50)
+        self.cal_20.setGeometry(btn_x+500, btn_y+325, 50, 50)
 
         self.cal_21 = QPushButton('21', self)
         self.cal_21.clicked.connect(partial(self.readexcel, 22))
-        self.cal_21.setGeometry(btn_x+200, btn_y+500, 50, 50)
+        self.cal_21.setGeometry(btn_x+200, btn_y+400, 50, 50)
 
         self.cal_22 = QPushButton('22', self)
         self.cal_22.clicked.connect(partial(self.readexcel, 23))
-        self.cal_22.setGeometry(btn_x+300, btn_y+500, 50, 50)
+        self.cal_22.setGeometry(btn_x+275, btn_y+400, 50, 50)
 
         self.cal_23 = QPushButton('23', self)
         self.cal_23.clicked.connect(partial(self.readexcel, 24))
-        self.cal_23.setGeometry(btn_x+400, btn_y+500, 50, 50)
+        self.cal_23.setGeometry(btn_x+350, btn_y+400, 50, 50)
 
         self.cal_24 = QPushButton('24', self)
         self.cal_24.clicked.connect(partial(self.readexcel, 25))
-        self.cal_24.setGeometry(btn_x+500, btn_y+500, 50, 50)
+        self.cal_24.setGeometry(btn_x+425, btn_y+400, 50, 50)
 
         self.cal_25 = QPushButton('25', self)
         self.cal_25.clicked.connect(partial(self.readexcel, 26))
-        self.cal_25.setGeometry(btn_x+600, btn_y+500, 50, 50)
+        self.cal_25.setGeometry(btn_x+500, btn_y+400, 50, 50)
 
 
 ####### 뒤로 가기 버튼 ###############################################################
@@ -161,7 +175,6 @@ class MyCal(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_time)
         self.timer.start(1000)
-
 
 
 ####### 이미지 삽입 #################################################################
@@ -229,6 +242,41 @@ class MyCal(QMainWindow):
         # 저장 후에는 엑셀 파일을 닫습니다.
         wb.close()
 
+
+####### 엑셀파일이 없을때 기본 포멧 만들기 #############################################
+    def create_initial_excel(self, excel_file_path):
+        # Create a new Excel file and add initial values
+        wb = openpyxl.Workbook()
+        sheet = wb.active
+        sheet.title = "angles"
+
+        # 초기값 설정
+        x = -400
+        y = -400
+        z = -900
+
+        # 10x10 행렬 생성 및 Excel에 저장
+        for i in range(25):
+                # 현재 값을 시트에 추가
+                sheet.cell(row=i + 2, column=1, value=x)
+                sheet.cell(row=i + 2, column=2, value=y)
+                sheet.cell(row=i + 2, column=3, value=z)
+
+                sheet.cell(row=i + 2, column=7, value=x)
+                sheet.cell(row=i + 2, column=8, value=y)
+                sheet.cell(row=i + 2, column=9, value=z)
+
+                # y 값을 증가
+                y += 200
+
+                # x 값을 증가, y는 초기값으로 재설정
+                if (i + 1) % 5 == 0:
+                        x += 200
+                        y = -400
+
+        # Excel 파일 저장
+        wb.save(excel_file_path)
+        wb.close()
 
 
 
