@@ -209,7 +209,17 @@ class MyApp(QWidget):
         self.btnYDown.setIconSize(QSize(60, 60))  # 아이콘 크기
         self.btnYDown.pressed.connect(lambda: self.startTimer(self.yDown))
         self.btnYDown.released.connect(self.stopTimer)
-        
+
+        # Start Button
+        self.btnStart = QPushButton('ON', self)
+        self.btnStart.setGeometry(75, 515, 80, 50)  # Adjust as needed
+        self.btnStart.clicked.connect(self.startOperation)
+
+        # Stop Button
+        self.btnStop = QPushButton('OFF', self)
+        self.btnStop.setGeometry(175, 515, 80, 50)  # Adjust as needed
+        self.btnStop.clicked.connect(self.stopOperation)
+
         # Initially disable XYZ buttons
         self.btnZUp.setDisabled(True)
         self.btnZDown.setDisabled(True)
@@ -219,17 +229,10 @@ class MyApp(QWidget):
         self.btnYDown.setDisabled(True)
         self.btnUpdate.setDisabled(True)
         self.btnReset.setDisabled(True)
+        self.btnStop.setDisabled(True)
         
 
-        # Start Button
-        self.btnStart = QPushButton('Start', self)
-        self.btnStart.setGeometry(75, 515, 80, 50)  # Adjust as needed
-        self.btnStart.clicked.connect(self.startOperation)
 
-        # Stop Button
-        self.btnStop = QPushButton('Stop', self)
-        self.btnStop.setGeometry(175, 515, 80, 50)  # Adjust as needed
-        self.btnStop.clicked.connect(self.stopOperation)
 
 
 ####### 시간 ######################################################################
@@ -342,6 +345,8 @@ class MyApp(QWidget):
         self.btnYDown.setDisabled(False)
         self.btnUpdate.setDisabled(False)
         self.btnReset.setDisabled(False)
+        self.btnStop.setDisabled(False)
+        self.btnback.setDisabled(True)
         print("Operation started")
 
 #  # Update Button
@@ -360,6 +365,8 @@ class MyApp(QWidget):
         self.btnYDown.setDisabled(True)
         self.btnUpdate.setDisabled(True)
         self.btnReset.setDisabled(True)
+        self.btnStop.setDisabled(True)
+        self.btnback.setDisabled(False)
         print("Operation stopped")
 
     def zUp(self):

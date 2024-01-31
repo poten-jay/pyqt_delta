@@ -485,9 +485,12 @@ class MyMove(QWidget):
 
         # 뒤로 가기 버튼
         self.btnback = QPushButton('<<', self)
-        self.btnback.clicked.connect(self.goToStartScreen.emit)
+        # self.btnback.clicked.connect(self.goToStartScreen.emit)
         self.btnback.setGeometry(0, 528, 50, 50)
         # self.btnback.raise_()  # Raise the button to the top of the widget stack
+
+        self.btnback.clicked.connect(self.close)
+        self.btnback.clicked.connect(self.goToStartScreen.emit)
 
     def home_t(self):
         # 뒤로 가기 버튼
@@ -501,25 +504,31 @@ class MyMove(QWidget):
         self.btnhome1.clicked.connect(self.goToStartScreen.emit)
         self.btnhome1.setGeometry(300, 86, 80, 40)
         # self.btnhome1.raise_()  # Raise the button to the top of the widget stack
+        self.btnhome1.setDisabled(True)
+
     def home2(self):
         # 뒤로 가기 버튼
         self.btnhome2 = QPushButton('Home2', self)
         self.btnhome2.clicked.connect(self.goToStartScreen.emit)
         self.btnhome2.setGeometry(400, 86, 80, 40)
         # self.btnhome2.raise_()  # Raise the button to the top of the widget stack
+        self.btnhome2.setDisabled(True)
+
     def home3(self):
         # 뒤로 가기 버튼
         self.btnhome3 = QPushButton('Home3', self)
         self.btnhome3.clicked.connect(self.goToStartScreen.emit)
         self.btnhome3.setGeometry(500, 86, 80, 40)
         # self.btnhome3.raise_()  # Raise the button to the top of the widget stack
+        self.btnhome3.setDisabled(True)
+
     def home4(self):
         # 뒤로 가기 버튼
         self.btnhome4 = QPushButton('Home4', self)
         self.btnhome4.clicked.connect(self.goToStartScreen.emit)
         self.btnhome4.setGeometry(600, 86, 80, 40)
         # self.btnhome4.raise_()  # Raise the button to the top of the widget stack
-
+        self.btnhome4.setDisabled(True)
 
 
     def onBackButtonClick(self):
@@ -535,8 +544,8 @@ class MyMove(QWidget):
         self.path_speed_a3.setText(str(1))
         self.bending_b.setText(str(50))
         self.bending_c.setText(str(50))
-        self.pick_height.setText(str(-350))
-        self.place_height.setText(str(-350))
+        self.pick_height.setText(str(-900))
+        self.place_height.setText(str(-900))
         # Optionally, reset the style if it's changed when values are out of range
         self.path_speed_a1.setStyleSheet("color: black;")
         self.path_speed_a2.setStyleSheet("color: black;")

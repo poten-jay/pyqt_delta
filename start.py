@@ -1,7 +1,7 @@
 import sys
 import rclpy
 import json
-from PyQt5.QtWidgets import QApplication, QPushButton, QMainWindow, QStackedWidget, QLabel, QRadioButton
+from PyQt5.QtWidgets import QApplication, QPushButton, QMainWindow, QStackedWidget, QLabel, QRadioButton, QDialog, QVBoxLayout, QLineEdit, QMessageBox
 from PyQt5.QtCore import  Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor, QFont, QPen, QBrush, QPainterPath
 from datetime import datetime
@@ -73,15 +73,20 @@ class StartWindow(QMainWindow):
         self.infoButton.clicked.connect(self.parent.gotoInfo)
         self.infoButton.setGeometry(10, 250, 100, 50)
 
-####### go calibration ######################################################################
-        self.infoButton = QPushButton('calibration', self)
-        self.infoButton.clicked.connect(self.parent.gotoCalibration)
-        self.infoButton.setGeometry(10, 300, 100, 50)
+# ####### go calibration ######################################################################
+#         self.infoButton = QPushButton('calibration', self)
+#         self.infoButton.clicked.connect(self.parent.gotoCalibration)
+#         self.infoButton.setGeometry(10, 300, 100, 50)
+
+####### go calibration need password ######################################################################
+        self.calButton = QPushButton('calibration', self)
+        self.calButton.clicked.connect(self.showCalibrationDialog)
+        self.calButton.setGeometry(10, 300, 100, 50)     
 
 ####### go example ######################################################################
-        self.infoButton = QPushButton('exmaple', self)
-        self.infoButton.clicked.connect(self.parent.gotoExample)
-        self.infoButton.setGeometry(10, 500, 100, 50)
+        self.examButton = QPushButton('exmaple', self)
+        self.examButton.clicked.connect(self.parent.gotoExample)
+        self.examButton.setGeometry(10, 500, 100, 50)
 
 ####### # Initially disable XYZ buttons ######################################
         self.startButton.setDisabled(True)
@@ -91,6 +96,7 @@ class StartWindow(QMainWindow):
         self.movingButton.setDisabled(True)
         self.infoButton.setDisabled(True)
         self.connectButton.setDisabled(True)
+        self.calButton.setDisabled(True)
 
 ####### 시간 ######################################################################
         # 시간 표시 라벨 설정
@@ -139,6 +145,7 @@ class StartWindow(QMainWindow):
         self.loadIoImages()
 
         self.radiobuttons()
+
 
 
 ###
@@ -322,6 +329,7 @@ class StartWindow(QMainWindow):
         self.movingButton.setDisabled(False)
         self.infoButton.setDisabled(False)
         self.connectButton.setDisabled(False)
+        self.calButton.setDisabled(False)
         print("Robot ON!!")
 
     # stop 누르면 비활성화
@@ -333,6 +341,7 @@ class StartWindow(QMainWindow):
         self.movingButton.setDisabled(True)
         self.infoButton.setDisabled(True)
         self.connectButton.setDisabled(True)
+        self.calButton.setDisabled(True)
         print("Good Bye...")
 
 ####### start/stop ##########################################################
@@ -346,6 +355,7 @@ class StartWindow(QMainWindow):
         self.connectButton.setDisabled(True)
         self.onButton.setDisabled(True)
         self.offButton.setDisabled(True)
+        self.calButton.setDisabled(True)
         print("Operation started!!")
 
     # stop 누르면 비활성화
@@ -360,10 +370,47 @@ class StartWindow(QMainWindow):
         self.onButton.setDisabled(False)
         self.stopButton.setDisabled(False)
         self.offButton.setDisabled(False)
+        self.calButton.setDisabled(False)
         print("Operation stopped...")
 
 
+    def showCalibrationDialog(self):
+        # 비밀번호 입력 다이얼로그 생성
+        dialog = PasswordDialog(self)
+        result = dialog.exec_()  # 다이얼로그를 모달로 표시하고 결과를 받음
 
+        # 다이얼로그 결과 확인
+        if result == QDialog.Accepted:
+            self.parent.gotoCalibration()  # 올바른 비밀번호가 입력되면 calibration 페이지로 이동
+
+class PasswordDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Password')
+        self.setFixedSize(300, 150)
+
+        self.label = QLabel('Please Enter password', self)
+        self.label.setGeometry(20, 20, 260, 30)
+
+        self.password_input = QLineEdit(self)
+        self.password_input.setGeometry(20, 60, 260, 30)
+        self.password_input.setEchoMode(QLineEdit.Password)
+
+        self.confirm_button = QPushButton('OK', self)
+        self.confirm_button.setGeometry(20, 100, 120, 30)
+        self.confirm_button.clicked.connect(self.checkPassword)
+
+        self.cancel_button = QPushButton('Cancel', self)
+        self.cancel_button.setGeometry(160, 100, 120, 30)
+        self.cancel_button.clicked.connect(self.reject)
+
+    def checkPassword(self):
+        # 입력된 비밀번호 확인
+        if self.password_input.text() == '1234':
+            self.accept()  # 올바른 비밀번호인 경우 다이얼로그를 종료하고 Accepted 반환
+        else:
+            QMessageBox.warning(self, 'Erorr', 'Invalied password!.')
+            self.password_input.clear()
 
 
 
