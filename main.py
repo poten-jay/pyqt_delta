@@ -12,6 +12,7 @@ from move import MyMove
 from info import MyInfo
 from start import StartWindow
 from calibration import MyCal
+from log import MyLog
 
 
 class AppManager(QStackedWidget):
@@ -35,6 +36,7 @@ class AppManager(QStackedWidget):
         self.info_app = MyInfo(self.node)  # MyInfo 객체 생성 시 노드 객체 전달
         self.move_app = None  # 초기에 None으로 설정 (애러서 버튼 호출 할때마다 새로운 창을 열기 위함)
         self.cal_app = MyCal(self.node)
+        self.log_app = MyLog(self.node)
         
         # StartWindow를 생성하고 스택에 추가
         self.start_window = StartWindow(parent=self)
@@ -47,6 +49,7 @@ class AppManager(QStackedWidget):
         # self.addWidget(self.move_app)
         self.addWidget(self.info_app)
         self.addWidget(self.cal_app)
+        self.addWidget(self.log_app)
 
         # 뒤로가기 버튼에서 돌아오는 길 지정
         self.ex_app.goToStartScreen.connect(self.gotoStart)
@@ -55,6 +58,7 @@ class AppManager(QStackedWidget):
         # 
         self.info_app.goToStartScreen.connect(self.gotoStart)
         self.cal_app.goToStartScreen.connect(self.gotoStart)
+        self.log_app.goToStartScreen.connect(self.gotoStart)
 
     # 예제 페이지
     def gotoCalibration(self):
@@ -82,6 +86,8 @@ class AppManager(QStackedWidget):
     
         self.setCurrentWidget(self.move_app)
         self.move_app.goToStartScreen.connect(self.gotoStart)
+        # self.move_app.close()
+        self.move_app = None
 
     # 인포메이션 페이지
     def gotoInfo(self):
@@ -91,8 +97,9 @@ class AppManager(QStackedWidget):
     def gotoCalibration(self):
         self.setCurrentWidget(self.cal_app)
         
-        
-
+    # 칼리브레이션 페이지
+    def gotoLog(self):
+        self.setCurrentWidget(self.log_app)
 
 
 

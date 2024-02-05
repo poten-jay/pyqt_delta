@@ -1,7 +1,7 @@
 import sys
 import rclpy
 import json
-from PyQt5.QtWidgets import QApplication, QPushButton, QMainWindow, QStackedWidget, QLabel, QRadioButton, QDialog, QVBoxLayout, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import QApplication, QTextBrowser, QPushButton, QMainWindow, QStackedWidget, QLabel, QRadioButton, QDialog, QVBoxLayout, QLineEdit, QMessageBox
 from PyQt5.QtCore import  Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap, QPainter, QColor, QFont, QPen, QBrush, QPainterPath
 from datetime import datetime
@@ -13,8 +13,13 @@ from home import MyHome
 from move import MyMove
 from info import MyInfo
 from calibration import MyCal
-
 import receive
+
+# yeong
+import subprocess
+import os
+import time
+import signal
 
 
 class StartWindow(QMainWindow):
@@ -23,6 +28,7 @@ class StartWindow(QMainWindow):
         self.parent = parent
         self.io_data = io_data  # io_data 매개변수를 추가하여 저장
         self.initUI()
+        
         
     def initUI(self):
         # UI 초기화 코드
@@ -79,14 +85,19 @@ class StartWindow(QMainWindow):
 #         self.infoButton.setGeometry(10, 300, 100, 50)
 
 ####### go calibration need password ######################################################################
-        self.calButton = QPushButton('calibration', self)
+        self.calButton = QPushButton('Calibration', self)
         self.calButton.clicked.connect(self.showCalibrationDialog)
-        self.calButton.setGeometry(10, 300, 100, 50)     
+        self.calButton.setGeometry(10, 500, 100, 50)     
+
+####### go log ######################################################################
+        self.examButton = QPushButton('Log', self)
+        self.examButton.clicked.connect(self.parent.gotoLog)
+        self.examButton.setGeometry(10, 300, 100, 50)
 
 ####### go example ######################################################################
         self.examButton = QPushButton('exmaple', self)
-        self.examButton.clicked.connect(self.parent.gotoExample)
-        self.examButton.setGeometry(10, 500, 100, 50)
+        self.examButton.clicked.connect(self.parent.gotoLog)
+        self.examButton.setGeometry(10, 400, 100, 50)
 
 ####### # Initially disable XYZ buttons ######################################
         self.startButton.setDisabled(True)
@@ -97,6 +108,33 @@ class StartWindow(QMainWindow):
         self.infoButton.setDisabled(True)
         self.connectButton.setDisabled(True)
         self.calButton.setDisabled(True)
+
+####### QTextBrowser 위젯 추가 ###############################################
+        self.text_browser = QTextBrowser(self)
+        self.text_browser.setGeometry(500, 100, 200, 200)
+        
+        self.text_browser.setStyleSheet("color: white; font-size: 15pt; background-color: transparent;")
+
+        self.update_text_browser()
+        self.connectButton.clicked.connect(self.update_text_browser)
+        
+        
+        # QTimer 설정
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_text_browser)
+        self.timer.start(500)  # 0.5 seconds interval
+
+        # # 텍스트 파일 내용을 읽어와서 QTextBrowser에 표시
+        # try:
+        #     file_path = 'document/io.json'  # 실제 파일 경로로 변경
+        #     with open(file_path, 'r', encoding='utf-8') as file:
+        #         io_data = json.load(file)
+        #         text_content = ""
+        #         for key, value in io_data.items():
+        #             text_content += f"{key} : {value}\n"
+        #         self.text_browser.setPlainText(text_content)
+        # except Exception as e:
+        #     self.text_browser.setPlainText(f"Error: {str(e)}")
 
 ####### 시간 ######################################################################
         # 시간 표시 라벨 설정
@@ -111,40 +149,40 @@ class StartWindow(QMainWindow):
         self.timer.start(1000)
 
 ####### I/O 신호 관련 텍스트 ###################################################
-        self.sig_robot = QLabel(f"Robot", self)
-        self.sig_robot.setStyleSheet("Color : white")
-        self.sig_robot.setAlignment(Qt.AlignRight)
-        self.sig_robot.setGeometry(300, 100, 60, 30)
+        # self.sig_robot = QLabel(f"Robot", self)
+        # self.sig_robot.setStyleSheet("Color : white")
+        # self.sig_robot.setAlignment(Qt.AlignRight)
+        # self.sig_robot.setGeometry(300, 100, 60, 30)
 
-        self.sig_conveyor = QLabel(f"conveyor", self)
-        self.sig_conveyor.setStyleSheet("Color : white")
-        self.sig_conveyor.setAlignment(Qt.AlignRight)
-        self.sig_conveyor.setGeometry(300, 130, 60, 30)
+        # self.sig_conveyor = QLabel(f"conveyor", self)
+        # self.sig_conveyor.setStyleSheet("Color : white")
+        # self.sig_conveyor.setAlignment(Qt.AlignRight)
+        # self.sig_conveyor.setGeometry(300, 130, 60, 30)
 
-        self.sig_vision = QLabel(f"vision", self)
-        self.sig_vision.setStyleSheet("Color : white")
-        self.sig_vision.setAlignment(Qt.AlignRight)
-        self.sig_vision.setGeometry(300, 160, 60, 30)
+        # self.sig_vision = QLabel(f"vision", self)
+        # self.sig_vision.setStyleSheet("Color : white")
+        # self.sig_vision.setAlignment(Qt.AlignRight)
+        # self.sig_vision.setGeometry(300, 160, 60, 30)
 
-        self.sig_encoder = QLabel(f"encoder", self)
-        self.sig_encoder.setStyleSheet("Color : white")
-        self.sig_encoder.setAlignment(Qt.AlignRight)
-        self.sig_encoder.setGeometry(300, 190, 60, 30)
+        # self.sig_encoder = QLabel(f"encoder", self)
+        # self.sig_encoder.setStyleSheet("Color : white")
+        # self.sig_encoder.setAlignment(Qt.AlignRight)
+        # self.sig_encoder.setGeometry(300, 190, 60, 30)
 
-        # io update 설정 - 시간 설정은 이미 위에서 했음
-        # self.timer = QTimer(self)
-        # self.timer.timeout.connect(self.update_io)  ### 살리면 1초당 업뎃
-        # self.timer.timeout.connect(self.connectToReceiver)
-        # self.timer.start(1000)  # 1초마다 업데이트
+        # # io update 설정 - 시간 설정은 이미 위에서 했음
+        # # self.timer = QTimer(self)
+        # # self.timer.timeout.connect(self.update_io)  ### 살리면 1초당 업뎃
+        # # self.timer.timeout.connect(self.connectToReceiver)
+        # # self.timer.start(1000)  # 1초마다 업데이트
 
-        with open("document/io.json", "r") as io_file:
-            self.io_data = json.load(io_file)
+        # with open("document/io.json", "r") as io_file:
+        #     self.io_data = json.load(io_file)
 
-        # self.ioPoint()
+        # # self.ioPoint()
 
-        self.loadIoImages()
+        # self.loadIoImages()
 
-        self.radiobuttons()
+        # self.radiobuttons()
 
 
 
@@ -152,72 +190,21 @@ class StartWindow(QMainWindow):
 ### def###
 ###
         
-
-###### if drawpoint #####################################################
-    def ioPoint(self):
-        if self.io_data is not None: 
-            if self.io_data["robot"] == True:
-                self.drawPoint(700, 100, 'green')
-                print('conneted')
-            else:
-                self.drawPoint(700, 100, 'red')
-                print('Caution! : Disconneted - Robot')
-
-            if self.io_data["conveyor"] == True:
-                self.drawPoint(700, 130, 'green')
-            else:
-                self.drawPoint(700, 130, 'red')
-                print('Caution! : Disconneted - Conveyor')
-
-            if self.io_data["vision"] == True:
-                self.drawPoint(700, 160, 'green')
-            else:
-                self.drawPoint(700, 160, 'red')
-                print('Caution! : Disconneted - Vision')
-
-            if self.io_data["encoder"] == True:
-                self.drawPoint(700, 190, 'green')
-            else:
-                self.drawPoint(700, 190, 'red')
-                print('Caution! : Disconneted - Encoder')
-
-
-####### 점 찍기 #########################################################
-    def drawPoint(self, x, y, color):
-        # 점 찍을 좌표 계산
-        point_x = x  # 예시: x 좌표 계산
-        point_y = y  # 예시: y 좌표 계산
-
-
-        # QLabel을 생성하여 점을 표시
-        # point_label = setPen(Qpen)
-
-        point_label = QLabel(self)
-        point_label.setGeometry(point_x, point_y, 5, 5)  # 점의 크기와 위치 설정
-        point_label.setStyleSheet("background-color: "+color+"; border-radius: 10px;")  # 점의 스타일 설정
-
-
-######## 주기적으로 io.json 파일을 읽고 UI를 업데이트 ##########################
-    def update_io(self):
-        with open("document/io.json", "r") as io_file:
-            # updated_io_data = json.load(io_file)
-            self.io_data = json.load(io_file)
-            print('open documents')
-
-        # if self.io_data != updated_io_data:
-        #     self.io_data = updated_io_data
-            # I/O 신호 이미지 업데이트
-            self.loadIoImages()
-
-            # 점찍기
-            self.ioPoint()
-
-            # 라디오 버튼 업데이트
-            self.radiobuttons()
-
-            # UI 업데이트
-            # self.update()
-
+####### io.json 읽어오기 ######################################################
+    def update_text_browser(self):
+                # 텍스트 파일 내용을 읽어와서 QTextBrowser에 표시
+        try:
+            file_path = 'document/io.json'  # 실제 파일 경로로 변경
+            with open(file_path, 'r', encoding='utf-8') as file:
+                io_data = json.load(file)
+                text_content = ""
+                for key, value in io_data.items():
+                    icon = "◉" if value else "◉"
+                    color = "#33FF33" if value else "red"
+                    text_content += f"<font color='{color}'>{icon}</font> - {key}<br>"
+                self.text_browser.setHtml(text_content)
+        except Exception as e:
+            self.text_browser.setPlainText(f"Error: {str(e)}")
 
 
 ####### connect ##########################################################
@@ -243,67 +230,6 @@ class StartWindow(QMainWindow):
             # pyqtSignal()
             print("Connected to receiver")
 
-### radio buttons #######################################################
-    def radiobuttons(self):
-        if self.io_data is not None:  # io_data가 None이 아닌 경우에만 처리
-            rbtn1 = QRadioButton('robot', self)
-            rbtn1.move(400, 100)
-            rbtn1.setAutoExclusive(False)
-            rbtn1.repaint()
-            if self.io_data["robot"]:
-                rbtn1.setChecked(True)
-            else:
-                rbtn1.setChecked(False)
-            
-            rbtn2 = QRadioButton(self)
-            rbtn2.move(400, 130)
-            rbtn2.setText('conveyor')
-            rbtn2.setAutoExclusive(False)
-            rbtn2.repaint()
-            if self.io_data["conveyor"]:
-                rbtn2.setChecked(True)
-            else:
-                rbtn2.setChecked(False)
-
-            rbtn3 = QRadioButton(self)
-            rbtn3.move(400, 160)
-            rbtn3.setText('vision')
-            rbtn3.setAutoExclusive(False)
-            rbtn3.repaint()
-            if self.io_data["vision"]:
-                rbtn3.setChecked(True)
-            else:
-                rbtn3.setChecked(False)
-
-            rbtn4 = QRadioButton(self)
-            rbtn4.move(400, 190)
-            rbtn4.setText('encoder')
-            rbtn4.setAutoExclusive(False)
-            rbtn4.repaint()
-            if self.io_data["encoder"]:
-                rbtn4.setChecked(True)
-            else:
-                rbtn4.setChecked(False)
-
-####### I/O 신호 관련 이미지 #######################################################
-    def loadIoImages(self):
-        if self.io_data is not None:  # io_data가 None이 아닌 경우에만 처리
-            if self.io_data["robot"] == True:
-                self.input_image(370, 100, 17, 17, "img/on.png")
-            else:
-                self.input_image(370, 100, 17, 17, "img/off.png")
-            if self.io_data["conveyor"] == True:
-                self.input_image(370, 130, 17, 17, "img/on.png")
-            else:
-                self.input_image(370, 130, 17, 17, "img/off.png")
-            if self.io_data["vision"] == True:
-                self.input_image(370, 160, 17, 17, "img/on.png")
-            else:
-                self.input_image(370, 160, 17, 17, "img/off.png")
-            if self.io_data["encoder"] == True:
-                self.input_image(370, 190, 17, 17, "img/on.png")
-            else:
-                self.input_image(370, 190, 17, 17, "img/off.png")
 
 ####### 이미지 삽입 ################################################################
         
@@ -330,6 +256,28 @@ class StartWindow(QMainWindow):
         self.infoButton.setDisabled(False)
         self.connectButton.setDisabled(False)
         self.calButton.setDisabled(False)
+
+        # # yeong
+        # # Run the ROS2 launch file and save the subprocess reference
+        # current_dir = os.path.dirname(os.path.realpath(__file__))
+        # bringup_file = os.path.join(current_dir, "../control/bringup/launch/bringup.py")
+        # move_zero_file = os.path.join(current_dir, "../move/move_zero.py")
+
+        # try:
+        #     self.ros2_process_robot = subprocess.Popen(["ros2", "launch", bringup_file], preexec_fn=os.setsid)
+        #     print("ROS2 robot bringup started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 launch file: {e}")
+
+        # time.sleep(20)
+
+        # try:
+        #     self.ros2_process_move_zero = subprocess.Popen(["python3", move_zero_file])
+        #     print("ROS2 move_zero started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 python3 file: {e}")
+
+        
         print("Robot ON!!")
 
     # stop 누르면 비활성화
@@ -342,7 +290,31 @@ class StartWindow(QMainWindow):
         self.infoButton.setDisabled(True)
         self.connectButton.setDisabled(True)
         self.calButton.setDisabled(True)
-        print("Good Bye...")
+        
+        # yeong
+
+        # # Terminate the ROS2 launch subprocess if it's running
+        # if self.ros2_process_robot and self.ros2_process_robot.poll() is None:  # Check if the process is still running
+        #     if self.ros2_process_robot and self.ros2_process_robot.poll() is None:
+        #         # Terminate the entire process group
+        #         os.killpg(os.getpgid(self.ros2_process_robot.pid), signal.SIGTERM)
+        #     # self.ros2_process_robot.terminate()  # Terminate the process
+        #     # try:
+        #     #     self.ros2_process_robot.wait(timeout=10)  # Wait for the process to terminate
+        #     # except subprocess.TimeoutExpired:
+        #     #     self.ros2_process_robot.kill()  # Force kill if it doesn't terminate within timeout
+        #         print("ROS2 robot terminated")
+
+        # # Terminate the ROS2 launch subprocess if it's running
+        # if self.ros2_process_move_zero and self.ros2_process_move_zero.poll() is None:  # Check if the process is still running
+        #     self.ros2_process_move_zero.terminate()  # Terminate the process
+        #     try:
+        #         self.ros2_process_move_zero.wait(timeout=5)  # Wait for the process to terminate
+        #     except subprocess.TimeoutExpired:
+        #         self.ros2_process_move_zero.kill()  # Force kill if it doesn't terminate within timeout
+        #     print("ROS2 vision terminated")
+
+        # print("Good Bye...")
 
 ####### start/stop ##########################################################
     def startOperation(self):
@@ -356,6 +328,28 @@ class StartWindow(QMainWindow):
         self.onButton.setDisabled(True)
         self.offButton.setDisabled(True)
         self.calButton.setDisabled(True)
+        
+        # # yeong
+        # # Run the ROS2 launch file and save the subprocess reference
+        # current_dir = os.path.dirname(os.path.realpath(__file__))
+        # vision_file = os.path.join(current_dir, "../vision/launch/vision.py")
+        # move_file = os.path.join(current_dir, "../move/move.py")
+
+        # try:
+        #     self.ros2_process_vision = subprocess.Popen(["ros2", "launch", vision_file])
+        #     print("ROS2 vision started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 launch file: {e}")
+
+        
+        # time.sleep(4)
+        
+        # try:
+        #     self.ros2_process_move = subprocess.Popen(["python3", move_file])
+        #     print("ROS2 move started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 python3 file: {e}")
+
         print("Operation started!!")
 
     # stop 누르면 비활성화
@@ -371,6 +365,26 @@ class StartWindow(QMainWindow):
         self.stopButton.setDisabled(False)
         self.offButton.setDisabled(False)
         self.calButton.setDisabled(False)
+        
+        # # Terminate the ROS2 launch subprocess if it's running
+        # if self.ros2_process_move and self.ros2_process_move.poll() is None:  # Check if the process is still running
+        #     self.ros2_process_move.terminate()  # Terminate the process
+        #     try:
+        #         self.ros2_process_move.wait(timeout=5)  # Wait for the process to terminate
+        #     except subprocess.TimeoutExpired:
+        #         self.ros2_process_move.kill()  # Force kill if it doesn't terminate within timeout
+        #     print("ROS2 move terminated")
+        # time.sleep(2)
+
+        # # Terminate the ROS2 launch subprocess if it's running
+        # if self.ros2_process_vision and self.ros2_process_vision.poll() is None:  # Check if the process is still running
+        #     self.ros2_process_vision.terminate()  # Terminate the process
+        #     try:
+        #         self.ros2_process_vision.wait(timeout=5)  # Wait for the process to terminate
+        #     except subprocess.TimeoutExpired:
+        #         self.ros2_process_vision.kill()  # Force kill if it doesn't terminate within timeout
+        #     print("ROS2 vision terminated")
+
         print("Operation stopped...")
 
 
@@ -382,6 +396,10 @@ class StartWindow(QMainWindow):
         # 다이얼로그 결과 확인
         if result == QDialog.Accepted:
             self.parent.gotoCalibration()  # 올바른 비밀번호가 입력되면 calibration 페이지로 이동
+            print("password")
+            # self.mycal.run_move_forward()
+    
+    
 
 class PasswordDialog(QDialog):
     def __init__(self, parent=None):

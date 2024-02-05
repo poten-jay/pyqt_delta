@@ -16,9 +16,6 @@ from info import MyInfo
 import setting
 from trajectory import *
 
-import os
-import subprocess
-
 
 class MyCal(QMainWindow):
     goToStartScreen = pyqtSignal()
@@ -26,9 +23,7 @@ class MyCal(QMainWindow):
         super().__init__()
         self.node = node
         self.parent = parent
-        self.ros2_process_manual_mode = None
         self.initUI()
-
         
     def initUI(self):
 
@@ -163,54 +158,11 @@ class MyCal(QMainWindow):
         self.cal_25.setGeometry(btn_x+500, btn_y+400, 50, 50)
 
 
-####### on/ off 버튼 ###############################################
-        self.btnOn = QPushButton('On', self)
-        # self.btnOn.clicked.connect(self.run_move_forward)
-        self.btnOn.clicked.connect(self.onOperation)
-        self.btnOn.setGeometry(100, 100, 100, 50)
-
-        self.btnOff = QPushButton('Off', self)
-        # self.btnOff.clicked.connect(self.stop_move_forward)
-        self.btnOff.clicked.connect(self.offOperation)
-        self.btnOff.setGeometry(100, 200, 100, 50)
-
 ####### 뒤로 가기 버튼 ###############################################################
         self.btnback = QPushButton('<<', self)
-        
         self.btnback.clicked.connect(self.goToStartScreen.emit)
         
         self.btnback.setGeometry(0, 528, 50, 50)
-
-        # Initially disable XYZ buttons
-        self.cal_1.setDisabled(True)
-        self.cal_2.setDisabled(True)
-        self.cal_3.setDisabled(True)
-        self.cal_4.setDisabled(True)
-        self.cal_5.setDisabled(True)
-        self.cal_6.setDisabled(True)
-        self.cal_7.setDisabled(True)
-        self.cal_8.setDisabled(True)
-        self.cal_9.setDisabled(True)
-        self.cal_10.setDisabled(True)
-        self.cal_11.setDisabled(True)
-        self.cal_12.setDisabled(True)
-        self.cal_13.setDisabled(True)
-        self.cal_14.setDisabled(True)
-        self.cal_15.setDisabled(True)
-        self.cal_16.setDisabled(True)
-        self.cal_17.setDisabled(True)
-        self.cal_18.setDisabled(True)
-        self.cal_19.setDisabled(True)
-        self.cal_20.setDisabled(True)
-        self.cal_21.setDisabled(True)
-        self.cal_22.setDisabled(True)
-        self.cal_23.setDisabled(True)
-        self.cal_24.setDisabled(True)
-        self.cal_25.setDisabled(True)
-        self.btnOff.setDisabled(True)
-
-
-
 
 ####### 시간 #######################################################################
         # 시간 표시 라벨 설정
@@ -223,92 +175,6 @@ class MyCal(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_time)
         self.timer.start(1000)
-
-    def onOperation(self):
-        self.cal_1.setDisabled(False)
-        self.cal_2.setDisabled(False)
-        self.cal_3.setDisabled(False)
-        self.cal_4.setDisabled(False)
-        self.cal_5.setDisabled(False)
-        self.cal_6.setDisabled(False)
-        self.cal_7.setDisabled(False)
-        self.cal_8.setDisabled(False)
-        self.cal_9.setDisabled(False)
-        self.cal_10.setDisabled(False)
-        self.cal_11.setDisabled(False)
-        self.cal_12.setDisabled(False)
-        self.cal_13.setDisabled(False)
-        self.cal_14.setDisabled(False)
-        self.cal_15.setDisabled(False)
-        self.cal_16.setDisabled(False)
-        self.cal_17.setDisabled(False)
-        self.cal_18.setDisabled(False)
-        self.cal_19.setDisabled(False)
-        self.cal_20.setDisabled(False)
-        self.cal_21.setDisabled(False)
-        self.cal_22.setDisabled(False)
-        self.cal_23.setDisabled(False)
-        self.cal_24.setDisabled(False)
-        self.cal_25.setDisabled(False)
-        self.btnOff.setDisabled(False)
-        self.btnOn.setDisabled(True)
-        self.btnback.setDisabled(True)
-
-    def offOperation(self):
-        self.cal_1.setDisabled(True)
-        self.cal_2.setDisabled(True)
-        self.cal_3.setDisabled(True)
-        self.cal_4.setDisabled(True)
-        self.cal_5.setDisabled(True)
-        self.cal_6.setDisabled(True)
-        self.cal_7.setDisabled(True)
-        self.cal_8.setDisabled(True)
-        self.cal_9.setDisabled(True)
-        self.cal_10.setDisabled(True)
-        self.cal_11.setDisabled(True)
-        self.cal_12.setDisabled(True)
-        self.cal_13.setDisabled(True)
-        self.cal_14.setDisabled(True)
-        self.cal_15.setDisabled(True)
-        self.cal_16.setDisabled(True)
-        self.cal_17.setDisabled(True)
-        self.cal_18.setDisabled(True)
-        self.cal_19.setDisabled(True)
-        self.cal_20.setDisabled(True)
-        self.cal_21.setDisabled(True)
-        self.cal_22.setDisabled(True)
-        self.cal_23.setDisabled(True)
-        self.cal_24.setDisabled(True)
-        self.cal_25.setDisabled(True)
-        self.btnOff.setDisabled(True)
-        self.btnOn.setDisabled(False)
-        self.btnback.setDisabled(False)
-    
-    def run_move_forward(self):
-        # # yeong 
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        manual_mode_file = os.path.join(current_dir, "../move/move_forward_xyz.py")
-
-        try:
-            self.ros2_process_manual_mode = subprocess.Popen(["python3", manual_mode_file], preexec_fn=os.setsid)
-            print("ROS2 manual mode started")
-        except Exception as e:
-            print(f"Failed to start ROS2 python3 file: {e}")
-            
-    def stop_move_forward(self):
-        # yeong
-        print("ros2_process_manual_mode", self.ros2_process_manual_mode)
-        # Terminate the ROS2 launch subprocess if it's running
-        if self.ros2_process_manual_mode and self.ros2_process_manual_mode.poll() is None:  # Check if the process is still running
-            self.ros2_process_manual_mode.terminate()  # Terminate the process
-            try:
-                self.ros2_process_manual_mode.wait(timeout=5)  # Wait for the process to terminate
-            except subprocess.TimeoutExpired:
-                self.ros2_process_manual_mode.kill()  # Force kill if it doesn't terminate within timeout
-            print("ROS2 manual mode terminated")
-
-        print("Operation stopped")
-
 
 
 ####### 이미지 삽입 #################################################################
@@ -597,3 +463,5 @@ class ExcelPopup(QDialog):
     def onBackButtonClick(self):
         # Emit the signal when the button is clicked
         self.goToStartScreen.emit()
+
+

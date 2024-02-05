@@ -317,9 +317,9 @@ class MyMove(QWidget):
             pick = float(self.pick_height.text())
             place = float(self.place_height.text())
             
-            if setting.path_speed_min <= path_a1 <= setting.path_speed_max and \
+            if setting.Deceleration_min <= path_a1 <= setting.Deceleration_max and \
                setting.path_speed_min <= path_a2 <= setting.path_speed_max and \
-               setting.path_speed_min <= path_a3 <= setting.path_speed_max and \
+               setting.Deceleration_min <= path_a3 <= setting.Deceleration_max and \
                setting.bending_min <= bending_b <= setting.bending_max and \
                setting.bending_min <= bending_c <= setting.bending_max and \
                setting.z_min <= pick <= setting.z_max and\

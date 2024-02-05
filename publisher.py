@@ -43,23 +43,23 @@ class GUI_Node(Node):
         msg.z = z
         self.publisher_xyz.publish(msg)
 
-    def publish_x(self, x):
-        # x = float(self.input_x)
-        msg_x = Point()
-        msg_x.x = x
-        self.publisher_xyz.publish(msg_x)
+    # def publish_x(self, x):
+    #     # x = float(self.input_x)
+    #     msg_x = Point()
+    #     msg_x.x = x
+    #     self.publisher_xyz.publish(msg_x)
 
-    def publish_y(self, y):
-        # y = float(self.input_y)
-        msg_y = Point()
-        msg_y.y = y
-        self.publisher_xyz.publish(msg_y)
+    # def publish_y(self, y):
+    #     # y = float(self.input_y)
+    #     msg_y = Point()
+    #     msg_y.y = y
+    #     self.publisher_xyz.publish(msg_y)
 
-    def publish_z(self, z):
-        # z = float(self.input_z)
-        msg_z = Point()
-        msg_z.z = z
-        self.publisher_xyz.publish(msg_z)
+    # def publish_z(self, z):
+    #     # z = float(self.input_z)
+    #     msg_z = Point()
+    #     msg_z.z = z
+    #     self.publisher_xyz.publish(msg_z)
 
 def main():
     rclpy.init(args=None)
