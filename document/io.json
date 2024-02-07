@@ -1,6 +1,6 @@
 {
   "robot": true,
-  "conveyor": false,
+  "conveyor": true,
   "vision": true,
-  "encoder": false
+  "encoder": true
 }

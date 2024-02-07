@@ -23,7 +23,15 @@ class MyLog(QMainWindow):
     def initUI(self):
         
         # UI 초기화 코드
-
+######## 이미지 넣기 #######################################################
+        original_pixmap = QPixmap("img/log.png")
+        scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # QLabel 생성 및 QPixmap 설정
+        lbl_img = QLabel(self)
+        lbl_img.setPixmap(scaled_pixmap)
+        lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
+########################################################################
+#
 
 ####### start ######################################################################
         self.startButton = QPushButton('Re', self)

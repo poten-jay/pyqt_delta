@@ -90,9 +90,9 @@ class StartWindow(QMainWindow):
         self.calButton.setGeometry(10, 500, 100, 50)     
 
 ####### go log ######################################################################
-        self.examButton = QPushButton('Log', self)
-        self.examButton.clicked.connect(self.parent.gotoLog)
-        self.examButton.setGeometry(10, 300, 100, 50)
+        self.logButton = QPushButton('Log', self)
+        self.logButton.clicked.connect(self.parent.gotoLog)
+        self.logButton.setGeometry(10, 300, 100, 50)
 
 ####### go example ######################################################################
         self.examButton = QPushButton('exmaple', self)
@@ -108,6 +108,7 @@ class StartWindow(QMainWindow):
         self.infoButton.setDisabled(True)
         self.connectButton.setDisabled(True)
         self.calButton.setDisabled(True)
+        self.logButton.setDisabled(True)
 
 ####### QTextBrowser 위젯 추가 ###############################################
         self.text_browser = QTextBrowser(self)
@@ -120,9 +121,9 @@ class StartWindow(QMainWindow):
         
         
         # QTimer 설정
-        self.timer = QTimer(self)
-        self.timer.timeout.connect(self.update_text_browser)
-        self.timer.start(500)  # 0.5 seconds interval
+        self.logtimer = QTimer(self)
+        self.logtimer.timeout.connect(self.update_text_browser)
+        self.logtimer.start(500)  # 0.5 seconds interval
 
         # # 텍스트 파일 내용을 읽어와서 QTextBrowser에 표시
         # try:
@@ -256,6 +257,7 @@ class StartWindow(QMainWindow):
         self.infoButton.setDisabled(False)
         self.connectButton.setDisabled(False)
         self.calButton.setDisabled(False)
+        self.logButton.setDisabled(False)
 
         # # yeong
         # # Run the ROS2 launch file and save the subprocess reference
@@ -290,6 +292,7 @@ class StartWindow(QMainWindow):
         self.infoButton.setDisabled(True)
         self.connectButton.setDisabled(True)
         self.calButton.setDisabled(True)
+        self.logButton.setDisabled(True)
         
         # yeong
 
@@ -328,6 +331,7 @@ class StartWindow(QMainWindow):
         self.onButton.setDisabled(True)
         self.offButton.setDisabled(True)
         self.calButton.setDisabled(True)
+        self.logButton.setDisabled(True)
         
         # # yeong
         # # Run the ROS2 launch file and save the subprocess reference
@@ -365,6 +369,7 @@ class StartWindow(QMainWindow):
         self.stopButton.setDisabled(False)
         self.offButton.setDisabled(False)
         self.calButton.setDisabled(False)
+        self.logButton.setDisabled(False)
         
         # # Terminate the ROS2 launch subprocess if it's running
         # if self.ros2_process_move and self.ros2_process_move.poll() is None:  # Check if the process is still running
