@@ -282,6 +282,8 @@ class MyMove(QWidget):
         self.btnb.setGeometry(20, 300, 100, 50)  # Adjust position and size as needed
         self.btnb.clicked.connect(self.clickmoveU)
 
+
+
         self.home_t()
         # Home 1버튼
         self.home1()
@@ -318,55 +320,25 @@ class MyMove(QWidget):
 
     # ㄱ 자 무빙
     def clickmoveL(self):
+        # self.btnb.setDisabled(True)
         self.path_speed_a3.setDisabled(True)
         self.bending_c.setDisabled(True)
         self.place_height.setDisabled(True)
-        self.update_file_last_char('a')  # 파일의 마지막 글자를 'a'로 변경
+        # self.label_spped_a3.setDisabled(True)
+        # self.label_bending_c.setDisabled(True)
+        # self.label_place.setDisabled(True)
 
-    # ㄷ 자 무빙
     def clickmoveU(self):
         self.path_speed_a3.setDisabled(False)
         self.bending_c.setDisabled(False)
         self.place_height.setDisabled(False)
-        self.update_file_last_char('b')  # 파일의 마지막 글자를 'b'로 변경
+        # self.label_spped_a3.setDisabled(False)
+        # self.label_bending_c.setDisabled(False)
+        # self.label_place.setDisabled(False)
 
-
-    # 마지막 글자 바꾸기
-    def update_file_last_char(self, new_char):
-        with open(file_path_move, 'r') as file:
-            lines = file.readlines()
-
-        updated_lines = []
-        for line in lines:
-            updated_line = line[:-2] + new_char + '\n'  # 마지막 글자를 new_char로 변경
-            updated_lines.append(updated_line)
-
-        with open(file_path_move, 'w') as file:
-            file.writelines(updated_lines)
 
     # 리스트업 클릭시 보낼 정보
     def listupClicked(self):
-        # move_list.txt 기존 파일 내용 읽어오기
-        existing_lines = []
-        if os.path.exists(file_path_move):
-            with open(file_path_move, 'r') as file:
-                existing_lines = file.readlines()
-
-        # 파일이 없을 경우 초기값 생성
-        while len(existing_lines) < 4:
-            # existing_lines.append(f'{len(existing_lines) + 1}\n')
-            existing_lines.append('0 0 0 0 0 0 0 a\n')
-
-        if existing_lines[0][-2] == 'a':
-            self.listupClicked_a()
-        else :
-            self.listupClicked_b()
-
-
-        # print(existing_lines[0][-2])
-
-
-    def listupClicked_a(self):
         try:
             path_a1 = float(self.path_speed_a1.text())
             path_a2 = float(self.path_speed_a2.text())
@@ -410,108 +382,7 @@ class MyMove(QWidget):
 
 
                 # 0번째 줄 덮어쓰기 또는 추가하기
-                existing_lines[0] = f'{path_a1} {path_a2} {path_a3} {bending_b} {bending_c} {pick} {place} a\n'
-                
-                # # A1,2,3 통합.
-                # existing_lines[0] = f'{path_a1} {path_a1} {path_a1} {bending_b} {bending_c} {pick} {place}\n'
-
-
-                # 파일에 덮어쓴 내용 저장
-                with open(file_path_move, 'w') as file:
-                    file.writelines(existing_lines)
-
-                self.label_spped_a1.setText(str(path_a1))
-                self.label_spped_a2.setText(str(path_a2))
-                self.label_spped_a3.setText(str(path_a3))
-                self.label_bending_b.setText(str(bending_b))
-                self.label_bending_c.setText(str(bending_c))
-                self.label_pick.setText(str(pick))
-                self.label_place.setText(str(place))
-
-
-                # 확인 메시지 표시
-                QMessageBox.information(self, "Info", "Data updated in move_list.txt")
-            else:
-                # Handle out of range values
-                print("Values out of range")
-                self.path_speed_a1.setText("Out of Range")
-                self.path_speed_a1.setStyleSheet("color: red;")
-                self.path_speed_a1.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.path_speed_a2.setText("Out of Range")
-                self.path_speed_a2.setStyleSheet("color: red;")
-                self.path_speed_a2.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.path_speed_a3.setText("Out of Range")
-                self.path_speed_a3.setStyleSheet("color: red;")
-                self.path_speed_a3.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.bending_b.setText("Out of Range")
-                self.bending_b.setStyleSheet("color: red;")
-                self.bending_b.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.bending_c.setText("Out of Range")
-                self.bending_c.setStyleSheet("color: red;")
-                self.bending_c.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.pick_height.setText("Out of Range")
-                self.pick_height.setStyleSheet("color: red;")
-                self.pick_height.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.place_height.setText("Out of Range")
-                self.place_height.setStyleSheet("color: red;")
-                self.place_height.setAlignment(Qt.AlignRight)
-
-
-        except ValueError:
-            print("Error")
-
-    # 리스트업 클릭시 보낼 정보
-    def listupClicked_b(self):
-        try:
-            path_a1 = float(self.path_speed_a1.text())
-            path_a2 = float(self.path_speed_a2.text())
-            path_a3 = float(self.path_speed_a3.text())
-            bending_b = float(self.bending_b.text())
-            bending_c = float(self.bending_c.text())
-            pick = float(self.pick_height.text())
-            place = float(self.place_height.text())
-            
-            if setting.Deceleration_min <= path_a1 <= setting.Deceleration_max and \
-               setting.path_speed_min <= path_a2 <= setting.path_speed_max and \
-               setting.Deceleration_min <= path_a3 <= setting.Deceleration_max and \
-               setting.bending_min <= bending_b <= setting.bending_max and \
-               setting.bending_min <= bending_c <= setting.bending_max and \
-               setting.z_min <= pick <= setting.z_max and\
-               setting.z_min <= place <= setting.z_max:
-
-                if place == setting.z_max:
-                    bending_c = 0
-                    path_a3 = 0
-
-                self.updateLabels()
-
-            # if setting.path_speed_min <= path_a1 <= setting.path_speed_max and \
-            #    setting.bending_min <= bending_b <= setting.bending_max and \
-            #    setting.bending_min <= bending_c <= setting.bending_max and \
-            #    setting.z_min <= pick <= setting.z_max and\
-            #    setting.z_min <= place <= setting.z_max:
-            #     self.updateLabels()
-
-                # move_list.txt 기존 파일 내용 읽어오기
-                existing_lines = []
-                if os.path.exists(file_path_move):
-                    with open(file_path_move, 'r') as file:
-                        existing_lines = file.readlines()
-
-                # 파일이 없을 경우 초기값 생성
-                while len(existing_lines) < 4:
-                    # existing_lines.append(f'{len(existing_lines) + 1}\n')
-                    existing_lines.append('0 0 0 0 0 0 0 a\n')
-
-
-                # 0번째 줄 덮어쓰기 또는 추가하기
-                existing_lines[0] = f'{path_a1} {path_a2} {path_a3} {bending_b} {bending_c} {pick} {place} b\n'
+                existing_lines[0] = f'{path_a1} {path_a2} {path_a3} {bending_b} {bending_c} {pick} {place}\n'
                 
                 # # A1,2,3 통합.
                 # existing_lines[0] = f'{path_a1} {path_a1} {path_a1} {bending_b} {bending_c} {pick} {place}\n'
@@ -698,22 +569,52 @@ class MyMove(QWidget):
 
     # 직접 입력창 리셋
     def resetFields(self):
+        file_path_home = 'document/home_list.txt'
+        with open(file_path_home, 'r') as file1:
+            lines_home = file1.readlines()
+        # 각 줄의 데이터를 변수에 저장합니다.
+        if len(lines_home) <= 4 :
+            # 1번째 줄 데이터 저장
+            first_line_1 = lines_home[0].split()
+            # # 2번째 줄 데이터 저장
+            # second_line_2 = lines_home[1].split()
+            # # 3번째 줄 데이터 저장
+            # third_line_3 = lines_home[2].split()
+            # # 4번째 줄 데이터 저장
+        if first_line_1[7] == 'a':
+            self.path_speed_a1.setText(str(1))
+            self.path_speed_a2.setText(str(1))
+            # self.path_speed_a3.setText(str(1))
+            self.bending_b.setText(str(50))
+            # self.bending_c.setText(str(50))
+            self.pick_height.setText(str(-900))
+            # self.place_height.setText(str(-900))
 
-        self.path_speed_a1.setText(str(1))
-        self.path_speed_a2.setText(str(1))
-        self.path_speed_a3.setText(str(1))
-        self.bending_b.setText(str(50))
-        self.bending_c.setText(str(50))
-        self.pick_height.setText(str(-900))
-        self.place_height.setText(str(-900))
-        # Optionally, reset the style if it's changed when values are out of range
-        self.path_speed_a1.setStyleSheet("color: black;")
-        self.path_speed_a2.setStyleSheet("color: black;")
-        self.path_speed_a3.setStyleSheet("color: black;")
-        self.bending_b.setStyleSheet("color: black;")
-        self.bending_c.setStyleSheet("color: black;")
-        self.pick_height.setStyleSheet("color: black;")
-        self.place_height.setStyleSheet("color: black;")
+            # Optionally, reset the style if it's changed when values are out of range
+            self.path_speed_a1.setStyleSheet("color: black;")
+            self.path_speed_a2.setStyleSheet("color: black;")
+            # self.path_speed_a3.setStyleSheet("color: black;")
+            self.bending_b.setStyleSheet("color: black;")
+            # self.bending_c.setStyleSheet("color: black;")
+            self.pick_height.setStyleSheet("color: black;")
+            # self.place_height.setStyleSheet("color: black;")
+        else:
+            self.path_speed_a1.setText(str(1))
+            self.path_speed_a2.setText(str(1))
+            self.path_speed_a3.setText(str(1))
+            self.bending_b.setText(str(50))
+            self.bending_c.setText(str(50))
+            self.pick_height.setText(str(-900))
+            self.place_height.setText(str(-900))
+            
+            # Optionally, reset the style if it's changed when values are out of range
+            self.path_speed_a1.setStyleSheet("color: black;")
+            self.path_speed_a2.setStyleSheet("color: black;")
+            self.path_speed_a3.setStyleSheet("color: black;")
+            self.bending_b.setStyleSheet("color: black;")
+            self.bending_c.setStyleSheet("color: black;")
+            self.pick_height.setStyleSheet("color: black;")
+            self.place_height.setStyleSheet("color: black;")
 
     def refreshPage(self):
         file_path_home = 'document/home_list.txt'

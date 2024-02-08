@@ -259,7 +259,7 @@ class StartWindow(QMainWindow):
         self.calButton.setDisabled(False)
         self.logButton.setDisabled(False)
 
-        # # yeong
+        # # # yeong
         # # Run the ROS2 launch file and save the subprocess reference
         # current_dir = os.path.dirname(os.path.realpath(__file__))
         # bringup_file = os.path.join(current_dir, "../control/bringup/launch/bringup.py")
@@ -294,9 +294,9 @@ class StartWindow(QMainWindow):
         self.calButton.setDisabled(True)
         self.logButton.setDisabled(True)
         
-        # yeong
+        # # yeong
 
-        # # Terminate the ROS2 launch subprocess if it's running
+        # # # Terminate the ROS2 launch subprocess if it's running
         # if self.ros2_process_robot and self.ros2_process_robot.poll() is None:  # Check if the process is still running
         #     if self.ros2_process_robot and self.ros2_process_robot.poll() is None:
         #         # Terminate the entire process group
@@ -317,7 +317,7 @@ class StartWindow(QMainWindow):
         #         self.ros2_process_move_zero.kill()  # Force kill if it doesn't terminate within timeout
         #     print("ROS2 vision terminated")
 
-        # print("Good Bye...")
+        print("Good Bye...")
 
 ####### start/stop ##########################################################
     def startOperation(self):
@@ -333,7 +333,7 @@ class StartWindow(QMainWindow):
         self.calButton.setDisabled(True)
         self.logButton.setDisabled(True)
         
-        # # yeong
+        # # # yeong
         # # Run the ROS2 launch file and save the subprocess reference
         # current_dir = os.path.dirname(os.path.realpath(__file__))
         # vision_file = os.path.join(current_dir, "../vision/launch/vision.py")
@@ -372,23 +372,23 @@ class StartWindow(QMainWindow):
         self.logButton.setDisabled(False)
         
         # # Terminate the ROS2 launch subprocess if it's running
-        # if self.ros2_process_move and self.ros2_process_move.poll() is None:  # Check if the process is still running
-        #     self.ros2_process_move.terminate()  # Terminate the process
-        #     try:
-        #         self.ros2_process_move.wait(timeout=5)  # Wait for the process to terminate
-        #     except subprocess.TimeoutExpired:
-        #         self.ros2_process_move.kill()  # Force kill if it doesn't terminate within timeout
-        #     print("ROS2 move terminated")
-        # time.sleep(2)
+        if self.ros2_process_move and self.ros2_process_move.poll() is None:  # Check if the process is still running
+            self.ros2_process_move.terminate()  # Terminate the process
+            try:
+                self.ros2_process_move.wait(timeout=5)  # Wait for the process to terminate
+            except subprocess.TimeoutExpired:
+                self.ros2_process_move.kill()  # Force kill if it doesn't terminate within timeout
+            print("ROS2 move terminated")
+        time.sleep(2)
 
-        # # Terminate the ROS2 launch subprocess if it's running
-        # if self.ros2_process_vision and self.ros2_process_vision.poll() is None:  # Check if the process is still running
-        #     self.ros2_process_vision.terminate()  # Terminate the process
-        #     try:
-        #         self.ros2_process_vision.wait(timeout=5)  # Wait for the process to terminate
-        #     except subprocess.TimeoutExpired:
-        #         self.ros2_process_vision.kill()  # Force kill if it doesn't terminate within timeout
-        #     print("ROS2 vision terminated")
+        # Terminate the ROS2 launch subprocess if it's running
+        if self.ros2_process_vision and self.ros2_process_vision.poll() is None:  # Check if the process is still running
+            self.ros2_process_vision.terminate()  # Terminate the process
+            try:
+                self.ros2_process_vision.wait(timeout=5)  # Wait for the process to terminate
+            except subprocess.TimeoutExpired:
+                self.ros2_process_vision.kill()  # Force kill if it doesn't terminate within timeout
+            print("ROS2 vision terminated")
 
         print("Operation stopped...")
 

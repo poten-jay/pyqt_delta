@@ -15,6 +15,10 @@ from function import xyz_button
 # setting.py 에서 값 호출
 import setting
 
+# yeong
+import os 
+import subprocess
+
 # 현재 좌표 값 받아오기
 x = setting.x
 y = setting.y
@@ -331,6 +335,16 @@ class MyApp(QWidget):
         self.btn.input_y = y
         self.btn.input_z = z
 
+        # # # yeong 
+        # current_dir = os.path.dirname(os.path.realpath(__file__))
+        # manual_mode_file = os.path.join(current_dir, "../move/move_forward_xyz.py")
+
+        # try:
+        #     self.ros2_process_manual_mode = subprocess.Popen(["python3", manual_mode_file])
+        #     print("ROS2 manual mode started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 python3 file: {e}")
+
         self.btn.publish_xyz()
 
         # Update labels with new values
@@ -367,6 +381,18 @@ class MyApp(QWidget):
         self.btnReset.setDisabled(True)
         self.btnStop.setDisabled(True)
         self.btnback.setDisabled(False)
+
+        # # yeong
+        # # Terminate the ROS2 launch subprocess if it's running
+        # if self.ros2_process_manual_mode and self.ros2_process_manual_mode.poll() is None:  # Check if the process is still running
+        #     self.ros2_process_manual_mode.terminate()  # Terminate the process
+        #     try:
+        #         self.ros2_process_manual_mode.wait(timeout=5)  # Wait for the process to terminate
+        #     except subprocess.TimeoutExpired:
+        #         self.ros2_process_manual_mode.kill()  # Force kill if it doesn't terminate within timeout
+        #     print("ROS2 manual mode terminated")
+
+        
         print("Operation stopped")
 
     def zUp(self):
