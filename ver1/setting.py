@@ -22,7 +22,6 @@ z_min = -1090
 ms = 100
 
 # move 한계값
-round = 50
 path_speed_max = 2000
 path_speed_min = 0
 bending_max = 90

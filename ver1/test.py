@@ -54,6 +54,3 @@ print('22222222' , q_values[0][0][2])
 print('0000000' , q_values[24][0][0])
 print('1111111' , q_values[24][0][1])
 print('2222222' , q_values[24][0][2])
-
-
-

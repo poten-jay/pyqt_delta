@@ -247,8 +247,6 @@ class StartWindow(QMainWindow):
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         self.time_label.setText(current_time)
 
-####### On connect popup ##################################################
-
 ####### on / off ##########################################################
     def onOperation(self):
         self.startButton.setDisabled(False)

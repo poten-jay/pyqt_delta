@@ -35,19 +35,31 @@ class MyMove(QWidget):
     def __init__(self):
         super().__init__()
         
+        file_path_home = 'document/move_list.txt'
+        with open(file_path_home, 'r') as file1:
+            lines_home = file1.readlines()
+            first_line_1 = lines_home[0].split()
+            print(first_line_1)
+
+        if first_line_1[7] == "T":
         # self.btn = xyz_button(node, x, y, z)
+            self.original_pixmap = QPixmap("img/move3.png")
+        else:
+            self.original_pixmap = QPixmap("img/move44.png")
         self.initUI()
         self.timer = QTimer(self)
-        self.initUI
+        # self.lbl_img = QLabel(self)
+        
+        # self.initUI
 
     def initUI(self):
 ######## 이미지 넣기 #######################################################
-        original_pixmap = QPixmap("img/move2.png")
-        scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # original_pixmap = QPixmap("img/move2.png")
+        scaled_pixmap = self.original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # QLabel 생성 및 QPixmap 설정
-        lbl_img = QLabel(self)
-        lbl_img.setPixmap(scaled_pixmap)
-        lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
+        self.lbl_img = QLabel(self)
+        self.lbl_img.setPixmap(scaled_pixmap)
+        self.lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
 ########################################################################
 ######## 이미지 추가 #######################################################
 #         original_pixmap1 = QPixmap("img/kbs1.png")
@@ -76,37 +88,7 @@ class MyMove(QWidget):
             # 4번째 줄 데이터 저장
             fourth_line = lines[3].split()
 
-        # txt 에서 읽어온 현재 상태 (now)
-        # 좌표 표시 수정 => (x-5, y+4)
-        self.label_spped_a1 = QLabel(f"{first_line[0]}", self)
-        self.label_spped_a1.setStyleSheet("Color : white")
-        self.label_spped_a1.setAlignment(Qt.AlignRight)
-        self.label_spped_a1.setGeometry(325, 410, 55, 25)  # Adjust position and size as needed
-        self.label_spped_a2 = QLabel(f"{first_line[1]}", self)
-        self.label_spped_a2.setStyleSheet("Color : white")
-        self.label_spped_a2.setAlignment(Qt.AlignRight)
-        self.label_spped_a2.setGeometry(412, 258, 55, 25)  # Adjust position and size as needed
-        self.label_spped_a3 = QLabel(f"{first_line[2]}", self)
-        self.label_spped_a3.setStyleSheet("Color : white")
-        self.label_spped_a3.setAlignment(Qt.AlignRight)
-        self.label_spped_a3.setGeometry(508, 410, 55, 25)  # Adjust position and size as needed
-        self.label_bending_b = QLabel(f"{first_line[3]}", self)
-        self.label_bending_b.setStyleSheet("Color : white")
-        self.label_bending_b.setAlignment(Qt.AlignRight)
-        self.label_bending_b.setGeometry(253, 246, 55, 25)  # Adjust position and size as needed
-        self.label_bending_c = QLabel(f"{first_line[4]}", self)
-        self.label_bending_c.setStyleSheet("Color : white")
-        self.label_bending_c.setAlignment(Qt.AlignRight)
-        self.label_bending_c.setGeometry(578, 246, 55, 25)  # Adjust position and size as needed
-        self.label_pick = QLabel(f"{first_line[5]}", self)
-        self.label_pick.setStyleSheet("Color : white")
-        self.label_pick.setAlignment(Qt.AlignRight)
-        self.label_pick.setGeometry(155, 390, 55, 25)  # Adjust position and size as needed
-        self.label_place = QLabel(f"{first_line[6]}", self)
-        self.label_place.setStyleSheet("Color : white")
-        self.label_place.setAlignment(Qt.AlignRight)
-        self.label_place.setGeometry(670, 405, 55, 25)  # Adjust position and size as needed
-
+#########################################################################
 
         file_path_home = 'document/home_list.txt'
         with open(file_path_home, 'r') as file1:
@@ -122,143 +104,91 @@ class MyMove(QWidget):
             # 4번째 줄 데이터 저장
             fourth_line_4 = lines_home[3].split()
 
+######################################################################
+        # 0. start_point z => home 의 정보 가져오기
+        self.place_z = QLabel(f"{first_line_1[3]}", self)
+        self.place_z.setStyleSheet("Color : white")
+        self.place_z.setAlignment(Qt.AlignRight)
+        self.place_z.setGeometry(516, 464, 55, 25)  # Adjust position and size as needed
 
-        # lebel 정보 창
-        self.label1_label = QLabel(f"{first_line_1[0]}", self)
-        self.label1_label.setStyleSheet("Color : white")
-        self.label1_label.setAlignment(Qt.AlignRight)
-        self.label1_label.setGeometry(313, 153, 100, 30)  # Adjust position and size as needed
-        self.label1_x = QLabel(f"{first_line_1[1]}", self)
-        self.label1_x.setStyleSheet("Color : white")
-        self.label1_x.setAlignment(Qt.AlignRight)
-        self.label1_x.setGeometry(412, 153, 100, 30)  # Adjust position and size as needed
-        self.label1_y = QLabel(f"{first_line_1[2]}", self)
-        self.label1_y.setStyleSheet("Color : white")
-        self.label1_y.setAlignment(Qt.AlignRight)
-        self.label1_y.setGeometry(531, 153, 100, 30)  # Adjust position and size as needed
-        self.label1_z = QLabel(f"{first_line_1[3]}", self)
-        self.label1_z.setStyleSheet("Color : white")
-        self.label1_z.setAlignment(Qt.AlignRight)
-        self.label1_z.setGeometry(649, 153, 100, 30)  # Adjust position and size as needed
+        # 1. height_1
+        self.label_height_1 = QLabel(f"{first_line[0]}", self)
+        self.label_height_1.setStyleSheet("Color : white")
+        self.label_height_1.setAlignment(Qt.AlignRight)
+        self.label_height_1.setGeometry(168, 233, 55, 25)
+        self.height_1 = QLineEdit(self) # 176, 229, 55, 25)
+        self.height_1.setGeometry(173, 255, 55, 25)
+        self.height_1.setText(first_line[0])
+        self.height_1.setAlignment(Qt.AlignRight) # 우측정렬
 
-        # self.label2_label = QLabel(f"{second_line[0]}", self)
-        # self.label2_label.setStyleSheet("Color : white")
-        # self.label2_label.setAlignment(Qt.AlignRight)
-        # self.label2_label.setGeometry(313, 153, 100, 30)  # Adjust position and size as needed
-        # self.label2_x = QLabel(f"{second_line[1]}", self)
-        # self.label2_x.setStyleSheet("Color : white")
-        # self.label2_x.setAlignment(Qt.AlignRight)
-        # self.label2_x.setGeometry(412, 153, 100, 30)  # Adjust position and size as needed
-        # self.label2_y = QLabel(f"{second_line[2]}", self)
-        # self.label2_y.setStyleSheet("Color : white")
-        # self.label2_y.setAlignment(Qt.AlignRight)
-        # self.label2_y.setGeometry(531, 153, 100, 30)  # Adjust position and size as needed
-        # self.label2_z = QLabel(f"{second_line[3]}", self)
-        # self.label2_z.setStyleSheet("Color : white")
-        # self.label2_z.setAlignment(Qt.AlignRight)
-        # self.label2_z.setGeometry(649, 153, 100, 30)  # Adjust position and size as needed
+        # 2. decel_6 z
+        self.label_pick_z_2 = QLabel(f"{first_line[1]}", self)
+        self.label_pick_z_2.setStyleSheet("Color : white")
+        self.label_pick_z_2.setAlignment(Qt.AlignRight)
+        self.label_pick_z_2.setGeometry(193, 418, 55, 25)  # Adjust position and size as needed
+        self.pick_z_2 = QLineEdit(self)
+        self.pick_z_2.setGeometry(198, 440, 55, 25)  # Adjust position and size as needed
+        self.pick_z_2.setText(first_line[1])
+        self.pick_z_2.setAlignment(Qt.AlignRight)
 
-        # self.label3_label = QLabel(f"{third_line[0]}", self)
-        # self.label3_label.setStyleSheet("Color : white")
-        # self.label3_label.setAlignment(Qt.AlignRight)
-        # self.label3_label.setGeometry(313, 189, 100, 30)  # Adjust position and size as needed
-        # self.label3_x = QLabel(f"{third_line[1]}", self)
-        # self.label3_x.setStyleSheet("Color : white")
-        # self.label3_x.setAlignment(Qt.AlignRight)
-        # self.label3_x.setGeometry(412, 189, 100, 30)  # Adjust position and size as needed
-        # self.label3_y = QLabel(f"{third_line[2]}", self)
-        # self.label3_y.setStyleSheet("Color : white")
-        # self.label3_y.setAlignment(Qt.AlignRight)
-        # self.label3_y.setGeometry(531, 189, 100, 30)  # Adjust position and size as needed
-        # self.label3_z = QLabel(f"{third_line[3]}", self)
-        # self.label3_z.setStyleSheet("Color : white")
-        # self.label3_z.setAlignment(Qt.AlignRight)
-        # self.label3_z.setGeometry(649, 189, 100, 30)  # Adjust position and size as needed
+        # 3. speed
+        self.label_speed_3 = QLabel(f"{first_line[2]}", self)
+        self.label_speed_3.setStyleSheet("Color : white")
+        self.label_speed_3.setAlignment(Qt.AlignRight)
+        self.label_speed_3.setGeometry(443, 284, 55, 25)  # Adjust position and size as needed
+        self.speed_3 = QLineEdit(self)
+        self.speed_3.setGeometry(448, 306, 55, 25)  # Adjust position and size as needed
+        self.speed_3.setText(first_line[2])
+        self.speed_3.setAlignment(Qt.AlignRight)
 
-        # self.label4_label = QLabel(f"{fourth_line[0]}", self)
-        # self.label4_label.setStyleSheet("Color : white")
-        # self.label4_label.setAlignment(Qt.AlignRight)
-        # self.label4_label.setGeometry(313, 225, 100, 30)  # Adjust position and size as needed
-        # self.label4_x = QLabel(f"{fourth_line[1]}", self)
-        # self.label4_x.setStyleSheet("Color : white")
-        # self.label4_x.setAlignment(Qt.AlignRight)
-        # self.label4_x.setGeometry(412, 225, 100, 30)  # Adjust position and size as needed
-        # self.label4_y = QLabel(f"{fourth_line[2]}", self)
-        # self.label4_y.setStyleSheet("Color : white")
-        # self.label4_y.setAlignment(Qt.AlignRight)
-        # self.label4_y.setGeometry(531, 225, 100, 30)  # Adjust position and size as needed
-        # self.label4_z = QLabel(f"{fourth_line[3]}", self)
-        # self.label4_z.setStyleSheet("Color : white")
-        # self.label4_z.setAlignment(Qt.AlignRight)
-        # self.label4_z.setGeometry(649, 225, 100, 30)  # Adjust position and size as needed
+        # 4. R
+        self.label_r_4 = QLabel(f"{first_line[3]}", self)
+        self.label_r_4.setStyleSheet("Color : white")
+        self.label_r_4.setAlignment(Qt.AlignRight)
+        self.label_r_4.setGeometry(340, 179, 55, 25)  # Adjust position and size as needed
+        self.r_4 = QLineEdit(self)
+        self.r_4.setGeometry(345, 201, 55, 25)  # Adjust position and size as needed
+        self.r_4.setText(first_line[3])
+        self.r_4.setAlignment(Qt.AlignRight)
 
-        # workspace 정보
-        # self.workspace_x = QLabel(f"Max : {setting.x_max}", self)
-        # self.workspace_x.setStyleSheet("Color : white")
-        # self.workspace_x.setAlignment(Qt.AlignRight)
-        # self.workspace_x.setGeometry(5, 360, 100, 30)  # Adjust position and size as needed
-        # self.workspace_xn = QLabel(f"Min : {setting.x_min}", self)
-        # self.workspace_xn.setStyleSheet("Color : white")
-        # self.workspace_xn.setAlignment(Qt.AlignRight)
-        # self.workspace_xn.setGeometry(150, 360, 100, 30)  # Adjust position and size as needed
-        
-        # self.workspace_y = QLabel(f"Max : {setting.y_max}", self)
-        # self.workspace_y.setStyleSheet("Color : white")
-        # self.workspace_y.setAlignment(Qt.AlignRight)
-        # self.workspace_y.setGeometry(70, 395, 100, 30)  # Adjust position and size as needed
-        # self.workspace_yn = QLabel(f"Min : {setting.y_min}", self)
-        # self.workspace_yn.setStyleSheet("Color : white")
-        # self.workspace_yn.setAlignment(Qt.AlignRight)
-        # self.workspace_yn.setGeometry(110, 335, 100, 30)  # Adjust position and size as needed
-        
+        # 5. deceleration 1
+        self.label_decel_5 = QLabel(f"{first_line[4]}", self)
+        self.label_decel_5.setStyleSheet("Color : white")
+        self.label_decel_5.setAlignment(Qt.AlignRight)
+        self.label_decel_5.setGeometry(371, 419, 55, 25)  # Adjust position and size as needed
+        self.decel_5 = QLineEdit(self)
+        self.decel_5.setGeometry(376, 441, 55, 25)  # Adjust position and size as needed
+        self.decel_5.setText(first_line[4])
+        self.decel_5.setAlignment(Qt.AlignRight)
+
+        # 6. deceleration 2
+        self.label_decel_6 = QLabel(f"{first_line[5]}", self)
+        self.label_decel_6.setStyleSheet("Color : white")
+        self.label_decel_6.setAlignment(Qt.AlignRight)
+        self.label_decel_6.setGeometry(704, 419, 55, 25)  # Adjust position and size as needed
+        self.decel_6 = QLineEdit(self)
+        self.decel_6.setGeometry(709, 441, 55, 25)  # Adjust position and size as needed
+        self.decel_6.setText(first_line[5])
+        self.decel_6.setAlignment(Qt.AlignRight)
+
+        # 7. start point of deceleration
+        # "30" 
+        self.start_point = 30
+        # start_point
+        # start_point
+
+        # 8. Move L or Move U => F / T
+
         self.workspace_z = QLabel(f"Max : {setting.z_max}", self)
         self.workspace_z.setStyleSheet("Color : white")
         self.workspace_z.setAlignment(Qt.AlignRight)
-        self.workspace_z.setGeometry(126, 300, 100, 30)  # Adjust position and size as needed
+        self.workspace_z.setGeometry(110, 150, 100, 30)  # Adjust position and size as needed
         self.workspace_zn = QLabel(f"Min : {setting.z_min}", self)
         self.workspace_zn.setStyleSheet("Color : white")
         self.workspace_zn.setAlignment(Qt.AlignRight)
-        self.workspace_zn.setGeometry(126, 470, 100, 30)  # Adjust position and size as needed
+        self.workspace_zn.setGeometry(110, 530, 100, 30)  # Adjust position and size as needed
 
-
-
-
-
-        # path_speed_a1
-        self.path_speed_a1 = QLineEdit(self)
-        self.path_speed_a1.setGeometry(330, 432, 55, 25)  # Adjust position and size as needed
-        self.path_speed_a1.setText(first_line[0])
-        self.path_speed_a1.setAlignment(Qt.AlignRight) # 우측정렬
-        # path_speed_a2
-        self.path_speed_a2 = QLineEdit(self)
-        self.path_speed_a2.setGeometry(417, 283, 55, 25)  # Adjust position and size as needed
-        self.path_speed_a2.setText(first_line[1])
-        self.path_speed_a2.setAlignment(Qt.AlignRight)
-        # path_speed_a3
-        self.path_speed_a3 = QLineEdit(self)
-        self.path_speed_a3.setGeometry(513, 432, 55, 25)  # Adjust position and size as needed
-        self.path_speed_a3.setText(first_line[2])
-        self.path_speed_a3.setAlignment(Qt.AlignRight)
-        # bending_b
-        self.bending_b = QLineEdit(self)
-        self.bending_b.setGeometry(258, 270, 55, 25)  # Adjust position and size as needed
-        self.bending_b.setText(first_line[3])
-        self.bending_b.setAlignment(Qt.AlignRight)
-        # bending_c
-        self.bending_c = QLineEdit(self)
-        self.bending_c.setGeometry(583, 270, 55, 25)  # Adjust position and size as needed
-        self.bending_c.setText(first_line[4])
-        self.bending_c.setAlignment(Qt.AlignRight)
-        # pick_height
-        self.pick_height = QLineEdit(self)
-        self.pick_height.setGeometry(160, 414, 55, 25)  # Adjust position and size as needed
-        self.pick_height.setText(first_line[5])
-        self.pick_height.setAlignment(Qt.AlignRight)
-        # place_height
-        self.place_height = QLineEdit(self)
-        self.place_height.setGeometry(675, 429, 55, 25)  # Adjust position and size as needed
-        self.place_height.setText(first_line[6])
-        self.place_height.setAlignment(Qt.AlignRight)
+#######################################################################
 
 
         # 버튼
@@ -274,20 +204,22 @@ class MyMove(QWidget):
 
         # a Button - ㄱ 자 움직임
         self.btna = QPushButton('Move L', self)
-        self.btna.setGeometry(20, 200, 100, 50)  # Adjust position and size as needed
+        self.btna.setGeometry(10, 200, 70, 50)  # Adjust position and size as needed
         self.btna.clicked.connect(self.clickmoveL)
+        self.btna.clicked.connect(self.addimage)
 
         # b Button - ㄷ자 움직임
         self.btnb = QPushButton('Move U', self)
-        self.btnb.setGeometry(20, 300, 100, 50)  # Adjust position and size as needed
+        self.btnb.setGeometry(10, 300, 70, 50)  # Adjust position and size as needed
         self.btnb.clicked.connect(self.clickmoveU)
+        self.btnb.clicked.connect(self.addimage2)
 
-        self.home_t()
-        # Home 1버튼
-        self.home1()
-        self.home2()
-        self.home3()
-        self.home4()
+        # self.home_t()
+        # # Home 1버튼
+        # self.home1()
+        # self.home2()
+        # self.home3()
+        # self.home4()
 
         # 뒤로가기 버튼 (순서가 밀리면 안보일 수도 있음)
         self.button()
@@ -316,19 +248,39 @@ class MyMove(QWidget):
 
 ####### 시간 #################################################################
 
+
+
+
     # ㄱ 자 무빙
     def clickmoveL(self):
-        self.path_speed_a3.setDisabled(True)
-        self.bending_c.setDisabled(True)
-        self.place_height.setDisabled(True)
-        self.update_file_last_char('a')  # 파일의 마지막 글자를 'a'로 변경
+        # self.speed_3.setDisabled(True)
+        self.decel_6.setDisabled(True)
+        # self.start_point.setDisabled(True)
+        self.update_file_last_char('F')  # 파일의 마지막 글자를 'a'로 변경
+        
 
     # ㄷ 자 무빙
     def clickmoveU(self):
-        self.path_speed_a3.setDisabled(False)
-        self.bending_c.setDisabled(False)
-        self.place_height.setDisabled(False)
-        self.update_file_last_char('b')  # 파일의 마지막 글자를 'b'로 변경
+        # self.speed_3.setDisabled(False)
+        self.decel_6.setDisabled(False)
+        # self.start_point.setDisabled(False)
+        self.update_file_last_char('T')  # 파일의 마지막 글자를 'b'로 변경
+
+####### 이미지 추가 #######################################################
+    def addimage(self):
+        new_pixmap = QPixmap("img/move44.png")
+        self.lbl_img.setPixmap(new_pixmap)
+
+    def addimage2(self):
+        scaled_pixmap = self.original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.lbl_img.setPixmap(scaled_pixmap)
+        # original_pixmap1 = QPixmap("img/main.png")
+        # scaled_pixmap1 = original_pixmap1.scaled(800, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # # QLabel 생성 및 QPixmap 설정
+        # add_img = QLabel(self)
+        # add_img.setPixmap(scaled_pixmap1)
+        # add_img.setGeometry(100, 100, scaled_pixmap1.width(), scaled_pixmap1.height())
+########################################################################
 
 
     # 마지막 글자 바꾸기
@@ -357,7 +309,7 @@ class MyMove(QWidget):
             # existing_lines.append(f'{len(existing_lines) + 1}\n')
             existing_lines.append('0 0 0 0 0 0 0 a\n')
 
-        if existing_lines[0][-2] == 'a':
+        if existing_lines[0][-2] == 'F':
             self.listupClicked_a()
         else :
             self.listupClicked_b()
@@ -368,33 +320,32 @@ class MyMove(QWidget):
 
     def listupClicked_a(self):
         try:
-            path_a1 = float(self.path_speed_a1.text())
-            path_a2 = float(self.path_speed_a2.text())
-            path_a3 = float(self.path_speed_a3.text())
-            bending_b = float(self.bending_b.text())
-            bending_c = float(self.bending_c.text())
-            pick = float(self.pick_height.text())
-            place = float(self.place_height.text())
+            height_1 = float(self.height_1.text())
+            pick_z_2 = float(self.pick_z_2.text())
+            speed_3 = float(self.speed_3.text())
+            r_4 = float(self.r_4.text())
+            decel_5 = float(self.decel_5.text())
+            decel_6 = float(self.decel_6.text())
+            start_point = float(self.start_point)
             
-            if setting.Deceleration_min <= path_a1 <= setting.Deceleration_max and \
-               setting.path_speed_min <= path_a2 <= setting.path_speed_max and \
-               setting.Deceleration_min <= path_a3 <= setting.Deceleration_max and \
-               setting.bending_min <= bending_b <= setting.bending_max and \
-               setting.bending_min <= bending_c <= setting.bending_max and \
-               setting.z_min <= pick <= setting.z_max and\
-               setting.z_min <= place <= setting.z_max:
+            if setting.z_min <= height_1 <= setting.z_max and \
+               setting.z_min <= pick_z_2 <= (height_1 - setting.round) and \
+               setting.path_speed_min <= speed_3 <= setting.path_speed_max and \
+               setting.bending_min <= r_4 <= setting.bending_max and \
+               setting.Deceleration_min <= decel_5 <= setting.Deceleration_max and \
+               setting.Deceleration_min <= decel_6 <= setting.Deceleration_max:
 
-                if place == setting.z_max:
-                    bending_c = 0
-                    path_a3 = 0
+                # if start_point == setting.z_max:
+                #     decel_5 = 0
+                #     speed_3 = 0
 
                 self.updateLabels()
 
-            # if setting.path_speed_min <= path_a1 <= setting.path_speed_max and \
-            #    setting.bending_min <= bending_b <= setting.bending_max and \
-            #    setting.bending_min <= bending_c <= setting.bending_max and \
-            #    setting.z_min <= pick <= setting.z_max and\
-            #    setting.z_min <= place <= setting.z_max:
+            # if setting.path_speed_min <= height_1 <= setting.path_speed_max and \
+            #    setting.bending_min <= r_4 <= setting.bending_max and \
+            #    setting.bending_min <= decel_5 <= setting.bending_max and \
+            #    setting.z_min <= decel_6 <= setting.z_max and\
+            #    setting.z_min <= start_point <= setting.z_max:
             #     self.updateLabels()
 
                 # move_list.txt 기존 파일 내용 읽어오기
@@ -406,27 +357,27 @@ class MyMove(QWidget):
                 # 파일이 없을 경우 초기값 생성
                 while len(existing_lines) < 4:
                     # existing_lines.append(f'{len(existing_lines) + 1}\n')
-                    existing_lines.append('0 0 0 0 0 0 0 a\n')
+                    existing_lines.append('0 0 0 0 0 0 0 F\n')
 
 
                 # 0번째 줄 덮어쓰기 또는 추가하기
-                existing_lines[0] = f'{path_a1} {path_a2} {path_a3} {bending_b} {bending_c} {pick} {place} a\n'
+                existing_lines[0] = f'{height_1} {pick_z_2} {speed_3} {r_4} {decel_5} {decel_6} {start_point} F\n'
                 
                 # # A1,2,3 통합.
-                # existing_lines[0] = f'{path_a1} {path_a1} {path_a1} {bending_b} {bending_c} {pick} {place}\n'
+                # existing_lines[0] = f'{height_1} {height_1} {height_1} {r_4} {decel_5} {decel_6} {start_point}\n'
 
 
                 # 파일에 덮어쓴 내용 저장
                 with open(file_path_move, 'w') as file:
                     file.writelines(existing_lines)
 
-                self.label_spped_a1.setText(str(path_a1))
-                self.label_spped_a2.setText(str(path_a2))
-                self.label_spped_a3.setText(str(path_a3))
-                self.label_bending_b.setText(str(bending_b))
-                self.label_bending_c.setText(str(bending_c))
-                self.label_pick.setText(str(pick))
-                self.label_place.setText(str(place))
+                self.label_height_1.setText(str(height_1))
+                self.label_pick_z_2.setText(str(pick_z_2))
+                self.label_speed_3.setText(str(speed_3))
+                self.label_r_4.setText(str(r_4))
+                self.label_decel_5.setText(str(decel_5))
+                self.label_decel_6.setText(str(decel_6))
+                # self.start_point.setText(str(start_point))
 
 
                 # 확인 메시지 표시
@@ -434,33 +385,33 @@ class MyMove(QWidget):
             else:
                 # Handle out of range values
                 print("Values out of range")
-                self.path_speed_a1.setText("Out of Range")
-                self.path_speed_a1.setStyleSheet("color: red;")
-                self.path_speed_a1.setAlignment(Qt.AlignRight)
+                self.height_1.setText("Out of Range")
+                self.height_1.setStyleSheet("color: red;")
+                self.height_1.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.path_speed_a2.setText("Out of Range")
-                self.path_speed_a2.setStyleSheet("color: red;")
-                self.path_speed_a2.setAlignment(Qt.AlignRight)
+                self.pick_z_2.setText("Out of Range")
+                self.pick_z_2.setStyleSheet("color: red;")
+                self.pick_z_2.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.path_speed_a3.setText("Out of Range")
-                self.path_speed_a3.setStyleSheet("color: red;")
-                self.path_speed_a3.setAlignment(Qt.AlignRight)
+                self.speed_3.setText("Out of Range")
+                self.speed_3.setStyleSheet("color: red;")
+                self.speed_3.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.bending_b.setText("Out of Range")
-                self.bending_b.setStyleSheet("color: red;")
-                self.bending_b.setAlignment(Qt.AlignRight)
+                self.r_4.setText("Out of Range")
+                self.r_4.setStyleSheet("color: red;")
+                self.r_4.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.bending_c.setText("Out of Range")
-                self.bending_c.setStyleSheet("color: red;")
-                self.bending_c.setAlignment(Qt.AlignRight)
+                self.decel_5.setText("Out of Range")
+                self.decel_5.setStyleSheet("color: red;")
+                self.decel_5.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.pick_height.setText("Out of Range")
-                self.pick_height.setStyleSheet("color: red;")
-                self.pick_height.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.place_height.setText("Out of Range")
-                self.place_height.setStyleSheet("color: red;")
-                self.place_height.setAlignment(Qt.AlignRight)
+                self.decel_6.setText("Out of Range")
+                self.decel_6.setStyleSheet("color: red;")
+                self.decel_6.setAlignment(Qt.AlignRight)
+                # print("Values out of range")
+                # self.start_point.setText("Out of Range")
+                # self.start_point.setStyleSheet("color: red;")
+                # self.start_point.setAlignment(Qt.AlignRight)
 
 
         except ValueError:
@@ -469,33 +420,41 @@ class MyMove(QWidget):
     # 리스트업 클릭시 보낼 정보
     def listupClicked_b(self):
         try:
-            path_a1 = float(self.path_speed_a1.text())
-            path_a2 = float(self.path_speed_a2.text())
-            path_a3 = float(self.path_speed_a3.text())
-            bending_b = float(self.bending_b.text())
-            bending_c = float(self.bending_c.text())
-            pick = float(self.pick_height.text())
-            place = float(self.place_height.text())
+            height_1 = float(self.height_1.text())
+            pick_z_2 = float(self.pick_z_2.text())
+            speed_3 = float(self.speed_3.text())
+            r_4 = float(self.r_4.text())
+            decel_5 = float(self.decel_5.text())
+            decel_6 = float(self.decel_6.text())
+            start_point = float(self.start_point)
             
-            if setting.Deceleration_min <= path_a1 <= setting.Deceleration_max and \
-               setting.path_speed_min <= path_a2 <= setting.path_speed_max and \
-               setting.Deceleration_min <= path_a3 <= setting.Deceleration_max and \
-               setting.bending_min <= bending_b <= setting.bending_max and \
-               setting.bending_min <= bending_c <= setting.bending_max and \
-               setting.z_min <= pick <= setting.z_max and\
-               setting.z_min <= place <= setting.z_max:
+            if setting.z_min <= height_1 <= setting.z_max and \
+               setting.z_min <= pick_z_2 <= (height_1 - setting.round) and \
+               setting.path_speed_min <= speed_3 <= setting.path_speed_max and \
+               setting.bending_min <= r_4 <= setting.bending_max and \
+               setting.Deceleration_min <= decel_5 <= setting.Deceleration_max and \
+               setting.Deceleration_min <= decel_6 <= setting.Deceleration_max:
 
-                if place == setting.z_max:
-                    bending_c = 0
-                    path_a3 = 0
+
+            # if setting.Deceleration_min <= height_1 <= setting.Deceleration_max and \
+            #    setting.path_speed_min <= pick_z_2 <= setting.path_speed_max and \
+            #    setting.Deceleration_min <= speed_3 <= setting.Deceleration_max and \
+            #    setting.bending_min <= r_4 <= setting.bending_max and \
+            #    setting.bending_min <= decel_5 <= setting.bending_max and \
+            #    setting.z_min <= decel_6 <= setting.z_max and\
+            #    setting.z_min <= start_point <= setting.z_max:
+
+            #     if start_point == setting.z_max:
+            #         decel_5 = 0
+            #         speed_3 = 0
 
                 self.updateLabels()
 
-            # if setting.path_speed_min <= path_a1 <= setting.path_speed_max and \
-            #    setting.bending_min <= bending_b <= setting.bending_max and \
-            #    setting.bending_min <= bending_c <= setting.bending_max and \
-            #    setting.z_min <= pick <= setting.z_max and\
-            #    setting.z_min <= place <= setting.z_max:
+            # if setting.path_speed_min <= height_1 <= setting.path_speed_max and \
+            #    setting.bending_min <= r_4 <= setting.bending_max and \
+            #    setting.bending_min <= decel_5 <= setting.bending_max and \
+            #    setting.z_min <= decel_6 <= setting.z_max and\
+            #    setting.z_min <= start_point <= setting.z_max:
             #     self.updateLabels()
 
                 # move_list.txt 기존 파일 내용 읽어오기
@@ -507,61 +466,60 @@ class MyMove(QWidget):
                 # 파일이 없을 경우 초기값 생성
                 while len(existing_lines) < 4:
                     # existing_lines.append(f'{len(existing_lines) + 1}\n')
-                    existing_lines.append('0 0 0 0 0 0 0 a\n')
+                    existing_lines.append('0 0 0 0 0 0 0 F\n')
 
 
                 # 0번째 줄 덮어쓰기 또는 추가하기
-                existing_lines[0] = f'{path_a1} {path_a2} {path_a3} {bending_b} {bending_c} {pick} {place} b\n'
+                existing_lines[0] = f'{height_1} {pick_z_2} {speed_3} {r_4} {decel_5} {decel_6} {start_point} T\n'
                 
                 # # A1,2,3 통합.
-                # existing_lines[0] = f'{path_a1} {path_a1} {path_a1} {bending_b} {bending_c} {pick} {place}\n'
+                # existing_lines[0] = f'{height_1} {height_1} {height_1} {r_4} {decel_5} {decel_6} {start_point}\n'
 
 
                 # 파일에 덮어쓴 내용 저장
                 with open(file_path_move, 'w') as file:
                     file.writelines(existing_lines)
 
-                self.label_spped_a1.setText(str(path_a1))
-                self.label_spped_a2.setText(str(path_a2))
-                self.label_spped_a3.setText(str(path_a3))
-                self.label_bending_b.setText(str(bending_b))
-                self.label_bending_c.setText(str(bending_c))
-                self.label_pick.setText(str(pick))
-                self.label_place.setText(str(place))
-
+                self.label_height_1.setText(str(height_1))
+                self.label_pick_z_2.setText(str(pick_z_2))
+                self.label_speed_3.setText(str(speed_3))
+                self.label_r_4.setText(str(r_4))
+                self.label_decel_5.setText(str(decel_5))
+                self.label_decel_6.setText(str(decel_6))
+                # self.start_point.setText(str(start_point))
 
                 # 확인 메시지 표시
                 QMessageBox.information(self, "Info", "Data updated in move_list.txt")
             else:
                 # Handle out of range values
                 print("Values out of range")
-                self.path_speed_a1.setText("Out of Range")
-                self.path_speed_a1.setStyleSheet("color: red;")
-                self.path_speed_a1.setAlignment(Qt.AlignRight)
+                self.height_1.setText("Out of Range")
+                self.height_1.setStyleSheet("color: red;")
+                self.height_1.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.path_speed_a2.setText("Out of Range")
-                self.path_speed_a2.setStyleSheet("color: red;")
-                self.path_speed_a2.setAlignment(Qt.AlignRight)
+                self.pick_z_2.setText("Out of Range")
+                self.pick_z_2.setStyleSheet("color: red;")
+                self.pick_z_2.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.path_speed_a3.setText("Out of Range")
-                self.path_speed_a3.setStyleSheet("color: red;")
-                self.path_speed_a3.setAlignment(Qt.AlignRight)
+                self.speed_3.setText("Out of Range")
+                self.speed_3.setStyleSheet("color: red;")
+                self.speed_3.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.bending_b.setText("Out of Range")
-                self.bending_b.setStyleSheet("color: red;")
-                self.bending_b.setAlignment(Qt.AlignRight)
+                self.r_4.setText("Out of Range")
+                self.r_4.setStyleSheet("color: red;")
+                self.r_4.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.bending_c.setText("Out of Range")
-                self.bending_c.setStyleSheet("color: red;")
-                self.bending_c.setAlignment(Qt.AlignRight)
+                self.decel_5.setText("Out of Range")
+                self.decel_5.setStyleSheet("color: red;")
+                self.decel_5.setAlignment(Qt.AlignRight)
                 print("Values out of range")
-                self.pick_height.setText("Out of Range")
-                self.pick_height.setStyleSheet("color: red;")
-                self.pick_height.setAlignment(Qt.AlignRight)
-                print("Values out of range")
-                self.place_height.setText("Out of Range")
-                self.place_height.setStyleSheet("color: red;")
-                self.place_height.setAlignment(Qt.AlignRight)
+                self.decel_6.setText("Out of Range")
+                self.decel_6.setStyleSheet("color: red;")
+                self.decel_6.setAlignment(Qt.AlignRight)
+                # print("Values out of range")
+                # self.start_point.setText("Out of Range")
+                # self.start_point.setStyleSheet("color: red;")
+                # self.start_point.setAlignment(Qt.AlignRight)
 
 
         except ValueError:
@@ -585,54 +543,54 @@ class MyMove(QWidget):
     # x,y,z 값 창 업데이트
     def updateLabels(self):
         # xzy 값 한도에서 붉게 변경
-        if self.label_spped_a1 == setting.path_speed_max or self.label_spped_a1 == setting.path_speed_min:
-            self.label_spped_a1.setStyleSheet("Color : red")
-            self.label_spped_a1.setText(f'Limit {self.label_spped_a1}')
+        if self.label_height_1 == setting.z_min or self.label_height_1 == setting.z_max:
+            self.label_height_1.setStyleSheet("Color : red")
+            self.label_height_1.setText(f'Limit {self.label_height_1}')
         else:
-            self.label_spped_a1.setStyleSheet("Color : white")
-            self.label_spped_a1.setText(f'{self.label_spped_a1}')
+            self.label_height_1.setStyleSheet("Color : white")
+            self.label_height_1.setText(f'{self.label_height_1}')
 
-        if self.label_spped_a2 == setting.path_speed_max or self.label_spped_a2 == setting.path_speed_min:
-            self.label_spped_a2.setStyleSheet("Color : red")
-            self.label_spped_a2.setText(f'Limit {self.label_spped_a2}')
+        if self.label_pick_z_2 == setting.z_min or self.label_pick_z_2 == setting.z_max:
+            self.label_pick_z_2.setStyleSheet("Color : red")
+            self.label_pick_z_2.setText(f'Limit {self.label_pick_z_2}')
         else:
-            self.label_spped_a2.setStyleSheet("Color : white")
-            self.label_spped_a2.setText(f'{self.label_spped_a2}')
+            self.label_pick_z_2.setStyleSheet("Color : white")
+            self.label_pick_z_2.setText(f'{self.label_pick_z_2}')
 
-        if self.label_spped_a3 == setting.path_speed_max or self.label_spped_a3 == setting.path_speed_min:
-            self.label_spped_a3.setStyleSheet("Color : red")
-            self.label_spped_a3.setText(f'Limit {self.label_spped_a3}')
+        if self.label_speed_3 == setting.path_speed_min or self.label_speed_3 == setting.path_speed_max:
+            self.label_speed_3.setStyleSheet("Color : red")
+            self.label_speed_3.setText(f'Limit {self.label_speed_3}')
         else:
-            self.label_spped_a3.setStyleSheet("Color : white")
-            self.label_spped_a3.setText(f'{self.label_spped_a3}')
+            self.label_speed_3.setStyleSheet("Color : white")
+            self.label_speed_3.setText(f'{self.label_speed_3}')
 ##############
-        if self.label_bending_b == setting.bending_max or self.label_bending_b == setting.bending_min:
-            self.label_bending_b.setStyleSheet("Color : red")
-            self.label_bending_b.setText(f'Limit {self.label_bending_b}')
+        if self.label_r_4 == setting.bending_min or self.label_r_4 == setting.bending_max:
+            self.label_r_4.setStyleSheet("Color : red")
+            self.label_r_4.setText(f'Limit {self.label_r_4}')
         else:
-            self.label_bending_b.setStyleSheet("Color : white")
-            self.label_bending_b.setText(f'{self.label_bending_b}')
-
-        if self.label_bending_c == setting.bending_max or self.label_bending_c == setting.bending_min:
-            self.label_bending_c.setStyleSheet("Color : red")
-            self.label_bending_c.setText(f'Limit {self.label_bending_c}')
-        else:
-            self.label_bending_c.setStyleSheet("Color : white")
-            self.label_bending_c.setText(f'{self.label_bending_c}')
+            self.label_r_4.setStyleSheet("Color : white")
+            self.label_r_4.setText(f'{self.label_r_4}')
 ##################
-        if self.label_pick == setting.z_max or self.label_pick == setting.z_min:
-            self.label_pick.setStyleSheet("Color : red")
-            self.label_pick.setText(f'Limit {self.label_pick}')
+        if self.label_decel_5 == setting.Deceleration_min or self.label_decel_5 == setting.Deceleration_max:
+            self.label_decel_5.setStyleSheet("Color : red")
+            self.label_decel_5.setText(f'Limit {self.label_decel_5}')
         else:
-            self.label_pick.setStyleSheet("Color : white")
-            self.label_pick.setText(f'{self.label_pick}')
+            self.label_decel_5.setStyleSheet("Color : white")
+            self.label_decel_5.setText(f'{self.label_decel_5}')
 
-        if self.label_place == setting.z_max or self.label_place == setting.z_min:
-            self.label_place.setStyleSheet("Color : red")
-            self.label_place.setText(f'Limit {self.label_place}')
+        if self.label_decel_6 == setting.Deceleration_min or self.label_decel_6 == setting.Deceleration_max:
+            self.label_decel_6.setStyleSheet("Color : red")
+            self.label_decel_6.setText(f'Limit {self.label_decel_6}')
         else:
-            self.label_place.setStyleSheet("Color : white")
-            self.label_place.setText(f'{self.label_place}')
+            self.label_decel_6.setStyleSheet("Color : white")
+            self.label_decel_6.setText(f'{self.label_decel_6}')
+
+        # if self.start_point == setting.z_max or self.start_point == setting.z_min:
+        #     self.start_point.setStyleSheet("Color : red")
+        #     self.start_point.setText(f'Limit {self.start_point}')
+        # else:
+        #     self.start_point.setStyleSheet("Color : white")
+        #     self.start_point.setText(f'{self.start_point}')
 
 
     def comboBoxIndexChanged(self, index):
@@ -652,43 +610,43 @@ class MyMove(QWidget):
         self.btnback.clicked.connect(self.close)
         self.btnback.clicked.connect(self.goToStartScreen.emit)
 
-    def home_t(self):
-        # 뒤로 가기 버튼
-        self.btnhomet = QPushButton('Total', self)
-        self.btnhomet.clicked.connect(self.goToStartScreen.emit)
-        self.btnhomet.setGeometry(200, 86, 80, 40)
-        # self.btnhomet.raise_()  # Raise the button to the top of the widget stack
-    def home1(self):
-        # 뒤로 가기 버튼
-        self.btnhome1 = QPushButton('Home1', self)
-        self.btnhome1.clicked.connect(self.goToStartScreen.emit)
-        self.btnhome1.setGeometry(300, 86, 80, 40)
-        # self.btnhome1.raise_()  # Raise the button to the top of the widget stack
-        self.btnhome1.setDisabled(True)
+    # def home_t(self):
+    #     # 뒤로 가기 버튼
+    #     self.btnhomet = QPushButton('Total', self)
+    #     self.btnhomet.clicked.connect(self.goToStartScreen.emit)
+    #     self.btnhomet.setGeometry(200, 86, 80, 40)
+    #     # self.btnhomet.raise_()  # Raise the button to the top of the widget stack
+    # def home1(self):
+    #     # 뒤로 가기 버튼
+    #     self.btnhome1 = QPushButton('Home1', self)
+    #     self.btnhome1.clicked.connect(self.goToStartScreen.emit)
+    #     self.btnhome1.setGeometry(300, 86, 80, 40)
+    #     # self.btnhome1.raise_()  # Raise the button to the top of the widget stack
+    #     self.btnhome1.setDisabled(True)
 
-    def home2(self):
-        # 뒤로 가기 버튼
-        self.btnhome2 = QPushButton('Home2', self)
-        self.btnhome2.clicked.connect(self.goToStartScreen.emit)
-        self.btnhome2.setGeometry(400, 86, 80, 40)
-        # self.btnhome2.raise_()  # Raise the button to the top of the widget stack
-        self.btnhome2.setDisabled(True)
+    # def home2(self):
+    #     # 뒤로 가기 버튼
+    #     self.btnhome2 = QPushButton('Home2', self)
+    #     self.btnhome2.clicked.connect(self.goToStartScreen.emit)
+    #     self.btnhome2.setGeometry(400, 86, 80, 40)
+    #     # self.btnhome2.raise_()  # Raise the button to the top of the widget stack
+    #     self.btnhome2.setDisabled(True)
 
-    def home3(self):
-        # 뒤로 가기 버튼
-        self.btnhome3 = QPushButton('Home3', self)
-        self.btnhome3.clicked.connect(self.goToStartScreen.emit)
-        self.btnhome3.setGeometry(500, 86, 80, 40)
-        # self.btnhome3.raise_()  # Raise the button to the top of the widget stack
-        self.btnhome3.setDisabled(True)
+    # def home3(self):
+    #     # 뒤로 가기 버튼
+    #     self.btnhome3 = QPushButton('Home3', self)
+    #     self.btnhome3.clicked.connect(self.goToStartScreen.emit)
+    #     self.btnhome3.setGeometry(500, 86, 80, 40)
+    #     # self.btnhome3.raise_()  # Raise the button to the top of the widget stack
+    #     self.btnhome3.setDisabled(True)
 
-    def home4(self):
-        # 뒤로 가기 버튼
-        self.btnhome4 = QPushButton('Home4', self)
-        self.btnhome4.clicked.connect(self.goToStartScreen.emit)
-        self.btnhome4.setGeometry(600, 86, 80, 40)
-        # self.btnhome4.raise_()  # Raise the button to the top of the widget stack
-        self.btnhome4.setDisabled(True)
+    # def home4(self):
+    #     # 뒤로 가기 버튼
+    #     self.btnhome4 = QPushButton('Home4', self)
+    #     self.btnhome4.clicked.connect(self.goToStartScreen.emit)
+    #     self.btnhome4.setGeometry(600, 86, 80, 40)
+    #     # self.btnhome4.raise_()  # Raise the button to the top of the widget stack
+    #     self.btnhome4.setDisabled(True)
 
 
     def onBackButtonClick(self):
@@ -699,21 +657,21 @@ class MyMove(QWidget):
     # 직접 입력창 리셋
     def resetFields(self):
 
-        self.path_speed_a1.setText(str(1))
-        self.path_speed_a2.setText(str(1))
-        self.path_speed_a3.setText(str(1))
-        self.bending_b.setText(str(50))
-        self.bending_c.setText(str(50))
-        self.pick_height.setText(str(-900))
-        self.place_height.setText(str(-900))
+        self.height_1.setText(str(-900))
+        self.pick_z_2.setText(str(-950))
+        self.speed_3.setText(str(1000))
+        self.r_4.setText(str(50))
+        self.decel_5.setText(str(0.95))
+        self.decel_6.setText(str(0.95))
+        # self.start_point.setText(str(-900))
         # Optionally, reset the style if it's changed when values are out of range
-        self.path_speed_a1.setStyleSheet("color: black;")
-        self.path_speed_a2.setStyleSheet("color: black;")
-        self.path_speed_a3.setStyleSheet("color: black;")
-        self.bending_b.setStyleSheet("color: black;")
-        self.bending_c.setStyleSheet("color: black;")
-        self.pick_height.setStyleSheet("color: black;")
-        self.place_height.setStyleSheet("color: black;")
+        self.height_1.setStyleSheet("color: black;")
+        self.pick_z_2.setStyleSheet("color: black;")
+        self.speed_3.setStyleSheet("color: black;")
+        self.r_4.setStyleSheet("color: black;")
+        self.decel_5.setStyleSheet("color: black;")
+        self.decel_6.setStyleSheet("color: black;")
+        # self.start_point.setStyleSheet("color: black;")
 
     def refreshPage(self):
         file_path_home = 'document/home_list.txt'

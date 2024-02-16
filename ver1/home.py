@@ -264,33 +264,21 @@ class MyHome(QWidget):
                     self.label1_x.setText(str(x_val))
                     self.label1_y.setText(str(y_val))
                     self.label1_z.setText(str(z_val))
-                    self.label2_z.setText(str(z_val))
-                    self.label3_z.setText(str(z_val))
-                    self.label4_z.setText(str(z_val))
                 elif selected_num == "2":
                     self.label2_label.setText(selected_item)
                     self.label2_x.setText(str(x_val))
                     self.label2_y.setText(str(y_val))
                     self.label2_z.setText(str(z_val))
-                    self.label1_z.setText(str(z_val))
-                    self.label3_z.setText(str(z_val))
-                    self.label4_z.setText(str(z_val))
                 elif selected_num == "3":
                     self.label3_label.setText(selected_item)
                     self.label3_x.setText(str(x_val))
                     self.label3_y.setText(str(y_val))
                     self.label3_z.setText(str(z_val))
-                    self.label1_z.setText(str(z_val))
-                    self.label2_z.setText(str(z_val))
-                    self.label4_z.setText(str(z_val))
                 elif selected_num == "4":
                     self.label4_label.setText(selected_item)
                     self.label4_x.setText(str(x_val))
                     self.label4_y.setText(str(y_val))
                     self.label4_z.setText(str(z_val))
-                    self.label1_z.setText(str(z_val))
-                    self.label2_z.setText(str(z_val))
-                    self.label3_z.setText(str(z_val))
 
                 # home_list.txt 기존 파일 내용 읽어오기
                 existing_lines = []
@@ -307,24 +295,12 @@ class MyHome(QWidget):
                 # 선택된 번호에 해당하는 줄 덮어쓰기 또는 추가하기
                 if selected_num == "1":
                     existing_lines[0] = f'{selected_item} {x_val} {y_val} {z_val}\n'
-                    existing_lines[1] = f'{existing_lines[1].split()[0]} {existing_lines[1].split()[1]} {existing_lines[1].split()[2]} {z_val}\n'
-                    existing_lines[2] = f'{existing_lines[2].split()[0]} {existing_lines[2].split()[1]} {existing_lines[2].split()[2]} {z_val}\n'
-                    existing_lines[3] = f'{existing_lines[3].split()[0]} {existing_lines[3].split()[1]} {existing_lines[3].split()[2]} {z_val}\n'
                 elif selected_num == "2":
                     existing_lines[1] = f'{selected_item} {x_val} {y_val} {z_val}\n'
-                    existing_lines[0] = f'{existing_lines[0].split()[0]} {existing_lines[0].split()[1]} {existing_lines[0].split()[2]} {z_val}\n'
-                    existing_lines[2] = f'{existing_lines[2].split()[0]} {existing_lines[2].split()[1]} {existing_lines[2].split()[2]} {z_val}\n'
-                    existing_lines[3] = f'{existing_lines[3].split()[0]} {existing_lines[3].split()[1]} {existing_lines[3].split()[2]} {z_val}\n'
                 elif selected_num == "3":
                     existing_lines[2] = f'{selected_item} {x_val} {y_val} {z_val}\n'
-                    existing_lines[1] = f'{existing_lines[1].split()[0]} {existing_lines[1].split()[1]} {existing_lines[1].split()[2]} {z_val}\n'
-                    existing_lines[0] = f'{existing_lines[0].split()[0]} {existing_lines[0].split()[1]} {existing_lines[0].split()[2]} {z_val}\n'
-                    existing_lines[3] = f'{existing_lines[3].split()[0]} {existing_lines[3].split()[1]} {existing_lines[3].split()[2]} {z_val}\n'
                 elif selected_num == "4":
                     existing_lines[3] = f'{selected_item} {x_val} {y_val} {z_val}\n'
-                    existing_lines[1] = f'{existing_lines[1].split()[0]} {existing_lines[1].split()[1]} {existing_lines[1].split()[2]} {z_val}\n'
-                    existing_lines[2] = f'{existing_lines[2].split()[0]} {existing_lines[2].split()[1]} {existing_lines[2].split()[2]} {z_val}\n'
-                    existing_lines[0] = f'{existing_lines[0].split()[0]} {existing_lines[0].split()[1]} {existing_lines[0].split()[2]} {z_val}\n'
 
                 # 파일에 덮어쓴 내용 저장
                 with open(file_path, 'w') as file:
