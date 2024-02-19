@@ -272,8 +272,9 @@ class MyMove(QWidget):
         self.lbl_img.setPixmap(new_pixmap)
 
     def addimage2(self):
-        scaled_pixmap = self.original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.lbl_img.setPixmap(scaled_pixmap)
+        new2_pixmap = QPixmap("img/move3.png")
+        # new2_pixmap = self.original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.lbl_img.setPixmap(new2_pixmap)
         # original_pixmap1 = QPixmap("img/main.png")
         # scaled_pixmap1 = original_pixmap1.scaled(800, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # # QLabel 생성 및 QPixmap 설정

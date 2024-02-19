@@ -251,15 +251,24 @@ class StartWindow(QMainWindow):
 
 ####### on / off ##########################################################
     def onOperation(self):
-        self.startButton.setDisabled(False)
-        self.stopButton.setDisabled(False)
-        self.mainButton.setDisabled(False)
-        self.homingButton.setDisabled(False)
-        self.movingButton.setDisabled(False)
-        self.infoButton.setDisabled(False)
-        self.connectButton.setDisabled(False)
-        self.calButton.setDisabled(False)
-        self.logButton.setDisabled(False)
+        # Create and display the popup dialog
+        popup_dialog = PopupDialog_robot(self)
+        result = popup_dialog.exec_()  # Show the dialog and wait for it to close
+
+        if result == QDialog.Accepted:
+            # The robot is activated, enable the buttons
+            self.startButton.setDisabled(False)
+            self.stopButton.setDisabled(False)
+            self.mainButton.setDisabled(False)
+            self.homingButton.setDisabled(False)
+            self.movingButton.setDisabled(False)
+            self.infoButton.setDisabled(False)
+            self.connectButton.setDisabled(False)
+            self.calButton.setDisabled(False)
+            self.logButton.setDisabled(False)
+        else:
+            # The dialog was closed due to timeout
+            QMessageBox.warning(self, "Timeout", "Failed to activate the robot within the time limit.")
 
         # # # yeong
         # # Run the ROS2 launch file and save the subprocess reference
@@ -323,17 +332,30 @@ class StartWindow(QMainWindow):
 
 ####### start/stop ##########################################################
     def startOperation(self):
-        self.startButton.setDisabled(True)
-        # self.stopButton.setDisabled(True)
-        self.mainButton.setDisabled(True)
-        self.homingButton.setDisabled(True)
-        self.movingButton.setDisabled(True)
-        # self.infoButton.setDisabled(True)
-        self.connectButton.setDisabled(True)
-        self.onButton.setDisabled(True)
-        self.offButton.setDisabled(True)
-        self.calButton.setDisabled(True)
-        self.logButton.setDisabled(True)
+
+
+            # Create and display the popup dialog
+        popup_dialog = PopupDialog_vision(self)
+        result = popup_dialog.exec_()  # Show the dialog and wait for it to close
+
+        if result == QDialog.Accepted:
+            # # # yeong
+            self.startButton.setDisabled(True)
+            # self.stopButton.setDisabled(True)
+            self.mainButton.setDisabled(True)
+            self.homingButton.setDisabled(True)
+            self.movingButton.setDisabled(True)
+            # self.infoButton.setDisabled(True)
+            self.connectButton.setDisabled(True)
+            self.onButton.setDisabled(True)
+            self.offButton.setDisabled(True)
+            self.calButton.setDisabled(True)
+            self.logButton.setDisabled(True)
+        else:
+            # The dialog was closed due to timeout
+            QMessageBox.warning(self, "Timeout", "Failed to activate the robot within the time limit.")
+
+
         
         # # # yeong
         # # Run the ROS2 launch file and save the subprocess reference
@@ -508,3 +530,75 @@ class PasswordDialog(QDialog):
 #     app_manager.show()
 #     sys.exit(app.exec_())
 #     rclpy.shutdown()
+            
+class PopupDialog_robot(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Waiting for Robot Activation')
+        self.setFixedSize(300, 150)
+        self.label = QLabel(self)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setGeometry(0, 0, 300 , 150)
+        self.image_paths = [f'img/wait{i}.png' for i in range(1, 7)]  # List of image paths
+        self.current_image_index = 0
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateImage)
+        self.timer.start(500)  # Update image every 0.5 seconds
+        self.check_robot_status_timer = QTimer(self)
+        self.check_robot_status_timer.timeout.connect(self.checkRobotStatus)
+        self.check_robot_status_timer.start(500)  # Check robot status every 0.5 seconds
+        self.start_time = time.time()
+
+    def updateImage(self):
+        pixmap = QPixmap(self.image_paths[self.current_image_index])
+        self.label.setPixmap(pixmap)
+        self.current_image_index = (self.current_image_index + 1) % len(self.image_paths)
+
+    def checkRobotStatus(self):
+        elapsed_time = time.time() - self.start_time
+        if elapsed_time > 30:  # Timeout after 20 seconds
+            self.reject()  # Close the dialog
+
+        try:
+            with open('document/io.json', 'r') as file:
+                io_data = json.load(file)
+                if io_data.get("robot"):  # Check if robot status is True
+                    self.accept()  # Close the dialog
+        except Exception as e:
+            print(f"Error reading io.json: {e}")
+
+class PopupDialog_vision(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Waiting for Vision Activation')
+        self.setFixedSize(300, 150)
+        self.label = QLabel(self)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setGeometry(0, 0, 300 , 150)
+        self.image_paths = [f'img/wait{i}.png' for i in range(1, 7)]  # List of image paths
+        self.current_image_index = 0
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.updateImage)
+        self.timer.start(500)  # Update image every 0.5 seconds
+        self.check_robot_status_timer = QTimer(self)
+        self.check_robot_status_timer.timeout.connect(self.checkRobotStatus)
+        self.check_robot_status_timer.start(500)  # Check robot status every 0.5 seconds
+        self.start_time = time.time()
+
+    def updateImage(self):
+        pixmap = QPixmap(self.image_paths[self.current_image_index])
+        self.label.setPixmap(pixmap)
+        self.current_image_index = (self.current_image_index + 1) % len(self.image_paths)
+
+    def checkRobotStatus(self):
+        elapsed_time = time.time() - self.start_time
+        if elapsed_time > 30:  # Timeout after 20 seconds
+            self.reject()  # Close the dialog
+
+        try:
+            with open('document/io.json', 'r') as file:
+                io_data = json.load(file)
+                if io_data.get("vision"):  # Check if robot status is True
+                    self.accept()  # Close the dialog
+        except Exception as e:
+            print(f"Error reading io.json: {e}")
