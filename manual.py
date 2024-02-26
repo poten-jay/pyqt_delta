@@ -331,9 +331,9 @@ class MyApp(QWidget):
     # start 버튼 누르면 수동 번튼 활성화
     def startOperation(self):
         # Increment initial XYZ values by 10
-        self.btn.input_x = x
-        self.btn.input_y = y
-        self.btn.input_z = z
+        # self.btn.input_x = x
+        # self.btn.input_y = y
+        # self.btn.input_z = z
 
         # # # yeong 
         # current_dir = os.path.dirname(os.path.realpath(__file__))

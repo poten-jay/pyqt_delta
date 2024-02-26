@@ -14,6 +14,8 @@ from function import xyz_button
 
 # setting.py 에서 값 호출
 import setting
+import yaml
+import ruamel.yaml
 # import move
 
 # 현재 좌표 값 받아오기
@@ -21,13 +23,9 @@ x = setting.x
 y = setting.y
 z = setting.z
 
-# 리스트업 버튼 클릭 후 txt 로 만들기
-file_path = "document/home_list.txt"
-# home_list.txt 파일 만들기
-if not os.path.exists(file_path):
-    with open(file_path, 'w') as file:
-        for _ in range(4):
-            file.write('0 0 0 0\n')
+yaml_file_path = '../move/config.yaml'  
+label_path = '../vision/labels.txt'
+
 
 class MyHome(QWidget):
     goToStartScreen = pyqtSignal()
@@ -39,7 +37,7 @@ class MyHome(QWidget):
         self.initUI()
         self.timer = QTimer(self)
         self.initUI
-
+        
     def initUI(self):
 ######## 이미지 넣기 #######################################################
         original_pixmap = QPixmap("img/home2.png")
@@ -75,85 +73,88 @@ class MyHome(QWidget):
         self.labelZ.setAlignment(Qt.AlignRight)
         self.labelZ.setGeometry(590, 410, 100, 30)  # Adjust position and size as needed
 
-        # home_list.txt 의 정보 읽어오기
-        with open(file_path, 'r') as file:
+
+        with open(yaml_file_path, 'r') as file:
+            # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+            config = yaml.safe_load(file)
+            
+        labels = {}
+        with open("../vision/labels.txt", "r") as file:
             lines = file.readlines()
-        # 각 줄의 데이터를 변수에 저장합니다.
-        if len(lines) <= 4 :
-            # 1번째 줄 데이터 저장
-            first_line = lines[0].split()
-            # 2번째 줄 데이터 저장
-            second_line = lines[1].split()
-            # 3번째 줄 데이터 저장
-            third_line = lines[2].split()
-            # 4번째 줄 데이터 저장
-            fourth_line = lines[3].split()
+            # cleaned_lines = [line.strip() for line in lines]
+            for idx, line in enumerate(lines, start=0):
+                line = line.strip()
+                if line:
+                    labels[line] = idx
+            # 마지막에 "None" 추가
+            labels["None"] = len(lines)
+            reversed_labels = {value: key for key, value in labels.items()}
 
         # lebel 정보 창
-        self.label1_label = QLabel(f"{first_line[0]}", self)
+        self.label1_label = QLabel(f"{reversed_labels[config['move']['home1']['label']]}", self) 
         self.label1_label.setStyleSheet("Color : white")
         self.label1_label.setAlignment(Qt.AlignRight)
         self.label1_label.setGeometry(313, 116, 100, 30)  # Adjust position and size as needed
-        self.label1_x = QLabel(f"{first_line[1]}", self)
+        self.label1_x = QLabel(f"{config['move']['home1']['x']}", self)
         self.label1_x.setStyleSheet("Color : white")
         self.label1_x.setAlignment(Qt.AlignRight)
         self.label1_x.setGeometry(412, 116, 100, 30)  # Adjust position and size as needed
-        self.label1_y = QLabel(f"{first_line[2]}", self)
+        self.label1_y = QLabel(f"{config['move']['home1']['y']}", self)
         self.label1_y.setStyleSheet("Color : white")
         self.label1_y.setAlignment(Qt.AlignRight)
         self.label1_y.setGeometry(531, 116, 100, 30)  # Adjust position and size as needed
-        self.label1_z = QLabel(f"{first_line[3]}", self)
+        self.label1_z = QLabel(f"{config['move']['home1']['z']}", self)
         self.label1_z.setStyleSheet("Color : white")
         self.label1_z.setAlignment(Qt.AlignRight)
         self.label1_z.setGeometry(649, 116, 100, 30)  # Adjust position and size as needed
 
-        self.label2_label = QLabel(f"{second_line[0]}", self)
+        self.label2_label = QLabel(f"{reversed_labels[config['move']['home2']['label']]}", self)
         self.label2_label.setStyleSheet("Color : white")
         self.label2_label.setAlignment(Qt.AlignRight)
         self.label2_label.setGeometry(313, 153, 100, 30)  # Adjust position and size as needed
-        self.label2_x = QLabel(f"{second_line[1]}", self)
+        self.label2_x = QLabel(f"{config['move']['home2']['x']}", self)
         self.label2_x.setStyleSheet("Color : white")
         self.label2_x.setAlignment(Qt.AlignRight)
         self.label2_x.setGeometry(412, 153, 100, 30)  # Adjust position and size as needed
-        self.label2_y = QLabel(f"{second_line[2]}", self)
+        self.label2_y = QLabel(f"{config['move']['home2']['y']}", self)
         self.label2_y.setStyleSheet("Color : white")
         self.label2_y.setAlignment(Qt.AlignRight)
         self.label2_y.setGeometry(531, 153, 100, 30)  # Adjust position and size as needed
-        self.label2_z = QLabel(f"{second_line[3]}", self)
+        self.label2_z = QLabel(f"{config['move']['home2']['z']}", self)
         self.label2_z.setStyleSheet("Color : white")
         self.label2_z.setAlignment(Qt.AlignRight)
         self.label2_z.setGeometry(649, 153, 100, 30)  # Adjust position and size as needed
 
-        self.label3_label = QLabel(f"{third_line[0]}", self)
+        self.label3_label = QLabel(f"{reversed_labels[config['move']['home3']['label']]}", self)
         self.label3_label.setStyleSheet("Color : white")
         self.label3_label.setAlignment(Qt.AlignRight)
         self.label3_label.setGeometry(313, 189, 100, 30)  # Adjust position and size as needed
-        self.label3_x = QLabel(f"{third_line[1]}", self)
+        self.label3_x = QLabel(f"{config['move']['home3']['x']}", self)
         self.label3_x.setStyleSheet("Color : white")
         self.label3_x.setAlignment(Qt.AlignRight)
         self.label3_x.setGeometry(412, 189, 100, 30)  # Adjust position and size as needed
-        self.label3_y = QLabel(f"{third_line[2]}", self)
+        self.label3_y = QLabel(f"{config['move']['home3']['y']}", self)
         self.label3_y.setStyleSheet("Color : white")
         self.label3_y.setAlignment(Qt.AlignRight)
         self.label3_y.setGeometry(531, 189, 100, 30)  # Adjust position and size as needed
-        self.label3_z = QLabel(f"{third_line[3]}", self)
+        self.label3_z = QLabel(f"{config['move']['home3']['z']}", self)
         self.label3_z.setStyleSheet("Color : white")
         self.label3_z.setAlignment(Qt.AlignRight)
         self.label3_z.setGeometry(649, 189, 100, 30)  # Adjust position and size as needed
 
-        self.label4_label = QLabel(f"{fourth_line[0]}", self)
+        self.label4_label = QLabel(f"{reversed_labels[config['move']['home4']['label']]}", self)
         self.label4_label.setStyleSheet("Color : white")
         self.label4_label.setAlignment(Qt.AlignRight)
         self.label4_label.setGeometry(313, 225, 100, 30)  # Adjust position and size as needed
-        self.label4_x = QLabel(f"{fourth_line[1]}", self)
+        self.label4_x = QLabel(f"{config['move']['home4']['x']}", self)
         self.label4_x.setStyleSheet("Color : white")
         self.label4_x.setAlignment(Qt.AlignRight)
         self.label4_x.setGeometry(412, 225, 100, 30)  # Adjust position and size as needed
-        self.label4_y = QLabel(f"{fourth_line[2]}", self)
+        self.label4_y = QLabel(f"{config['move']['home4']['y']}", self)
         self.label4_y.setStyleSheet("Color : white")
         self.label4_y.setAlignment(Qt.AlignRight)
         self.label4_y.setGeometry(531, 225, 100, 30)  # Adjust position and size as needed
-        self.label4_z = QLabel(f"{fourth_line[3]}", self)
+        self.label4_z = QLabel(f"{config['move']['home4']['z']}", self)
         self.label4_z.setStyleSheet("Color : white")
         self.label4_z.setAlignment(Qt.AlignRight)
         self.label4_z.setGeometry(649, 225, 100, 30)  # Adjust position and size as needed
@@ -231,11 +232,16 @@ class MyHome(QWidget):
         self.comboBox = QComboBox(self)
         self.comboBox.setGeometry(460, 480, 90, 25)  # Adjust position and size as needed
 
+        # # Read items from the file and add them to the ComboBox
+        # with open('vision/labels.txt', 'r') as file:
+        #     items = file.read().splitlines()
+        #     self.comboBox.addItems(items)
         # Read items from the file and add them to the ComboBox
-        with open('vision/labels.txt', 'r') as file:
-            items = file.read().splitlines()
-            self.comboBox.addItems(items)
 
+        with open('../vision/labels.txt', 'r') as file:
+            items = file.read().splitlines()
+            items2 = items + ['None']
+            self.comboBox.addItems(items2)
 
         # # Create a QTextEdit widget
         # self.textEdit = QTextEdit(self)
@@ -244,9 +250,27 @@ class MyHome(QWidget):
 
     # 리스트업 클릭시 보낼 정보
     def listupClicked(self):
+
+        self.update()
+        labels = {}
+        with open("../vision/labels.txt", "r") as file:
+            lines = file.readlines()
+            cleaned_lines = [line.strip() for line in lines]
+            for idx, line in enumerate(lines, start=0):
+                line = line.strip()
+                if line:
+                    labels[line] = idx
+            # 마지막에 "None" 추가
+            labels["None"] = len(lines)
+            reversed_labels = {value: key for key, value in labels.items()}
+
         try:
             selected_num = self.comboBox1.currentText()
-            selected_item = self.comboBox.currentText()
+            # selected_item = self.comboBox.currentText()
+            for key, value in labels.items():
+                if key == self.comboBox.currentText():
+                    selected_item = str(value)
+                    break
             x_val = float(self.lineEditX.text())
             y_val = float(self.lineEditY.text())
             z_val = float(self.lineEditZ.text())
@@ -259,76 +283,100 @@ class MyHome(QWidget):
                 self.btn.input_z = z_val
                 self.updateLabels()
 
+                # 창에 정보 띄우기
                 if selected_num == "1":
-                    self.label1_label.setText(selected_item)
+                    if int(selected_item) <= len(cleaned_lines)-1:
+                        self.label1_label.setText(cleaned_lines[int(selected_item)])
+                    else:
+                        self.label1_label.setText("None")
                     self.label1_x.setText(str(x_val))
                     self.label1_y.setText(str(y_val))
                     self.label1_z.setText(str(z_val))
                     self.label2_z.setText(str(z_val))
                     self.label3_z.setText(str(z_val))
                     self.label4_z.setText(str(z_val))
+
                 elif selected_num == "2":
-                    self.label2_label.setText(selected_item)
+                    if int(selected_item) <= len(cleaned_lines)-1:
+                        self.label2_label.setText(cleaned_lines[int(selected_item)])
+                    else:
+                        self.label2_label.setText("None")
                     self.label2_x.setText(str(x_val))
                     self.label2_y.setText(str(y_val))
                     self.label2_z.setText(str(z_val))
                     self.label1_z.setText(str(z_val))
                     self.label3_z.setText(str(z_val))
                     self.label4_z.setText(str(z_val))
+
                 elif selected_num == "3":
-                    self.label3_label.setText(selected_item)
+                    if int(selected_item) <= len(cleaned_lines)-1:
+                        self.label3_label.setText(cleaned_lines[int(selected_item)])
+                    else:
+                        self.label3_label.setText("None")
                     self.label3_x.setText(str(x_val))
                     self.label3_y.setText(str(y_val))
                     self.label3_z.setText(str(z_val))
                     self.label1_z.setText(str(z_val))
                     self.label2_z.setText(str(z_val))
                     self.label4_z.setText(str(z_val))
+
                 elif selected_num == "4":
-                    self.label4_label.setText(selected_item)
+                    if int(selected_item) <= len(cleaned_lines)-1:
+                        self.label4_label.setText(cleaned_lines[int(selected_item)])
+                    else:
+                        self.label4_label.setText("None")
                     self.label4_x.setText(str(x_val))
                     self.label4_y.setText(str(y_val))
                     self.label4_z.setText(str(z_val))
                     self.label1_z.setText(str(z_val))
                     self.label2_z.setText(str(z_val))
                     self.label3_z.setText(str(z_val))
+                    
 
-                # home_list.txt 기존 파일 내용 읽어오기
-                existing_lines = []
-                if os.path.exists(file_path):
-                    with open(file_path, 'r') as file:
-                        existing_lines = file.readlines()
-
-                # 파일이 없을 경우 초기값 생성
-                while len(existing_lines) < 4:
-                    # existing_lines.append(f'{len(existing_lines) + 1}\n')
-                    existing_lines.append('0 0 0 0\n')
-
+                # YAML 파일 불러오기 및 설정
+                yaml = ruamel.yaml.YAML()
+                yaml.indent(mapping=4, sequence=4, offset=2)
+                with open(yaml_file_path, 'r') as file:
+                    # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+                    config = yaml.load(file)
 
                 # 선택된 번호에 해당하는 줄 덮어쓰기 또는 추가하기
                 if selected_num == "1":
-                    existing_lines[0] = f'{selected_item} {x_val} {y_val} {z_val}\n'
-                    existing_lines[1] = f'{existing_lines[1].split()[0]} {existing_lines[1].split()[1]} {existing_lines[1].split()[2]} {z_val}\n'
-                    existing_lines[2] = f'{existing_lines[2].split()[0]} {existing_lines[2].split()[1]} {existing_lines[2].split()[2]} {z_val}\n'
-                    existing_lines[3] = f'{existing_lines[3].split()[0]} {existing_lines[3].split()[1]} {existing_lines[3].split()[2]} {z_val}\n'
+                    config['move']['home1']['label'] = int(selected_item)
+                    config['move']['home1']['x'] = x_val
+                    config['move']['home1']['y'] = y_val
+                    config['move']['home1']['z'] = z_val
+                    config['move']['home2']['z'] = z_val
+                    config['move']['home3']['z'] = z_val
+                    config['move']['home4']['z'] = z_val
                 elif selected_num == "2":
-                    existing_lines[1] = f'{selected_item} {x_val} {y_val} {z_val}\n'
-                    existing_lines[0] = f'{existing_lines[0].split()[0]} {existing_lines[0].split()[1]} {existing_lines[0].split()[2]} {z_val}\n'
-                    existing_lines[2] = f'{existing_lines[2].split()[0]} {existing_lines[2].split()[1]} {existing_lines[2].split()[2]} {z_val}\n'
-                    existing_lines[3] = f'{existing_lines[3].split()[0]} {existing_lines[3].split()[1]} {existing_lines[3].split()[2]} {z_val}\n'
+                    config['move']['home2']['label'] = int(selected_item)
+                    config['move']['home2']['x'] = x_val
+                    config['move']['home2']['y'] = y_val
+                    config['move']['home1']['z'] = z_val
+                    config['move']['home2']['z'] = z_val
+                    config['move']['home3']['z'] = z_val
+                    config['move']['home4']['z'] = z_val
                 elif selected_num == "3":
-                    existing_lines[2] = f'{selected_item} {x_val} {y_val} {z_val}\n'
-                    existing_lines[1] = f'{existing_lines[1].split()[0]} {existing_lines[1].split()[1]} {existing_lines[1].split()[2]} {z_val}\n'
-                    existing_lines[0] = f'{existing_lines[0].split()[0]} {existing_lines[0].split()[1]} {existing_lines[0].split()[2]} {z_val}\n'
-                    existing_lines[3] = f'{existing_lines[3].split()[0]} {existing_lines[3].split()[1]} {existing_lines[3].split()[2]} {z_val}\n'
+                    config['move']['home3']['label'] = int(selected_item)
+                    config['move']['home3']['x'] = x_val
+                    config['move']['home3']['y'] = y_val
+                    config['move']['home1']['z'] = z_val
+                    config['move']['home2']['z'] = z_val
+                    config['move']['home3']['z'] = z_val
+                    config['move']['home4']['z'] = z_val
                 elif selected_num == "4":
-                    existing_lines[3] = f'{selected_item} {x_val} {y_val} {z_val}\n'
-                    existing_lines[1] = f'{existing_lines[1].split()[0]} {existing_lines[1].split()[1]} {existing_lines[1].split()[2]} {z_val}\n'
-                    existing_lines[2] = f'{existing_lines[2].split()[0]} {existing_lines[2].split()[1]} {existing_lines[2].split()[2]} {z_val}\n'
-                    existing_lines[0] = f'{existing_lines[0].split()[0]} {existing_lines[0].split()[1]} {existing_lines[0].split()[2]} {z_val}\n'
+                    config['move']['home4']['label'] = int(selected_item)
+                    config['move']['home4']['x'] = x_val
+                    config['move']['home4']['y'] = y_val
+                    config['move']['home1']['z'] = z_val
+                    config['move']['home2']['z'] = z_val
+                    config['move']['home3']['z'] = z_val
+                    config['move']['home4']['z'] = z_val
 
-                # 파일에 덮어쓴 내용 저장
-                with open(file_path, 'w') as file:
-                    file.writelines(existing_lines)
+
+                with open(yaml_file_path, 'w') as file:
+                    yaml.dump(config, file)
 
                 # 확인 메시지 표시
                 QMessageBox.information(self, "Info", "Data updated in home_list.txt")
@@ -422,7 +470,41 @@ class MyHome(QWidget):
 
 ####### 시간 #################################################################
 
+####### 점 그리기 ##############################################################
+    # def paintEvent(self, event):
+    #     super().paintEvent(event)  # 기본 paintEvent 처리
+    #     painter = QPainter(self)
+    #     painter.setPen(QPen(Qt.red,  30, Qt.SolidLine))  # 점의 색상과 크기 설정
 
+    #     with open(yaml_file_path, 'r') as file:
+    #         # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+    #         config = yaml.safe_load(file)
+    #     # 화면 좌표계로 변환된 점을 그림
+    #     for home in ['home1', 'home2', 'home3', 'home4']:
+    #         real_x = config['move'][home]['x']
+    #         real_y = config['move'][home]['y']
+    #         screen_x, screen_y = self.transform_coordinate(real_x, real_y)
+    #         print(f"Drawing point at: ({screen_x}, {screen_y})")  # 디버깅 출력
+    #         painter.drawPoint(screen_x, screen_y)
+
+    # def transform_coordinate(self, real_x, real_y):
+    #     # 화면 좌표계와 실제 좌표계의 범위 정의
+    #     screen_x_min, screen_y_min = 60, 100
+    #     screen_x_max, screen_y_max = 220, 260
+    #     real_x_min, real_y_min = -460, -460
+    #     real_x_max, real_y_max = 460, 460
+
+    #     # 변환 비율 계산
+    #     scale_x = (screen_x_max - screen_x_min) / (real_x_max - real_x_min)
+    #     scale_y = (screen_y_max - screen_y_min) / (real_y_max - real_y_min)
+
+    #     # 좌표 변환
+    #     transformed_x = (real_x - real_x_min) * scale_x + screen_x_min
+    #     transformed_y = (real_y - real_y_min) * scale_y + screen_y_min
+
+    #     return transformed_x, transformed_y
+######################################################################
+    
     def onBackButtonClick(self):
         # Emit the signal when the button is clicked
         self.goToStartScreen.emit()

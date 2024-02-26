@@ -540,11 +540,11 @@ class ExcelPopup(QDialog):
         # print(value)
         # if isinstance(value, float) ==True:
         x = self.double_spin_box1.value()
-        print('xㅌㅌ : ', x)
+        print('x : ', x)
         y = self.double_spin_box2.value()
-        print('yㅛㅛ : ', y)
+        print('y : ', y)
         z = self.double_spin_box3.value()
-        print('zㅋㅋ : ',  z)
+        print('z : ',  z)
         self.node.publish_xyz(x,y,z)
 
 

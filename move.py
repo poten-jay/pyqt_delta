@@ -15,33 +15,43 @@ from home import MyHome
 
 # setting.py 에서 값 호출
 import setting
+import yaml
+import ruamel.yaml
+
 
 # 현재 좌표 값 받아오기
 x = setting.x
 y = setting.y
 z = setting.z
 
-# 리스트업 버튼 클릭 후 txt 로 만들기
-file_path_move = "document/move_list.txt"
-# home_list.txt 파일 만들기
-if not os.path.exists(file_path_move):
-    with open(file_path_move, 'w') as file:
-        for _ in range(4):
-            file.write('0 0 0 0 0 0 0 a\n')
+
+yaml_file_path = '../move/config.yaml'  
+
+with open(yaml_file_path, 'r') as file:
+    # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+    config = yaml.safe_load(file)
+
+
+    up = config['trajectory']['up']
+    pick_z = config['trajectory']['pick_z']
+    speed = config['trajectory']['speed']
+    curve_r = config['trajectory']['curve_r']
+    pick_decel = config['trajectory']['pick_decel']
+    place_decel = config['trajectory']['place_decel']
+    decel_start = config['trajectory']['decel_start']
+    place_down_mode = config['trajectory']['place_down_mode']
 
 class MyMove(QWidget):
     goToStartScreen = pyqtSignal()
 
     def __init__(self):
         super().__init__()
-        
-        file_path_home = 'document/move_list.txt'
-        with open(file_path_home, 'r') as file1:
-            lines_home = file1.readlines()
-            first_line_1 = lines_home[0].split()
-            print(first_line_1)
-
-        if first_line_1[7] == "T":
+    
+        with open(yaml_file_path, 'r') as file:
+            # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+            config = yaml.safe_load(file)
+            
+        if config['trajectory']['place_down_mode'] == 1:
         # self.btn = xyz_button(node, x, y, z)
             self.original_pixmap = QPixmap("img/move3.png")
         else:
@@ -73,110 +83,79 @@ class MyMove(QWidget):
         # 창 크기 고정
         self.setFixedSize(800,600)
 
-        # home_list.txt 의 정보 읽어오기
-        file_path_move = 'document/move_list.txt'
-        with open(file_path_move, 'r') as file:
-            lines = file.readlines()
-        # 각 줄의 데이터를 변수에 저장합니다.
-        if len(lines) <= 4 :
-            # 1번째 줄 데이터 저장
-            first_line = lines[0].split()
-            # 2번째 줄 데이터 저장
-            second_line = lines[1].split()
-            # 3번째 줄 데이터 저장
-            third_line = lines[2].split()
-            # 4번째 줄 데이터 저장
-            fourth_line = lines[3].split()
-
-#########################################################################
-
-        file_path_home = 'document/home_list.txt'
-        with open(file_path_home, 'r') as file1:
-            lines_home = file1.readlines()
-        # 각 줄의 데이터를 변수에 저장합니다.
-        if len(lines_home) <= 4 :
-            # 1번째 줄 데이터 저장
-            first_line_1 = lines_home[0].split()
-            # 2번째 줄 데이터 저장
-            second_line_2 = lines_home[1].split()
-            # 3번째 줄 데이터 저장
-            third_line_3 = lines_home[2].split()
-            # 4번째 줄 데이터 저장
-            fourth_line_4 = lines_home[3].split()
-
 ######################################################################
         # 0. start_point z => home 의 정보 가져오기
-        self.place_z = QLabel(f"{first_line_1[3]}", self)
+        self.place_z = QLabel(f"{config['move']['home1']['z']}", self)
         self.place_z.setStyleSheet("Color : white")
         self.place_z.setAlignment(Qt.AlignRight)
         self.place_z.setGeometry(516, 464, 55, 25)  # Adjust position and size as needed
 
         # 1. height_1
-        self.label_height_1 = QLabel(f"{first_line[0]}", self)
+        self.label_height_1 = QLabel(f"{up}", self)
         self.label_height_1.setStyleSheet("Color : white")
         self.label_height_1.setAlignment(Qt.AlignRight)
         self.label_height_1.setGeometry(168, 233, 55, 25)
         self.height_1 = QLineEdit(self) # 176, 229, 55, 25)
         self.height_1.setGeometry(173, 255, 55, 25)
-        self.height_1.setText(first_line[0])
+        self.height_1.setText(str(up))
         self.height_1.setAlignment(Qt.AlignRight) # 우측정렬
 
         # 2. decel_6 z
-        self.label_pick_z_2 = QLabel(f"{first_line[1]}", self)
+        self.label_pick_z_2 = QLabel(f"{pick_z}", self)
         self.label_pick_z_2.setStyleSheet("Color : white")
         self.label_pick_z_2.setAlignment(Qt.AlignRight)
         self.label_pick_z_2.setGeometry(193, 418, 55, 25)  # Adjust position and size as needed
         self.pick_z_2 = QLineEdit(self)
         self.pick_z_2.setGeometry(198, 440, 55, 25)  # Adjust position and size as needed
-        self.pick_z_2.setText(first_line[1])
+        self.pick_z_2.setText(str(pick_z))
         self.pick_z_2.setAlignment(Qt.AlignRight)
 
         # 3. speed
-        self.label_speed_3 = QLabel(f"{first_line[2]}", self)
+        self.label_speed_3 = QLabel(f"{speed}", self)
         self.label_speed_3.setStyleSheet("Color : white")
         self.label_speed_3.setAlignment(Qt.AlignRight)
         self.label_speed_3.setGeometry(443, 284, 55, 25)  # Adjust position and size as needed
         self.speed_3 = QLineEdit(self)
         self.speed_3.setGeometry(448, 306, 55, 25)  # Adjust position and size as needed
-        self.speed_3.setText(first_line[2])
+        self.speed_3.setText(str(speed))
         self.speed_3.setAlignment(Qt.AlignRight)
 
         # 4. R
-        self.label_r_4 = QLabel(f"{first_line[3]}", self)
+        self.label_r_4 = QLabel(f"{curve_r}", self)
         self.label_r_4.setStyleSheet("Color : white")
         self.label_r_4.setAlignment(Qt.AlignRight)
         self.label_r_4.setGeometry(340, 179, 55, 25)  # Adjust position and size as needed
         self.r_4 = QLineEdit(self)
         self.r_4.setGeometry(345, 201, 55, 25)  # Adjust position and size as needed
-        self.r_4.setText(first_line[3])
+        self.r_4.setText(str(curve_r))
         self.r_4.setAlignment(Qt.AlignRight)
 
         # 5. deceleration 1
-        self.label_decel_5 = QLabel(f"{first_line[4]}", self)
+        self.label_decel_5 = QLabel(f"{pick_decel}", self)
         self.label_decel_5.setStyleSheet("Color : white")
         self.label_decel_5.setAlignment(Qt.AlignRight)
         self.label_decel_5.setGeometry(371, 419, 55, 25)  # Adjust position and size as needed
         self.decel_5 = QLineEdit(self)
         self.decel_5.setGeometry(376, 441, 55, 25)  # Adjust position and size as needed
-        self.decel_5.setText(first_line[4])
+        self.decel_5.setText(str(pick_decel))
         self.decel_5.setAlignment(Qt.AlignRight)
 
         # 6. deceleration 2
-        self.label_decel_6 = QLabel(f"{first_line[5]}", self)
+        self.label_decel_6 = QLabel(f"{place_decel}", self)
         self.label_decel_6.setStyleSheet("Color : white")
         self.label_decel_6.setAlignment(Qt.AlignRight)
         self.label_decel_6.setGeometry(704, 419, 55, 25)  # Adjust position and size as needed
         self.decel_6 = QLineEdit(self)
         self.decel_6.setGeometry(709, 441, 55, 25)  # Adjust position and size as needed
-        self.decel_6.setText(first_line[5])
+        self.decel_6.setText(str(place_decel))
         self.decel_6.setAlignment(Qt.AlignRight)
 
         # 7. start point of deceleration
         # "30" 
-        self.start_point = 30
-        # start_point
-        # start_point
 
+        # self.start_point = 30
+        self.start_point = decel_start
+                 
         # 8. Move L or Move U => F / T
 
         self.workspace_z = QLabel(f"Max : {setting.z_max}", self)
@@ -214,18 +193,12 @@ class MyMove(QWidget):
         self.btnb.clicked.connect(self.clickmoveU)
         self.btnb.clicked.connect(self.addimage2)
 
-        # self.home_t()
-        # # Home 1버튼
-        # self.home1()
-        # self.home2()
-        # self.home3()
-        # self.home4()
 
         # 뒤로가기 버튼 (순서가 밀리면 안보일 수도 있음)
         self.button()
 
         # Read items from the file and add them to the ComboBox
-        with open('vision/labels.txt', 'r') as file:
+        with open('../vision/labels.txt', 'r') as file:
             items = file.read().splitlines()
             # self.comboBox.addItems(items)
 
@@ -249,14 +222,12 @@ class MyMove(QWidget):
 ####### 시간 #################################################################
 
 
-
-
     # ㄱ 자 무빙
     def clickmoveL(self):
         # self.speed_3.setDisabled(True)
         self.decel_6.setDisabled(True)
         # self.start_point.setDisabled(True)
-        self.update_file_last_char('F')  # 파일의 마지막 글자를 'a'로 변경
+        self.update_place_down_mode(0)  # 파일의 마지막 글자를 'a'로 변경
         
 
     # ㄷ 자 무빙
@@ -264,7 +235,7 @@ class MyMove(QWidget):
         # self.speed_3.setDisabled(False)
         self.decel_6.setDisabled(False)
         # self.start_point.setDisabled(False)
-        self.update_file_last_char('T')  # 파일의 마지막 글자를 'b'로 변경
+        self.update_place_down_mode(1)  # 파일의 마지막 글자를 'b'로 변경
 
 ####### 이미지 추가 #######################################################
     def addimage(self):
@@ -285,41 +256,34 @@ class MyMove(QWidget):
 
 
     # 마지막 글자 바꾸기
-    def update_file_last_char(self, new_char):
-        with open(file_path_move, 'r') as file:
-            lines = file.readlines()
+    def update_place_down_mode(self, tf):
+        yaml = ruamel.yaml.YAML()
+        yaml.indent(mapping=4, sequence=4, offset=2)
+        with open(yaml_file_path, 'r') as file:
+            # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+            config = yaml.load(file)
 
-        updated_lines = []
-        for line in lines:
-            updated_line = line[:-2] + new_char + '\n'  # 마지막 글자를 new_char로 변경
-            updated_lines.append(updated_line)
+            # tf = tf.rstrip('')
+            config['trajectory']['place_down_mode'] = tf
 
-        with open(file_path_move, 'w') as file:
-            file.writelines(updated_lines)
+        with open(yaml_file_path, 'w') as file:
+            yaml.dump(config, file)
+
+
 
     # 리스트업 클릭시 보낼 정보
     def listupClicked(self):
-        # move_list.txt 기존 파일 내용 읽어오기
-        existing_lines = []
-        if os.path.exists(file_path_move):
-            with open(file_path_move, 'r') as file:
-                existing_lines = file.readlines()
 
-        # 파일이 없을 경우 초기값 생성
-        while len(existing_lines) < 4:
-            # existing_lines.append(f'{len(existing_lines) + 1}\n')
-            existing_lines.append('0 0 0 0 0 0 0 a\n')
-
-        if existing_lines[0][-2] == 'F':
+        if place_down_mode == 0:
             self.listupClicked_a()
         else :
             self.listupClicked_b()
 
 
-        # print(existing_lines[0][-2])
-
 
     def listupClicked_a(self):
+        
+
         try:
             height_1 = float(self.height_1.text())
             pick_z_2 = float(self.pick_z_2.text())
@@ -327,7 +291,7 @@ class MyMove(QWidget):
             r_4 = float(self.r_4.text())
             decel_5 = float(self.decel_5.text())
             decel_6 = float(self.decel_6.text())
-            start_point = float(self.start_point)
+            start_point = float(decel_start)
             
             if setting.z_min <= height_1 <= setting.z_max and \
                setting.z_min <= pick_z_2 <= (height_1 - setting.round) and \
@@ -342,35 +306,25 @@ class MyMove(QWidget):
 
                 self.updateLabels()
 
-            # if setting.path_speed_min <= height_1 <= setting.path_speed_max and \
-            #    setting.bending_min <= r_4 <= setting.bending_max and \
-            #    setting.bending_min <= decel_5 <= setting.bending_max and \
-            #    setting.z_min <= decel_6 <= setting.z_max and\
-            #    setting.z_min <= start_point <= setting.z_max:
-            #     self.updateLabels()
 
-                # move_list.txt 기존 파일 내용 읽어오기
-                existing_lines = []
-                if os.path.exists(file_path_move):
-                    with open(file_path_move, 'r') as file:
-                        existing_lines = file.readlines()
+                yaml = ruamel.yaml.YAML()
+                yaml.indent(mapping=4, sequence=4, offset=2)
+                with open(yaml_file_path, 'r') as file:
+                    # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+                    config = yaml.load(file)
 
-                # 파일이 없을 경우 초기값 생성
-                while len(existing_lines) < 4:
-                    # existing_lines.append(f'{len(existing_lines) + 1}\n')
-                    existing_lines.append('0 0 0 0 0 0 0 F\n')
+                config['trajectory']['up'] = height_1
+                config['trajectory']['pick_z'] = pick_z_2
+                config['trajectory']['speed'] = speed_3
+                config['trajectory']['curve_r'] = r_4
+                config['trajectory']['pick_decel'] = decel_5
+                config['trajectory']['place_decel'] = decel_6
+                config['trajectory']['decel_start'] = start_point
+                # place_down_mode = config['trajectory']['place_down_mode']
 
+                with open(yaml_file_path, 'w') as file:
+                    yaml.dump(config, file)
 
-                # 0번째 줄 덮어쓰기 또는 추가하기
-                existing_lines[0] = f'{height_1} {pick_z_2} {speed_3} {r_4} {decel_5} {decel_6} {start_point} F\n'
-                
-                # # A1,2,3 통합.
-                # existing_lines[0] = f'{height_1} {height_1} {height_1} {r_4} {decel_5} {decel_6} {start_point}\n'
-
-
-                # 파일에 덮어쓴 내용 저장
-                with open(file_path_move, 'w') as file:
-                    file.writelines(existing_lines)
 
                 self.label_height_1.setText(str(height_1))
                 self.label_pick_z_2.setText(str(pick_z_2))
@@ -382,7 +336,7 @@ class MyMove(QWidget):
 
 
                 # 확인 메시지 표시
-                QMessageBox.information(self, "Info", "Data updated in move_list.txt")
+                QMessageBox.information(self, "Info", "Data updated in config")
             else:
                 # Handle out of range values
                 print("Values out of range")
@@ -420,6 +374,7 @@ class MyMove(QWidget):
 
     # 리스트업 클릭시 보낼 정보
     def listupClicked_b(self):
+
         try:
             height_1 = float(self.height_1.text())
             pick_z_2 = float(self.pick_z_2.text())
@@ -427,7 +382,7 @@ class MyMove(QWidget):
             r_4 = float(self.r_4.text())
             decel_5 = float(self.decel_5.text())
             decel_6 = float(self.decel_6.text())
-            start_point = float(self.start_point)
+            start_point = float(decel_start)
             
             if setting.z_min <= height_1 <= setting.z_max and \
                setting.z_min <= pick_z_2 <= (height_1 - setting.round) and \
@@ -437,49 +392,28 @@ class MyMove(QWidget):
                setting.Deceleration_min <= decel_6 <= setting.Deceleration_max:
 
 
-            # if setting.Deceleration_min <= height_1 <= setting.Deceleration_max and \
-            #    setting.path_speed_min <= pick_z_2 <= setting.path_speed_max and \
-            #    setting.Deceleration_min <= speed_3 <= setting.Deceleration_max and \
-            #    setting.bending_min <= r_4 <= setting.bending_max and \
-            #    setting.bending_min <= decel_5 <= setting.bending_max and \
-            #    setting.z_min <= decel_6 <= setting.z_max and\
-            #    setting.z_min <= start_point <= setting.z_max:
-
-            #     if start_point == setting.z_max:
-            #         decel_5 = 0
-            #         speed_3 = 0
-
                 self.updateLabels()
 
-            # if setting.path_speed_min <= height_1 <= setting.path_speed_max and \
-            #    setting.bending_min <= r_4 <= setting.bending_max and \
-            #    setting.bending_min <= decel_5 <= setting.bending_max and \
-            #    setting.z_min <= decel_6 <= setting.z_max and\
-            #    setting.z_min <= start_point <= setting.z_max:
-            #     self.updateLabels()
+                yaml = ruamel.yaml.YAML()
+                yaml.indent(mapping=4, sequence=4, offset=2)
+                with open(yaml_file_path, 'r') as file:
+                    # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+                    config = yaml.load(file)
 
-                # move_list.txt 기존 파일 내용 읽어오기
-                existing_lines = []
-                if os.path.exists(file_path_move):
-                    with open(file_path_move, 'r') as file:
-                        existing_lines = file.readlines()
-
-                # 파일이 없을 경우 초기값 생성
-                while len(existing_lines) < 4:
-                    # existing_lines.append(f'{len(existing_lines) + 1}\n')
-                    existing_lines.append('0 0 0 0 0 0 0 F\n')
-
-
-                # 0번째 줄 덮어쓰기 또는 추가하기
-                existing_lines[0] = f'{height_1} {pick_z_2} {speed_3} {r_4} {decel_5} {decel_6} {start_point} T\n'
+                # # 0번째 줄 덮어쓰기 또는 추가하기
+                # existing_lines[0] = f'{height_1} {pick_z_2} {speed_3} {r_4} {decel_5} {decel_6} {start_point} F\n'
                 
-                # # A1,2,3 통합.
-                # existing_lines[0] = f'{height_1} {height_1} {height_1} {r_4} {decel_5} {decel_6} {start_point}\n'
-
-
-                # 파일에 덮어쓴 내용 저장
-                with open(file_path_move, 'w') as file:
-                    file.writelines(existing_lines)
+                config['trajectory']['up'] = height_1
+                config['trajectory']['pick_z'] = pick_z_2
+                config['trajectory']['speed'] = speed_3
+                config['trajectory']['curve_r'] = r_4
+                config['trajectory']['pick_decel'] = decel_5
+                config['trajectory']['place_decel'] = decel_6
+                config['trajectory']['decel_start'] = start_point
+                # place_down_mode = config['trajectory']['place_down_mode']
+                    
+                with open(yaml_file_path, 'w') as file:
+                    yaml.dump(config, file)
 
                 self.label_height_1.setText(str(height_1))
                 self.label_pick_z_2.setText(str(pick_z_2))
@@ -490,7 +424,7 @@ class MyMove(QWidget):
                 # self.start_point.setText(str(start_point))
 
                 # 확인 메시지 표시
-                QMessageBox.information(self, "Info", "Data updated in move_list.txt")
+                QMessageBox.information(self, "Info", "Data updated in config")
             else:
                 # Handle out of range values
                 print("Values out of range")
@@ -611,44 +545,6 @@ class MyMove(QWidget):
         self.btnback.clicked.connect(self.close)
         self.btnback.clicked.connect(self.goToStartScreen.emit)
 
-    # def home_t(self):
-    #     # 뒤로 가기 버튼
-    #     self.btnhomet = QPushButton('Total', self)
-    #     self.btnhomet.clicked.connect(self.goToStartScreen.emit)
-    #     self.btnhomet.setGeometry(200, 86, 80, 40)
-    #     # self.btnhomet.raise_()  # Raise the button to the top of the widget stack
-    # def home1(self):
-    #     # 뒤로 가기 버튼
-    #     self.btnhome1 = QPushButton('Home1', self)
-    #     self.btnhome1.clicked.connect(self.goToStartScreen.emit)
-    #     self.btnhome1.setGeometry(300, 86, 80, 40)
-    #     # self.btnhome1.raise_()  # Raise the button to the top of the widget stack
-    #     self.btnhome1.setDisabled(True)
-
-    # def home2(self):
-    #     # 뒤로 가기 버튼
-    #     self.btnhome2 = QPushButton('Home2', self)
-    #     self.btnhome2.clicked.connect(self.goToStartScreen.emit)
-    #     self.btnhome2.setGeometry(400, 86, 80, 40)
-    #     # self.btnhome2.raise_()  # Raise the button to the top of the widget stack
-    #     self.btnhome2.setDisabled(True)
-
-    # def home3(self):
-    #     # 뒤로 가기 버튼
-    #     self.btnhome3 = QPushButton('Home3', self)
-    #     self.btnhome3.clicked.connect(self.goToStartScreen.emit)
-    #     self.btnhome3.setGeometry(500, 86, 80, 40)
-    #     # self.btnhome3.raise_()  # Raise the button to the top of the widget stack
-    #     self.btnhome3.setDisabled(True)
-
-    # def home4(self):
-    #     # 뒤로 가기 버튼
-    #     self.btnhome4 = QPushButton('Home4', self)
-    #     self.btnhome4.clicked.connect(self.goToStartScreen.emit)
-    #     self.btnhome4.setGeometry(600, 86, 80, 40)
-    #     # self.btnhome4.raise_()  # Raise the button to the top of the widget stack
-    #     self.btnhome4.setDisabled(True)
-
 
     def onBackButtonClick(self):
         # Emit the signal when the button is clicked
@@ -659,7 +555,7 @@ class MyMove(QWidget):
     def resetFields(self):
 
         self.height_1.setText(str(-900))
-        self.pick_z_2.setText(str(-950))
+        self.pick_z_2.setText(str(-970))
         self.speed_3.setText(str(1000))
         self.r_4.setText(str(50))
         self.decel_5.setText(str(0.95))
@@ -675,63 +571,31 @@ class MyMove(QWidget):
         # self.start_point.setStyleSheet("color: black;")
 
     def refreshPage(self):
-        file_path_home = 'document/home_list.txt'
-        with open(file_path_home, 'r') as file1:
-            lines_home = file1.readlines()
-        # 각 줄의 데이터를 변수에 저장합니다.
-        if len(lines_home) <= 4 :
-            # 1번째 줄 데이터 저장
-            first_line_1 = lines_home[0].split()
-            # 2번째 줄 데이터 저장
-            second_line_2 = lines_home[1].split()
-            # 3번째 줄 데이터 저장
-            third_line_3 = lines_home[2].split()
-            # 4번째 줄 데이터 저장
-            fourth_line_4 = lines_home[3].split()
+
+        with open(yaml_file_path, 'r') as file:
+            # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+            config = yaml.safe_load(file)
+
+            # config['move']['home1']['label']
+            # config['move']['home1']['x']
+            # config['move']['home1']['y']
+            # config['move']['home1']['z']
 
         # lebel 정보 창
-        self.label1_label = QLabel(f"{first_line_1[0]}", self)
+        self.label1_label = QLabel(f"{config['move']['home1']['label']}", self)
         self.label1_label.setStyleSheet("Color : white")
         self.label1_label.setAlignment(Qt.AlignRight)
         self.label1_label.setGeometry(313, 153, 100, 30)  # Adjust position and size as needed
-        self.label1_x = QLabel(f"{first_line_1[1]}", self)
+        self.label1_x = QLabel(f"{config['move']['home1']['x']}", self)
         self.label1_x.setStyleSheet("Color : white")
         self.label1_x.setAlignment(Qt.AlignRight)
         self.label1_x.setGeometry(412, 153, 100, 30)  # Adjust position and size as needed
-        self.label1_y = QLabel(f"{first_line_1[2]}", self)
+        self.label1_y = QLabel(f"{config['move']['home1']['y']}", self)
         self.label1_y.setStyleSheet("Color : white")
         self.label1_y.setAlignment(Qt.AlignRight)
         self.label1_y.setGeometry(531, 153, 100, 30)  # Adjust position and size as needed
-        self.label1_z = QLabel(f"{first_line_1[3]}", self)
+        self.label1_z = QLabel(f"{config['move']['home1']['z']}", self)
         self.label1_z.setStyleSheet("Color : white")
         self.label1_z.setAlignment(Qt.AlignRight)
         self.label1_z.setGeometry(649, 153, 100, 30)  # Adjust position and size as needed
 
-
-########### start.py를 실행하면 아래는 필요 없음 #####################
-
-# class GUI_Node(Node):
-#     def __init__(self):
-#         super().__init__('gui_node')
-#         self.publisher_xyz = self.create_publisher(Point, 'input_xyz', 10)
-#         self.app = QApplication(sys.argv)
-#         self.gui = MyMove(self)
-#         self.timer = self.create_timer(0.1, self.timer_callback)
-
-#     def timer_callback(self):
-#         pass
-
-
-# def main(args=None):
-#     rclpy.init(args=args)
-#     gui_node = GUI_Node()
-
-#     exit_code = gui_node.app.exec_()
-
-#     gui_node.destroy_node()
-#     rclpy.shutdown()
-
-#     sys.exit(exit_code)
-
-# if __name__ == '__main__':
-#     main()
