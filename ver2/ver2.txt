@@ -1,0 +1,5 @@
+ver2.
+
+'../move/config.yaml'  사용
+
+setting 파일과, 대부분 연결 값을 yaml 으로 통합 관리
