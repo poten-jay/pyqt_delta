@@ -193,6 +193,15 @@ class MyMove(QWidget):
         self.btnb.clicked.connect(self.clickmoveU)
         self.btnb.clicked.connect(self.addimage2)
 
+        # Zoom1 Button
+        self.zoom1 = QPushButton('Zoom1', self)
+        self.zoom1.setGeometry(10, 450, 70, 70)  # Adjust position and size as needed
+        self.zoom1.clicked.connect(self.openZoomDialog)
+
+        # Zoom Button
+        self.zoom2 = QPushButton('Zoom2', self)
+        self.zoom2.setGeometry(700, 100, 70, 70)  # Adjust position and size as needed
+        self.zoom2.clicked.connect(self.openZoomDialog)
 
         # 뒤로가기 버튼 (순서가 밀리면 안보일 수도 있음)
         self.button()
@@ -599,3 +608,55 @@ class MyMove(QWidget):
         self.label1_z.setAlignment(Qt.AlignRight)
         self.label1_z.setGeometry(649, 153, 100, 30)  # Adjust position and size as needed
 
+    def openZoomDialog(self):
+        dialog = ZoomDialog(self)
+        dialog.saveClicked.connect(self.updatePickZ2)  # 시그널을 슬롯에 연결
+        dialog.exec_()  # 대화상자 실행
+
+    # 슬롯 정의: 새 pick_z_2 값으로 self.pick_z_2 업데이트
+    def updatePickZ2(self, new_pick_z_2):
+        self.pick_z_2.setText(str(new_pick_z_2))  # QLineEdit의 텍스트 업데이트
+        # 필요한 경우 추가적인 업데이트 로직 구현
+
+class ZoomDialog(QDialog):
+    saveClicked = pyqtSignal(float)  # float 타입의 시그널 정의
+
+    def __init__(self, parent=None):
+        super(ZoomDialog, self).__init__(parent)
+        self.setWindowTitle('Coupling & Deceleration')
+        self.setFixedSize(500, 300)
+        # QVBoxLayout을 사용하여 위젯을 세로로 배치
+        # layout = QVBoxLayout(self)
+
+        Mymove = MyMove() # MyMove class 가져오기
+
+        self.setBackgroundImage("img/kbs1")
+
+        # QLineEdit 위젯 생성 및 초기화
+        self.lineEdit = QLineEdit(self)
+        self.lineEdit.setText(str(pick_z))  # 기존 pick_z 값으로 초기화
+        self.lineEdit.setAlignment(Qt.AlignRight)
+        self.lineEdit.setFixedSize(100,30) # QLineEdit의 크기를 조절
+        self.lineEdit.move(200, 150)  # QLineEdit의 위치를 지정
+
+        # QDialog에 확인(Ok) 버튼 추가
+        self.okButton = QPushButton('Save', self)
+        self.okButton.setFixedSize(100,30) # QLineEdit의 크기를 조절
+        self.okButton.move(200, 200)  # QLisave_clickedneEdit의 위치를 지정
+        self.okButton.clicked.connect(self.save_clicked)  # 클릭 시 대화상자 닫기
+
+    def setBackgroundImage(self, imagePath):
+        # 배경 이미지 설정을 위한 QPixmap 객체 생성
+        background = QPixmap(imagePath)
+        # QPalette 객체 생성
+        palette = QPalette()
+        # QPalette의 Background에 QPixmap을 QBrush 객체로 설정
+        palette.setBrush(QPalette.Window, QBrush(background))
+        # QDialog의 팔레트 설정
+        self.setPalette(palette)
+
+     # "Save" 버튼 클릭 이벤트 처리기
+    def save_clicked(self):
+        new_pick_z_2 = float(self.lineEdit.text())  # QLineEdit에서 새 값을 읽음
+        self.saveClicked.emit(new_pick_z_2)  # 시그널 발생, 새 pick_z_2 값 전달
+        self.close()  # 대화상자 닫기

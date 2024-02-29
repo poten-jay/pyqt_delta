@@ -73,6 +73,10 @@ class MyHome(QWidget):
         self.labelZ.setAlignment(Qt.AlignRight)
         self.labelZ.setGeometry(590, 410, 100, 30)  # Adjust position and size as needed
 
+        self.text1 = QLabel(f"Z value = place z (moving)", self)
+        self.text1.setStyleSheet("Color : white; font-size: 14px")
+        self.text1.setAlignment(Qt.AlignRight)
+        self.text1.setGeometry(550, 280, 200, 30) 
 
         with open(yaml_file_path, 'r') as file:
             # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
@@ -218,6 +222,7 @@ class MyHome(QWidget):
         self.btnListup = QPushButton('List Up', self)
         self.btnListup.setGeometry(640, 480, 90, 25)  # Adjust position and size as needed
         self.btnListup.clicked.connect(self.listupClicked)
+
 
         # 뒤로가기 버튼 (순서가 밀리면 안보일 수도 있음)
         self.button()

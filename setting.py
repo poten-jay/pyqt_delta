@@ -34,8 +34,8 @@ path_speed_max = config['trajectory']['path_speed_max'] # 2000
 path_speed_min = config['trajectory']['path_speed_min'] # 0
 bending_max = config['trajectory']['bending_max'] # 90
 bending_min = config['trajectory']['bending_min'] # 0
-Deceleration_max = config['trajectory']['Deceleration_max'] # 1.0
-Deceleration_min = config['trajectory']['Deceleration_min'] # 0
+Deceleration_max = config['trajectory']['deceleration_max'] # 1.0
+Deceleration_min = config['trajectory']['deceleration_min'] # 0
 
 
 # import yaml
