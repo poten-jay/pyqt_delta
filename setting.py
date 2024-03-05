@@ -36,6 +36,10 @@ bending_max = config['trajectory']['bending_max'] # 90
 bending_min = config['trajectory']['bending_min'] # 0
 Deceleration_max = config['trajectory']['deceleration_max'] # 1.0
 Deceleration_min = config['trajectory']['deceleration_min'] # 0
+sync_max = config['trajectory']['sync_max'] # 30
+sync_min = config['trajectory']['sync_min'] # 0
+pick_sync = config['trajectory']['pick_sync']
+place_sync = config['trajectory']['place_sync']
 
 
 # import yaml

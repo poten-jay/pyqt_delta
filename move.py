@@ -40,6 +40,8 @@ with open(yaml_file_path, 'r') as file:
     place_decel = config['trajectory']['place_decel']
     decel_start = config['trajectory']['decel_start']
     place_down_mode = config['trajectory']['place_down_mode']
+    pick_sync = config['trajectory']['pick_sync']
+    place_sync = config['trajectory']['place_sync']
 
 class MyMove(QWidget):
     goToStartScreen = pyqtSignal()
@@ -61,8 +63,39 @@ class MyMove(QWidget):
         # self.lbl_img = QLabel(self)
         
         # self.initUI
+        if config['trajectory']['sync'] == 0:
+            # Sync 값이 0이면 이 부분의 설정을 따름
+            self.decel_5.setEnabled(True)
+            self.decel_6.setEnabled(True)
+            self.sync1.setDisabled(True)
+            self.sync2.setDisabled(True)
+            self.synconoff.setText("Sync On")  # 버튼 텍스트를 Sync On으로 설정
+        else:
+            # Sync 값이 1이면 이 부분의 설정을 따름
+            self.decel_5.setDisabled(True)
+            self.decel_6.setDisabled(True)
+            self.sync1.setEnabled(True)
+            self.sync2.setEnabled(True)
+            self.synconoff.setText("Sync Off")  # 버튼 텍스트를 Sync Off으로 설정
+
+        
 
     def initUI(self):
+        with open(yaml_file_path, 'r') as file:
+        # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
+            config = yaml.safe_load(file)
+
+
+            up = config['trajectory']['up']
+            pick_z = config['trajectory']['pick_z']
+            speed = config['trajectory']['speed']
+            curve_r = config['trajectory']['curve_r']
+            pick_decel = config['trajectory']['pick_decel']
+            place_decel = config['trajectory']['place_decel']
+            decel_start = config['trajectory']['decel_start']
+            place_down_mode = config['trajectory']['place_down_mode']
+            pick_sync = config['trajectory']['pick_sync']
+            place_sync = config['trajectory']['place_sync']
 ######## 이미지 넣기 #######################################################
         # original_pixmap = QPixmap("img/move2.png")
         scaled_pixmap = self.original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -88,15 +121,15 @@ class MyMove(QWidget):
         self.place_z = QLabel(f"{config['move']['home1']['z']}", self)
         self.place_z.setStyleSheet("Color : white")
         self.place_z.setAlignment(Qt.AlignRight)
-        self.place_z.setGeometry(516, 464, 55, 25)  # Adjust position and size as needed
+        self.place_z.setGeometry(516, 473, 55, 25)  # Adjust position and size as needed
 
         # 1. height_1
         self.label_height_1 = QLabel(f"{up}", self)
         self.label_height_1.setStyleSheet("Color : white")
         self.label_height_1.setAlignment(Qt.AlignRight)
-        self.label_height_1.setGeometry(168, 233, 55, 25)
+        self.label_height_1.setGeometry(189, 274, 55, 25)
         self.height_1 = QLineEdit(self) # 176, 229, 55, 25)
-        self.height_1.setGeometry(173, 255, 55, 25)
+        self.height_1.setGeometry(194, 296, 55, 25)
         self.height_1.setText(str(up))
         self.height_1.setAlignment(Qt.AlignRight) # 우측정렬
 
@@ -104,9 +137,9 @@ class MyMove(QWidget):
         self.label_pick_z_2 = QLabel(f"{pick_z}", self)
         self.label_pick_z_2.setStyleSheet("Color : white")
         self.label_pick_z_2.setAlignment(Qt.AlignRight)
-        self.label_pick_z_2.setGeometry(193, 418, 55, 25)  # Adjust position and size as needed
+        self.label_pick_z_2.setGeometry(159, 489, 55, 25)  # Adjust position and size as needed
         self.pick_z_2 = QLineEdit(self)
-        self.pick_z_2.setGeometry(198, 440, 55, 25)  # Adjust position and size as needed
+        self.pick_z_2.setGeometry(164, 511, 55, 25)  # Adjust position and size as needed
         self.pick_z_2.setText(str(pick_z))
         self.pick_z_2.setAlignment(Qt.AlignRight)
 
@@ -114,9 +147,9 @@ class MyMove(QWidget):
         self.label_speed_3 = QLabel(f"{speed}", self)
         self.label_speed_3.setStyleSheet("Color : white")
         self.label_speed_3.setAlignment(Qt.AlignRight)
-        self.label_speed_3.setGeometry(443, 284, 55, 25)  # Adjust position and size as needed
+        self.label_speed_3.setGeometry(453, 280, 55, 25)  # Adjust position and size as needed
         self.speed_3 = QLineEdit(self)
-        self.speed_3.setGeometry(448, 306, 55, 25)  # Adjust position and size as needed
+        self.speed_3.setGeometry(458, 302, 55, 25)  # Adjust position and size as needed
         self.speed_3.setText(str(speed))
         self.speed_3.setAlignment(Qt.AlignRight)
 
@@ -124,9 +157,9 @@ class MyMove(QWidget):
         self.label_r_4 = QLabel(f"{curve_r}", self)
         self.label_r_4.setStyleSheet("Color : white")
         self.label_r_4.setAlignment(Qt.AlignRight)
-        self.label_r_4.setGeometry(340, 179, 55, 25)  # Adjust position and size as needed
+        self.label_r_4.setGeometry(346, 178, 55, 25)  # Adjust position and size as needed
         self.r_4 = QLineEdit(self)
-        self.r_4.setGeometry(345, 201, 55, 25)  # Adjust position and size as needed
+        self.r_4.setGeometry(351, 201, 54, 25)  # Adjust position and size as needed
         self.r_4.setText(str(curve_r))
         self.r_4.setAlignment(Qt.AlignRight)
 
@@ -134,9 +167,9 @@ class MyMove(QWidget):
         self.label_decel_5 = QLabel(f"{pick_decel}", self)
         self.label_decel_5.setStyleSheet("Color : white")
         self.label_decel_5.setAlignment(Qt.AlignRight)
-        self.label_decel_5.setGeometry(371, 419, 55, 25)  # Adjust position and size as needed
+        self.label_decel_5.setGeometry(378, 419, 55, 25)  # Adjust position and size as needed
         self.decel_5 = QLineEdit(self)
-        self.decel_5.setGeometry(376, 441, 55, 25)  # Adjust position and size as needed
+        self.decel_5.setGeometry(383, 441, 55, 25)  # Adjust position and size as needed
         self.decel_5.setText(str(pick_decel))
         self.decel_5.setAlignment(Qt.AlignRight)
 
@@ -165,20 +198,29 @@ class MyMove(QWidget):
         self.workspace_zn = QLabel(f"Min : {setting.z_min}", self)
         self.workspace_zn.setStyleSheet("Color : white")
         self.workspace_zn.setAlignment(Qt.AlignRight)
-        self.workspace_zn.setGeometry(110, 530, 100, 30)  # Adjust position and size as needed
+        self.workspace_zn.setGeometry(110, 550, 100, 30)  # Adjust position and size as needed
 
+        # 9. Sync
+        self.pick_sync_8 = QLabel(f"{pick_sync}", self)
+        self.pick_sync_8.setStyleSheet("Color : white")
+        self.pick_sync_8.setAlignment(Qt.AlignRight)
+        self.pick_sync_8.setGeometry(159, 400, 55, 25)  # Adjust position and size as needed
+        self.place_sync_9 = QLabel(f"{place_sync}", self)
+        self.place_sync_9.setStyleSheet("Color : white")
+        self.place_sync_9.setAlignment(Qt.AlignRight)
+        self.place_sync_9.setGeometry(600, 400, 55, 25)  # Adjust position and size as needed
 #######################################################################
 
 
         # 버튼
         # Reset Button
         self.btnReset = QPushButton('Reset', self)
-        self.btnReset.setGeometry(580, 500, 50, 30)  # Adjust position and size as needed
+        self.btnReset.setGeometry(580, 520, 50, 40)  # Adjust position and size as needed
         self.btnReset.clicked.connect(self.resetFields)
 
         # Listup Button
         self.btnListup = QPushButton('List Up', self)
-        self.btnListup.setGeometry(640, 500, 90, 30)  # Adjust position and size as needed
+        self.btnListup.setGeometry(640, 520, 90, 40)  # Adjust position and size as needed
         self.btnListup.clicked.connect(self.listupClicked)
 
         # a Button - ㄱ 자 움직임
@@ -193,15 +235,35 @@ class MyMove(QWidget):
         self.btnb.clicked.connect(self.clickmoveU)
         self.btnb.clicked.connect(self.addimage2)
 
-        # Zoom1 Button
-        self.zoom1 = QPushButton('Zoom1', self)
-        self.zoom1.setGeometry(10, 450, 70, 70)  # Adjust position and size as needed
-        self.zoom1.clicked.connect(self.openZoomDialog)
+        # sync on/off
+        self.synconoff = QPushButton('Sync On', self)
+        self.synconoff.setGeometry(10, 400, 70, 50)
+        if config['trajectory']['sync'] == 1:
+            self.synconoff.setStyleSheet("background-color: green;")
+        else:
+            self.synconoff.setStyleSheet("")
+        self.synconoff.clicked.connect(self.toggleSync)
+        self.synconoff.clicked.connect(self.synconclick)
 
-        # Zoom Button
-        self.zoom2 = QPushButton('Zoom2', self)
-        self.zoom2.setGeometry(700, 100, 70, 70)  # Adjust position and size as needed
-        self.zoom2.clicked.connect(self.openZoomDialog)
+        # pick Sync Button
+        self.sync1 = QPushButton('Sync', self)
+        self.sync1.setGeometry(310, 510, 35, 25)  # Adjust position and size as needed
+        if config['trajectory']['sync'] == 1:
+            self.sync1.setStyleSheet("background-color: green;")
+        else:
+            self.sync1.setStyleSheet("")
+        self.sync1.clicked.connect(self.syncDialog_pick)
+        self.sync1.setDisabled(True)
+            
+        # Place Sync Button
+        self.sync2 = QPushButton('Sync', self)
+        self.sync2.setGeometry(610, 480, 35, 25)  # Adjust position and size as needed
+        if config['trajectory']['sync'] == 1:
+            self.sync2.setStyleSheet("background-color: green;")
+        else:
+            self.sync2.setStyleSheet("")
+        self.sync2.clicked.connect(self.syncDialog_place)
+        self.sync2.setDisabled(True)
 
         # 뒤로가기 버튼 (순서가 밀리면 안보일 수도 있음)
         self.button()
@@ -242,7 +304,8 @@ class MyMove(QWidget):
     # ㄷ 자 무빙
     def clickmoveU(self):
         # self.speed_3.setDisabled(False)
-        self.decel_6.setDisabled(False)
+        if config['trajectory']['sync'] == 1:
+            self.decel_6.setDisabled(True)
         # self.start_point.setDisabled(False)
         self.update_place_down_mode(1)  # 파일의 마지막 글자를 'b'로 변경
 
@@ -263,8 +326,46 @@ class MyMove(QWidget):
         # add_img.setGeometry(100, 100, scaled_pixmap1.width(), scaled_pixmap1.height())
 ########################################################################
 
+###### sync on/off버튼
+    def toggleSync(self):
+        current_text = self.synconoff.text()
+        new_text = "Sync" if current_text == "Sync On" else "Sync On"
+        self.synconoff.setText(new_text)
+    
+    def synconclick(self):
+        current_text = self.synconoff.text()
+        if current_text == "Sync On":
+            self.decel_5.setEnabled(True)
+            self.decel_6.setEnabled(True)
+            self.sync1.setDisabled(True)
+            self.sync2.setDisabled(True)
+            self.updateSyncValue(0)  # Sync Off 상태에서 Sync 값을 0으로 설정
+            self.synconoff.setStyleSheet("")
+            self.sync1.setStyleSheet("") 
+            self.sync2.setStyleSheet("") 
+            
+        else:
+            self.decel_5.setDisabled(True)
+            self.decel_6.setDisabled(True)
+            self.sync1.setEnabled(True)
+            self.sync2.setEnabled(True)
+            self.updateSyncValue(1)  # Sync On 상태에서 Sync 값을 1로 설정
+            self.synconoff.setStyleSheet("background-color: green;") 
+            self.sync1.setStyleSheet("background-color: green;") 
+            self.sync2.setStyleSheet("background-color: green;") 
+        
+    def updateSyncValue(self, value):
+        # config['trajectory']['sync'] 값을 업데이트하는 함수
+        yaml = ruamel.yaml.YAML()
+        yaml.indent(mapping=4, sequence=4, offset=2)
+        with open(yaml_file_path, 'r') as file:
+            config = yaml.load(file)
+            config['trajectory']['sync'] = value  # sync 값을 업데이트
 
-    # 마지막 글자 바꾸기
+        with open(yaml_file_path, 'w') as file:
+            yaml.dump(config, file)  # 변경된 설정을 파일에 다시 쓰기
+
+###### 마지막 글자 바꾸기
     def update_place_down_mode(self, tf):
         yaml = ruamel.yaml.YAML()
         yaml.indent(mapping=4, sequence=4, offset=2)
@@ -280,7 +381,7 @@ class MyMove(QWidget):
 
 
 
-    # 리스트업 클릭시 보낼 정보
+###### 리스트업 클릭시 보낼 정보
     def listupClicked(self):
 
         if place_down_mode == 0:
@@ -301,20 +402,20 @@ class MyMove(QWidget):
             decel_5 = float(self.decel_5.text())
             decel_6 = float(self.decel_6.text())
             start_point = float(decel_start)
+            pick_sync_8 = float(self.pick_sync_8.text())
+            place_sync_9 = float(self.place_sync_9.text())
             
             if setting.z_min <= height_1 <= setting.z_max and \
                setting.z_min <= pick_z_2 <= (height_1 - setting.round) and \
                setting.path_speed_min <= speed_3 <= setting.path_speed_max and \
                setting.bending_min <= r_4 <= setting.bending_max and \
                setting.Deceleration_min <= decel_5 <= setting.Deceleration_max and \
-               setting.Deceleration_min <= decel_6 <= setting.Deceleration_max:
-
-                # if start_point == setting.z_max:
-                #     decel_5 = 0
-                #     speed_3 = 0
+               setting.Deceleration_min <= decel_6 <= setting.Deceleration_max and \
+               setting.sync_min <= pick_sync_8 <= setting.sync_max and \
+               setting.sync_min <= place_sync_9 <= setting.sync_max:
+               
 
                 self.updateLabels()
-
 
                 yaml = ruamel.yaml.YAML()
                 yaml.indent(mapping=4, sequence=4, offset=2)
@@ -322,6 +423,9 @@ class MyMove(QWidget):
                     # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
                     config = yaml.load(file)
 
+                # # 0번째 줄 덮어쓰기 또는 추가하기
+                # existing_lines[0] = f'{height_1} {pick_z_2} {speed_3} {r_4} {decel_5} {decel_6} {start_point} F\n'
+                
                 config['trajectory']['up'] = height_1
                 config['trajectory']['pick_z'] = pick_z_2
                 config['trajectory']['speed'] = speed_3
@@ -329,11 +433,12 @@ class MyMove(QWidget):
                 config['trajectory']['pick_decel'] = decel_5
                 config['trajectory']['place_decel'] = decel_6
                 config['trajectory']['decel_start'] = start_point
+                config['trajectory']['pick_sync'] =  pick_sync_8
+                config['trajectory']['place_sync'] = place_sync_9
                 # place_down_mode = config['trajectory']['place_down_mode']
-
+                    
                 with open(yaml_file_path, 'w') as file:
                     yaml.dump(config, file)
-
 
                 self.label_height_1.setText(str(height_1))
                 self.label_pick_z_2.setText(str(pick_z_2))
@@ -341,8 +446,10 @@ class MyMove(QWidget):
                 self.label_r_4.setText(str(r_4))
                 self.label_decel_5.setText(str(decel_5))
                 self.label_decel_6.setText(str(decel_6))
+                self.pick_sync_8.setText(str(pick_sync_8))
+                self.place_sync_9.setText(str(place_sync_9))
                 # self.start_point.setText(str(start_point))
-
+                # place_down_mode = config['trajectory']['place_down_mode']
 
                 # 확인 메시지 표시
                 QMessageBox.information(self, "Info", "Data updated in config")
@@ -372,6 +479,14 @@ class MyMove(QWidget):
                 self.decel_6.setText("Out of Range")
                 self.decel_6.setStyleSheet("color: red;")
                 self.decel_6.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.pick_sync_8.setText("Out of Range")
+                self.pick_sync_8.setStyleSheet("color: red;")
+                self.pick_sync_8.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.place_sync_9.setText("Out of Range")
+                self.place_sync_9.setStyleSheet("color: red;")
+                self.place_sync_9.setAlignment(Qt.AlignRight)
                 # print("Values out of range")
                 # self.start_point.setText("Out of Range")
                 # self.start_point.setStyleSheet("color: red;")
@@ -392,14 +507,18 @@ class MyMove(QWidget):
             decel_5 = float(self.decel_5.text())
             decel_6 = float(self.decel_6.text())
             start_point = float(decel_start)
+            pick_sync_8 = float(self.pick_sync_8.text())
+            place_sync_9 = float(self.place_sync_9.text())
             
             if setting.z_min <= height_1 <= setting.z_max and \
                setting.z_min <= pick_z_2 <= (height_1 - setting.round) and \
                setting.path_speed_min <= speed_3 <= setting.path_speed_max and \
                setting.bending_min <= r_4 <= setting.bending_max and \
                setting.Deceleration_min <= decel_5 <= setting.Deceleration_max and \
-               setting.Deceleration_min <= decel_6 <= setting.Deceleration_max:
-
+               setting.Deceleration_min <= decel_6 <= setting.Deceleration_max and \
+               setting.sync_min <= pick_sync_8 <= setting.sync_max and \
+               setting.sync_min <= place_sync_9 <= setting.sync_max:
+               
 
                 self.updateLabels()
 
@@ -419,6 +538,8 @@ class MyMove(QWidget):
                 config['trajectory']['pick_decel'] = decel_5
                 config['trajectory']['place_decel'] = decel_6
                 config['trajectory']['decel_start'] = start_point
+                config['trajectory']['pick_sync'] =  pick_sync_8
+                config['trajectory']['place_sync'] = place_sync_9
                 # place_down_mode = config['trajectory']['place_down_mode']
                     
                 with open(yaml_file_path, 'w') as file:
@@ -430,6 +551,8 @@ class MyMove(QWidget):
                 self.label_r_4.setText(str(r_4))
                 self.label_decel_5.setText(str(decel_5))
                 self.label_decel_6.setText(str(decel_6))
+                self.pick_sync_8.setText(str(pick_sync_8))
+                self.place_sync_9.setText(str(place_sync_9))
                 # self.start_point.setText(str(start_point))
 
                 # 확인 메시지 표시
@@ -460,6 +583,14 @@ class MyMove(QWidget):
                 self.decel_6.setText("Out of Range")
                 self.decel_6.setStyleSheet("color: red;")
                 self.decel_6.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.pick_sync_8.setText("Out of Range")
+                self.pick_sync_8.setStyleSheet("color: red;")
+                self.pick_sync_8.setAlignment(Qt.AlignRight)
+                print("Values out of range")
+                self.place_sync_9.setText("Out of Range")
+                self.place_sync_9.setStyleSheet("color: red;")
+                self.place_sync_9.setAlignment(Qt.AlignRight)
                 # print("Values out of range")
                 # self.start_point.setText("Out of Range")
                 # self.start_point.setStyleSheet("color: red;")
@@ -551,12 +682,14 @@ class MyMove(QWidget):
         self.btnback.setGeometry(0, 528, 50, 50)
         # self.btnback.raise_()  # Raise the button to the top of the widget stack
 
-        self.btnback.clicked.connect(self.close)
-        self.btnback.clicked.connect(self.goToStartScreen.emit)
+        # self.btnback.clicked.connect(self.close)
+        # self.btnback.clicked.connect(self.goToStartScreen.emit)
+        self.btnback.clicked.connect(self.onBackButtonClick)
 
 
     def onBackButtonClick(self):
         # Emit the signal when the button is clicked
+        self.close() 
         self.goToStartScreen.emit()
 
 
@@ -608,41 +741,63 @@ class MyMove(QWidget):
         self.label1_z.setAlignment(Qt.AlignRight)
         self.label1_z.setGeometry(649, 153, 100, 30)  # Adjust position and size as needed
 
-    def openZoomDialog(self):
-        dialog = ZoomDialog(self)
-        dialog.saveClicked.connect(self.updatePickZ2)  # 시그널을 슬롯에 연결
+###### pop pick synk ###########
+    def syncDialog_pick(self):
+        QMessageBox.information(self, "Notice", "If you use Sncy, you will not be able to use Decceleration.")
+        # config.yaml 파일에서 pick_z 값을 읽어오는 부분
+        with open(yaml_file_path, 'r') as file:
+            config = yaml.safe_load(file)
+            current_pick = config['trajectory']['pick_sync']  # 현재 pick_z 값을 얻음
+
+        # syncDialog에 현재 pick_z 값을 전달하면서 인스턴스 생성
+        dialog = syncDialog_pick(current_pick, self)  
+        dialog.saveClicked.connect(self.updatePick1)  # 시그널 연결
         dialog.exec_()  # 대화상자 실행
 
     # 슬롯 정의: 새 pick_z_2 값으로 self.pick_z_2 업데이트
-    def updatePickZ2(self, new_pick_z_2):
-        self.pick_z_2.setText(str(new_pick_z_2))  # QLineEdit의 텍스트 업데이트
+    def updatePick1(self, new_pick):
+        self.pick_sync_8.setText(str(new_pick))  # QLineEdit의 텍스트 업데이트
         # 필요한 경우 추가적인 업데이트 로직 구현
 
-class ZoomDialog(QDialog):
+###### pop place synk ###########
+    def syncDialog_place(self):
+        QMessageBox.information(self, "Notice", "If you use Sncy, you will not be able to use Decceleration.")
+        # config.yaml 파일에서 pick_z 값을 읽어오는 부분
+        with open(yaml_file_path, 'r') as file:
+            config = yaml.safe_load(file)
+            current_place = config['trajectory']['place_sync']  # 현재 pick_z 값을 얻음
+
+        # syncDialog에 현재 pick_z 값을 전달하면서 인스턴스 생성
+        dialog = syncDialog_place(current_place, self)  
+        dialog.saveClicked.connect(self.updatePick2)  # 시그널 연결
+        dialog.exec_()  # 대화상자 실행
+
+    # 슬롯 정의: 새 pick_z_2 값으로 self.pick_z_2 업데이트
+    def updatePick2(self, new_place):
+        self.place_sync_9.setText(str(new_place))  # QLineEdit의 텍스트 업데이트
+        # 필요한 경우 추가적인 업데이트 로직 구현
+        
+###### pop pick synk ###########
+class syncDialog_pick(QDialog):
     saveClicked = pyqtSignal(float)  # float 타입의 시그널 정의
 
-    def __init__(self, parent=None):
-        super(ZoomDialog, self).__init__(parent)
-        self.setWindowTitle('Coupling & Deceleration')
+    def __init__(self,pick_sync, parent=None):
+        super(syncDialog_pick, self).__init__(parent)
+        self.setWindowTitle('Moving Sync & Deceleration')
         self.setFixedSize(500, 300)
-        # QVBoxLayout을 사용하여 위젯을 세로로 배치
-        # layout = QVBoxLayout(self)
-
-        Mymove = MyMove() # MyMove class 가져오기
-
-        self.setBackgroundImage("img/kbs1")
+        self.setBackgroundImage("img/move_pop2.png")
 
         # QLineEdit 위젯 생성 및 초기화
         self.lineEdit = QLineEdit(self)
-        self.lineEdit.setText(str(pick_z))  # 기존 pick_z 값으로 초기화
+        self.lineEdit.setText(str(pick_sync))  # 기존 pick_z 값으로 초기화
         self.lineEdit.setAlignment(Qt.AlignRight)
-        self.lineEdit.setFixedSize(100,30) # QLineEdit의 크기를 조절
-        self.lineEdit.move(200, 150)  # QLineEdit의 위치를 지정
+        self.lineEdit.setFixedSize(55,25) # QLineEdit의 크기를 조절
+        self.lineEdit.move(302, 233)  # QLineEdit의 위치를 지정
 
         # QDialog에 확인(Ok) 버튼 추가
         self.okButton = QPushButton('Save', self)
-        self.okButton.setFixedSize(100,30) # QLineEdit의 크기를 조절
-        self.okButton.move(200, 200)  # QLisave_clickedneEdit의 위치를 지정
+        self.okButton.setFixedSize(70,50) # QLineEdit의 크기를 조절
+        self.okButton.move(400, 220)  # QLisave_clickedneEdit의 위치를 지정
         self.okButton.clicked.connect(self.save_clicked)  # 클릭 시 대화상자 닫기
 
     def setBackgroundImage(self, imagePath):
@@ -657,6 +812,49 @@ class ZoomDialog(QDialog):
 
      # "Save" 버튼 클릭 이벤트 처리기
     def save_clicked(self):
-        new_pick_z_2 = float(self.lineEdit.text())  # QLineEdit에서 새 값을 읽음
-        self.saveClicked.emit(new_pick_z_2)  # 시그널 발생, 새 pick_z_2 값 전달
+        QMessageBox.information(self, "Notice", "You must click List Up to enable Sync.")
+        new_pick = float(self.lineEdit.text())  # QLineEdit에서 새 값을 읽음
+        self.saveClicked.emit(new_pick)  # 시그널 발생, new_place 값 전달
+        self.close()  # 대화상자 닫기
+
+
+    
+###### pop place synk ###########
+class syncDialog_place(QDialog):
+    saveClicked = pyqtSignal(float)  # float 타입의 시그널 정의
+
+    def __init__(self,place_sync, parent=None):
+        super(syncDialog_place, self).__init__(parent)
+        self.setWindowTitle('Moving Sync & Deceleration')
+        self.setFixedSize(500, 300)
+        self.setBackgroundImage("img/move_pop3.png")
+
+        # QLineEdit 위젯 생성 및 초기화
+        self.lineEdit = QLineEdit(self)
+        self.lineEdit.setText(str(place_sync))  # 기존 pick_z 값으로 초기화
+        self.lineEdit.setAlignment(Qt.AlignRight)
+        self.lineEdit.setFixedSize(55,25) # QLineEdit의 크기를 조절
+        self.lineEdit.move(302, 233)  # QLineEdit의 위치를 지정
+
+        # QDialog에 확인(Ok) 버튼 추가
+        self.okButton = QPushButton('Save', self)
+        self.okButton.setFixedSize(70,50) # QLineEdit의 크기를 조절
+        self.okButton.move(400, 220)  # QLisave_clickedneEdit의 위치를 지정
+        self.okButton.clicked.connect(self.save_clicked)  # 클릭 시 대화상자 닫기
+
+    def setBackgroundImage(self, imagePath):
+        # 배경 이미지 설정을 위한 QPixmap 객체 생성
+        background = QPixmap(imagePath)
+        # QPalette 객체 생성
+        palette = QPalette()
+        # QPalette의 Background에 QPixmap을 QBrush 객체로 설정
+        palette.setBrush(QPalette.Window, QBrush(background))
+        # QDialog의 팔레트 설정
+        self.setPalette(palette)
+
+     # "Save" 버튼 클릭 이벤트 처리기
+    def save_clicked(self):
+        QMessageBox.information(self, "Notice", "You must click List Up to enable Sync.")
+        new_place = float(self.lineEdit.text())  # QLineEdit에서 새 값을 읽음
+        self.saveClicked.emit(new_place)  # 시그널 발생, 새 pick_z_2 값 전달
         self.close()  # 대화상자 닫기
