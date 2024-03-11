@@ -10,9 +10,9 @@ with open(yaml_file_path, 'r') as file:
 #     def xyz_origin(self):
 
 # 현재 좌표 값 받아오기
-x = config['defalt']['x']
-y = config['defalt']['y']
-z = config['defalt']['z']
+x = 0
+y = 0
+z = -850
 
 # 한계 설정
 x_max = config['move']['max_x_area'] #  460

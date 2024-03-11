@@ -21,44 +21,6 @@ import os
 import time
 import signal
 
-import rclpy
-from rclpy.node import Node
-from std_msgs.msg import Bool
-from wimt_msg.msg import TrackerArray 
-
-import rclpy
-from rclpy.node import Node
-from std_msgs.msg import Bool  # robot_on 토픽의 메시지 타입
-from wimt_msg.msg import TrackerArray  # /tracked_objects 토픽의 메시지 타입
-
-class RobotVisionStatusNode(Node):
-    def __init__(self, name='robot_vision_status_node'):
-        super().__init__(name)
-        self.robot_on = False
-        self.vision_on = False
-        self.tracked_objects = None
-
-        self.create_subscription(
-            Bool,
-            'robot_on',
-            self.robot_on_callback,
-            10)
-        
-        self.create_subscription(
-            TrackerArray,
-            'tracked_objects',
-            self.tracked_objects_callback,
-            10)
-
-    def robot_on_callback(self, msg):
-        self.robot_on = msg.data
-
-    def tracked_objects_callback(self, msg):
-        # self.tracked_objects = msg  # TrackerArray 메시지 객체 전체를 저장
-        self.vision_on = True
-        
-
-
 
 class StartWindow(QMainWindow):
     def __init__(self, parent=None, io_data=None):
@@ -66,14 +28,6 @@ class StartWindow(QMainWindow):
         self.parent = parent
         self.io_data = io_data  # io_data 매개변수를 추가하여 저장
         self.initUI()
-        self.ros2_process_robot = None 
-
-        if not rclpy.ok():
-            rclpy.init()
-        self.robot_vision_status_node = RobotVisionStatusNode()
-        self.executor = rclpy.executors.SingleThreadedExecutor()
-        self.executor.add_node(self.robot_vision_status_node)
-
         
         
     def initUI(self):
@@ -156,34 +110,6 @@ class StartWindow(QMainWindow):
         self.calButton.setDisabled(True)
         self.logButton.setDisabled(True)
 
-        # Robot text label
-        msg_robot = "- Robot"
-        self.signal_robot = QLabel(f"{msg_robot}", self)
-        self.signal_robot.setStyleSheet("Color : white; font-size: 15pt; background-color: black;")
-        self.signal_robot.setAlignment(Qt.AlignLeft)
-        self.signal_robot.setGeometry(300, 100, 150, 25)
-
-        # Conveyor text label
-        msg_conveyor = "- Conveyor"
-        self.signal_conveyor = QLabel(f"{msg_conveyor}", self)
-        self.signal_conveyor.setStyleSheet("Color : white; font-size: 15pt; background-color: black;")
-        self.signal_conveyor.setAlignment(Qt.AlignLeft)
-        self.signal_conveyor.setGeometry(300, 130, 150, 25)
-
-        # Vision text label
-        msg_vision = "- Vision"
-        self.signal_vision = QLabel(f"{msg_vision}", self)
-        self.signal_vision.setStyleSheet("Color : white; font-size: 15pt; background-color: black;")
-        self.signal_vision.setAlignment(Qt.AlignLeft)
-        self.signal_vision.setGeometry(300, 160, 150, 25)
-
-        # Encoder text label
-        msg_encoder = "- Encoder"
-        self.signal_encoder = QLabel(f"{msg_encoder}", self)
-        self.signal_encoder.setStyleSheet("Color : white; font-size: 15pt; background-color: black;")
-        self.signal_encoder.setAlignment(Qt.AlignLeft)
-        self.signal_encoder.setGeometry(300, 190, 150, 25)
-
 ####### QTextBrowser 위젯 추가 ###############################################
         self.text_browser = QTextBrowser(self)
         self.text_browser.setGeometry(500, 100, 200, 200)
@@ -193,11 +119,10 @@ class StartWindow(QMainWindow):
         self.update_text_browser()
         self.connectButton.clicked.connect(self.update_text_browser)
         
-
+        
         # QTimer 설정
         self.logtimer = QTimer(self)
-        # self.logtimer.timeout.connect(self.update_text_browser)
-        self.logtimer.timeout.connect(self.update_ros_status)
+        self.logtimer.timeout.connect(self.update_text_browser)
         self.logtimer.start(500)  # 0.5 seconds interval
 
         # # 텍스트 파일 내용을 읽어와서 QTextBrowser에 표시
@@ -260,38 +185,11 @@ class StartWindow(QMainWindow):
 
         # self.radiobuttons()
 
-    def update_ros_status(self):
-        try:
-            # ROS 노드에서 상태 값을 받아옵니다.
-            self.executor.spin_once(timeout_sec=0)  # ROS executor를 한 번 실행하여 콜백을 처리합니다.
-            vision_status = self.robot_vision_status_node.vision_on  # vision_on 상태 값을 가져옵니다.
-            robot_status = self.robot_vision_status_node.robot_on  # robot_on 상태 값을 가져옵니다.
 
-            # 상태 값에 따라 표시할 텍스트를 구성합니다.
-            text_content = ""
-            status_dict = {"Vision": vision_status, "Robot": robot_status}
-            for key, value in status_dict.items():
-                icon = "◉"  # 상태 아이콘
-                color = "#33FF33" if value else "red"  # 상태에 따른 색상 (True일 때 녹색, False일 때 빨강)
-                text_content += f"<font color='{color}'>{icon}</font> - {key}<br>"
 
-            # QTextBrowser에 상태 텍스트를 HTML 형식으로 설정합니다.
-            self.text_browser.setHtml(text_content)
-
-        except Exception as e:
-            # 오류가 발생한 경우, 오류 메시지를 QTextBrowser에 표시합니다.
-            self.text_browser.setPlainText(f"Error: {str(e)}")
-
-        # 이제 robot_vision_status_node robot_on 및 vision_on 속성을 사용할 수 있다.
-        # 예: self.robot_vision_status_node.robot_on, self.robot_vision_status_node.vision_on
-
-        
-            
-
-    def closeEvent(self, event):
-        super().closeEvent(event)
-        self.executor.shutdown()
-        rclpy.shutdown()
+###
+### def###
+###
         
 ####### io.json 읽어오기 ######################################################
     def update_text_browser(self):
@@ -355,26 +253,7 @@ class StartWindow(QMainWindow):
     def onOperation(self):
         # Create and display the popup dialog
         popup_dialog = PopupDialog_robot(self)
-
-        # # yeong
-        # Run the ROS2 launch file and save the subprocess reference
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        bringup_file = os.path.join(current_dir, "../control/bringup/launch/bringup.py")
-        move_zero_file = os.path.join(current_dir, "../move/move_zero.py")
-
-        try:
-            self.ros2_process_robot = subprocess.Popen(["ros2", "launch", bringup_file], preexec_fn=os.setsid)
-            print("ROS2 robot bringup started")
-        except Exception as e:
-            print(f"Failed to start ROS2 launch file: {e}")
-
         result = popup_dialog.exec_()  # Show the dialog and wait for it to close
-
-        # try:
-        #     self.ros2_process_move_zero = subprocess.Popen(["python3", move_zero_file])
-        #     print("ROS2 move_zero started")
-        # except Exception as e:
-        #     print(f"Failed to start ROS2 python3 file: {e}")
 
         if result == QDialog.Accepted:
             # The robot is activated, enable the buttons
@@ -391,6 +270,25 @@ class StartWindow(QMainWindow):
             # The dialog was closed due to timeout
             QMessageBox.warning(self, "Timeout", "Failed to activate the robot within the time limit.")
 
+        # # # yeong
+        # # Run the ROS2 launch file and save the subprocess reference
+        # current_dir = os.path.dirname(os.path.realpath(__file__))
+        # bringup_file = os.path.join(current_dir, "../control/bringup/launch/bringup.py")
+        # move_zero_file = os.path.join(current_dir, "../move/move_zero.py")
+
+        # try:
+        #     self.ros2_process_robot = subprocess.Popen(["ros2", "launch", bringup_file], preexec_fn=os.setsid)
+        #     print("ROS2 robot bringup started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 launch file: {e}")
+
+        # time.sleep(20)
+
+        # try:
+        #     self.ros2_process_move_zero = subprocess.Popen(["python3", move_zero_file])
+        #     print("ROS2 move_zero started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 python3 file: {e}")
 
         
         print("Robot ON!!")
@@ -407,21 +305,21 @@ class StartWindow(QMainWindow):
         self.calButton.setDisabled(True)
         self.logButton.setDisabled(True)
         
-        # yeong
+        # # yeong
+
+        # # # Terminate the ROS2 launch subprocess if it's running
+        # if self.ros2_process_robot and self.ros2_process_robot.poll() is None:  # Check if the process is still running
+        #     if self.ros2_process_robot and self.ros2_process_robot.poll() is None:
+        #         # Terminate the entire process group
+        #         os.killpg(os.getpgid(self.ros2_process_robot.pid), signal.SIGTERM)
+        #     # self.ros2_process_robot.terminate()  # Terminate the process
+        #     # try:
+        #     #     self.ros2_process_robot.wait(timeout=10)  # Wait for the process to terminate
+        #     # except subprocess.TimeoutExpired:
+        #     #     self.ros2_process_robot.kill()  # Force kill if it doesn't terminate within timeout
+        #         print("ROS2 robot terminated")
 
         # # Terminate the ROS2 launch subprocess if it's running
-        if self.ros2_process_robot and self.ros2_process_robot.poll() is None:  # Check if the process is still running
-            if self.ros2_process_robot and self.ros2_process_robot.poll() is None:
-                # Terminate the entire process group
-                os.killpg(os.getpgid(self.ros2_process_robot.pid), signal.SIGTERM)
-            # self.ros2_process_robot.terminate()  # Terminate the process
-            # try:
-            #     self.ros2_process_robot.wait(timeout=10)  # Wait for the process to terminate
-            # except subprocess.TimeoutExpired:
-            #     self.ros2_process_robot.kill()  # Force kill if it doesn't terminate within timeout
-                print("ROS2 robot terminated")
-
-        # Terminate the ROS2 launch subprocess if it's running
         # if self.ros2_process_move_zero and self.ros2_process_move_zero.poll() is None:  # Check if the process is still running
         #     self.ros2_process_move_zero.terminate()  # Terminate the process
         #     try:
@@ -429,38 +327,15 @@ class StartWindow(QMainWindow):
         #     except subprocess.TimeoutExpired:
         #         self.ros2_process_move_zero.kill()  # Force kill if it doesn't terminate within timeout
         #     print("ROS2 vision terminated")
-        
-
 
         print("Good Bye...")
 
 ####### start/stop ##########################################################
     def startOperation(self):
-        # Create and display the popup dialog
+
+
+            # Create and display the popup dialog
         popup_dialog = PopupDialog_vision(self)
-
-        # # yeong
-        # Run the ROS2 launch file and save the subprocess reference
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        vision_file = os.path.join(current_dir, "../vision/launch/vision.py")
-        move_file = os.path.join(current_dir, "../move/move.py")
-
-        try:
-            self.ros2_process_move = subprocess.Popen(["python3", move_file])
-            print("ROS2 move started")
-        except Exception as e:
-            print(f"Failed to start ROS2 python3 file: {e}")
-
-        time.sleep(6)
-        
-        try:
-            self.ros2_process_vision = subprocess.Popen(["ros2", "launch", vision_file])
-            print("ROS2 vision started")
-        except Exception as e:
-            print(f"Failed to start ROS2 launch file: {e}")
-
-        print("Operation started!!")
-
         result = popup_dialog.exec_()  # Show the dialog and wait for it to close
 
         if result == QDialog.Accepted:
@@ -480,6 +355,30 @@ class StartWindow(QMainWindow):
             # The dialog was closed due to timeout
             QMessageBox.warning(self, "Timeout", "Failed to activate the robot within the time limit.")
 
+
+        
+        # # # yeong
+        # # Run the ROS2 launch file and save the subprocess reference
+        # current_dir = os.path.dirname(os.path.realpath(__file__))
+        # vision_file = os.path.join(current_dir, "../vision/launch/vision.py")
+        # move_file = os.path.join(current_dir, "../move/move.py")
+
+        # try:
+        #     self.ros2_process_vision = subprocess.Popen(["ros2", "launch", vision_file])
+        #     print("ROS2 vision started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 launch file: {e}")
+
+        
+        # time.sleep(4)
+        
+        # try:
+        #     self.ros2_process_move = subprocess.Popen(["python3", move_file])
+        #     print("ROS2 move started")
+        # except Exception as e:
+        #     print(f"Failed to start ROS2 python3 file: {e}")
+
+        print("Operation started!!")
 
     # stop 누르면 비활성화
     def stopOperation(self):
@@ -562,33 +461,79 @@ class PasswordDialog(QDialog):
 
 
 
-class RobotStatusNode(Node):
-    def __init__(self, name='robot_status_node'):
-        super().__init__(name)
-        self.subscription = self.create_subscription(
-            Bool,
-            '/robot_on',
-            self.robot_status_callback,
-            10)
-        self.robot_on = False
+# class AppManager(QStackedWidget):
+#     def __init__(self):
+#         super().__init__()
+#         self.setWindowTitle('W-ECOBOT Application')
+#         self.setWindowIcon(QIcon('img/eth.png'))
+#         self.setFixedSize(800, 600)
+#         self.setStyleSheet("QStackedWidget {background-image: url('img/start.png');}")
+#         self.node = GUI_Node()  # GUI_Node 객체 생성
+#         self.initUI()
+        
+#     def initUI(self):
+#         # MyApp, MyHome, MyMove, MyInfo 등 모든 페이지를 생성
+        
+#         self.my_app = MyApp(self.node)  # MyApp 객체 생성 시 노드 객체 전달
+#         self.home_app = MyHome(self.node)  # MyHome 객체 생성 시 노드 객체 전달
+#         # self.move_app = MyMove(self.node)  # MyMove 객체 생성 시 노드 객체 전달
+#         self.info_app = MyInfo(self.node)  # MyInfo 객체 생성 시 노드 객체 전달
+#         self.move_app = None  # 초기에 None으로 설정 (애러서 버튼 호출 할때마다 새로운 창을 열기 위함)
+        
+#         # StartWindow를 생성하고 스택에 추가
+#         self.start_window = StartWindow(parent=self)
+#         self.addWidget(self.start_window)
 
-    def robot_status_callback(self, msg):
-        self.robot_on = msg.data
+#         # 나머지 페이지들도 스택에 추가
+#         self.addWidget(self.my_app)
+#         self.addWidget(self.home_app)
+#         # self.addWidget(self.move_app)
+#         self.addWidget(self.info_app)
 
+#         # 뒤로가기 버튼에서 돌아오는 길 지정
+#         self.my_app.goToStartScreen.connect(self.gotoStart)
+#         self.home_app.goToStartScreen.connect(self.gotoStart)
+#         # 
+#         self.info_app.goToStartScreen.connect(self.gotoStart)
 
+#     # 시작 페이지
+#     def gotoStart(self):
+#         self.setCurrentWidget(self.start_window)
 
+#     # 메인 페이지
+#     def gotoMain(self):
+#         self.setCurrentWidget(self.my_app)
+        
+#     # 호밍페이지
+#     def gotoHome(self):
+#         self.setCurrentWidget(self.home_app)
 
+#     # 무빙(수동)페이지
+#     def gotoMove(self):
+#         # self.setCurrentWidget(self.move_app)
+#         if self.move_app is None:
+#             # node = GUI_Node()  # 새로운 GUI_Node 객체 생성
+#             self.move_app = MyMove()  # MyMove 객체 생성 시 새로운 노드 객체 전달
+#             self.addWidget(self.move_app)  # 스택에 페이지 추가
+    
+#         self.setCurrentWidget(self.move_app)
+#         self.move_app.goToStartScreen.connect(self.gotoStart)
+
+#     # 인포메이션 페이지
+#     def gotoInfo(self):
+#         self.setCurrentWidget(self.info_app)
+
+# if __name__ == '__main__':
+#     app = QApplication(sys.argv) # QApplication : 프로그램을 실행시켜주는 클래스
+#     rclpy.init(args=None)
+#     app_manager = AppManager()
+#     app_manager.show()
+#     sys.exit(app.exec_())
+#     rclpy.shutdown()
+            
 class PopupDialog_robot(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        # ROS 2 노드 초기화 및 구독 시작
-        if not rclpy.ok():
-            rclpy.init()
-        self.robot_status_node = RobotStatusNode()
-        self.robot_status_executor = rclpy.executors.SingleThreadedExecutor()
-        self.robot_status_executor.add_node(self.robot_status_node)
-
         self.setWindowTitle('Waiting for Robot Activation')
         self.setFixedSize(300, 150)
         self.label = QLabel(self)
@@ -603,7 +548,6 @@ class PopupDialog_robot(QDialog):
         self.check_robot_status_timer.timeout.connect(self.checkRobotStatus)
         self.check_robot_status_timer.start(500)  # Check robot status every 0.5 seconds
         self.start_time = time.time()
-    
 
     def updateImage(self):
         pixmap = QPixmap(self.image_paths[self.current_image_index])
@@ -611,57 +555,21 @@ class PopupDialog_robot(QDialog):
         self.current_image_index = (self.current_image_index + 1) % len(self.image_paths)
 
     def checkRobotStatus(self):
-
-        self.robot_status_executor.spin_once(timeout_sec=0)  # ROS 2 콜백 처리
-
-        if self.robot_status_node.robot_on:
-            self.accept()  # Close the dialog
-
-
         elapsed_time = time.time() - self.start_time
         if elapsed_time > 30:  # Timeout after 20 seconds
             self.reject()  # Close the dialog
 
-        # try:
-        #     with open('document/io.json', 'r') as file:
-        #         io_data = json.load(file)
-        #         if io_data.get("robot"):  # Check if robot status is True
-        #             self.accept()  # Close the dialog
-        # except Exception as e:
-        #     print(f"Error reading io.json: {e}")
-    def closeEvent(self, event):
-        super().closeEvent(event)
-        self.robot_status_executor.shutdown()
-    #rclpy.shutdown() 호출은 프로그램의 다른 부분에서 rclpy를 사용하는 경우에는 적합하지 않을 수 있습니다.
-
-
-class VisionStatusNode(Node):
-    def __init__(self, name='vision_status_node'):
-        super().__init__(name)
-        self.vision_on = False  # Vision 상태를 저장하는 변수
-
-        self.subscription_tracked_objects = self.create_subscription(
-            TrackerArray,
-            'tracked_objects',
-            self.tracked_objects_callback,
-            10)
-
-    def tracked_objects_callback(self, msg):
-        # 여기에서 메시지 처리 로직을 구현합니다.
-        # 예를 들어, 메시지를 받으면 vision_on 상태를 True로 설정할 수 있습니다.
-        self.vision_on = True
+        try:
+            with open('document/io.json', 'r') as file:
+                io_data = json.load(file)
+                if io_data.get("robot"):  # Check if robot status is True
+                    self.accept()  # Close the dialog
+        except Exception as e:
+            print(f"Error reading io.json: {e}")
 
 class PopupDialog_vision(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-
-        # ROS 2 노드 초기화 및 구독 시작
-        if not rclpy.ok():
-            rclpy.init()
-        self.vision_status_node = VisionStatusNode()
-        self.vision_status_executor = rclpy.executors.SingleThreadedExecutor()
-        self.vision_status_executor.add_node(self.vision_status_node)
-
         self.setWindowTitle('Waiting for Vision Activation')
         self.setFixedSize(300, 150)
         self.label = QLabel(self)
@@ -683,28 +591,14 @@ class PopupDialog_vision(QDialog):
         self.current_image_index = (self.current_image_index + 1) % len(self.image_paths)
 
     def checkRobotStatus(self):
-
-        # ROS 2 콜백 처리
-        self.vision_status_executor.spin_once(timeout_sec=0)
-
-        if self.vision_status_node.vision_on:
-            self.accept()  # Close the dialog if vision_on is True
-
-
-
         elapsed_time = time.time() - self.start_time
         if elapsed_time > 30:  # Timeout after 20 seconds
             self.reject()  # Close the dialog
 
-        # try:
-        #     with open('document/io.json', 'r') as file:
-        #         io_data = json.load(file)
-        #         if io_data.get("vision"):  # Check if robot status is True
-        #             self.accept()  # Close the dialog
-        # except Exception as e:
-        #     print(f"Error reading io.json: {e}")
-
-    def closeEvent(self, event):
-        super().closeEvent(event)
-        self.vision_status_executor.shutdown()
-
+        try:
+            with open('document/io.json', 'r') as file:
+                io_data = json.load(file)
+                if io_data.get("vision"):  # Check if robot status is True
+                    self.accept()  # Close the dialog
+        except Exception as e:
+            print(f"Error reading io.json: {e}")

@@ -10,7 +10,7 @@ from manual import MyApp
 from home import MyHome
 from move import MyMove
 from info import MyInfo
-from start_dj import StartWindow
+from start import StartWindow
 from calibration import MyCal
 from log import MyLog
 

@@ -39,172 +39,180 @@ class MyHome(QWidget):
         self.initUI
         
     def initUI(self):
-        # images
+######## 이미지 넣기 #######################################################
         original_pixmap = QPixmap("img/home2.png")
         scaled_pixmap = original_pixmap.scaled(800, 600, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-
+        # QLabel 생성 및 QPixmap 설정
         lbl_img = QLabel(self)
         lbl_img.setPixmap(scaled_pixmap)
         lbl_img.setGeometry(0, 0, scaled_pixmap.width(), scaled_pixmap.height())
+########################################################################
+######## 이미지 추가 #######################################################
+#         original_pixmap1 = QPixmap("img/kbs1.png")
+#         scaled_pixmap1 = original_pixmap1.scaled(800, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+#         # QLabel 생성 및 QPixmap 설정
+#         lbl_img = QLabel(self)
+#         lbl_img.setPixmap(scaled_pixmap1)
+#         lbl_img.setGeometry(23, 20, scaled_pixmap1.width(), scaled_pixmap1.height())
+# ########################################################################
 
-        # total layout
+        # 창 크기 고정
         self.setFixedSize(800,600)
 
-        # leftside image value
+        # 화면에 표시되는 xyz 좌표
         self.labelX = QLabel(f"{x}", self)
         self.labelX.setStyleSheet("Color : white")
         self.labelX.setAlignment(Qt.AlignRight)
-        self.labelX.setGeometry(275, 410, 100, 30)
+        self.labelX.setGeometry(275, 410, 100, 30)  # Adjust position and size as needed
         self.labelY = QLabel(f"{y}", self)
         self.labelY.setStyleSheet("Color : white")
         self.labelY.setAlignment(Qt.AlignRight)
-        self.labelY.setGeometry(430, 410, 100, 30)
+        self.labelY.setGeometry(430, 410, 100, 30)  # Adjust position and size as needed
         self.labelZ = QLabel(f"{z}", self)
         self.labelZ.setStyleSheet("Color : white")
         self.labelZ.setAlignment(Qt.AlignRight)
-        self.labelZ.setGeometry(590, 410, 100, 30)
+        self.labelZ.setGeometry(590, 410, 100, 30)  # Adjust position and size as needed
 
-        # Z value = place z (moving)
         self.text1 = QLabel(f"Z value = place z (moving)", self)
         self.text1.setStyleSheet("Color : white; font-size: 14px")
         self.text1.setAlignment(Qt.AlignRight)
         self.text1.setGeometry(550, 280, 200, 30) 
 
-        # config.yaml 
         with open(yaml_file_path, 'r') as file:
+            # YAML 파일을 읽고 파싱하여 Python 딕셔너리로 변환
             config = yaml.safe_load(file)
-        
-        # vision/labels
+            
         labels = {}
         with open("../vision/labels.txt", "r") as file:
             lines = file.readlines()
+            # cleaned_lines = [line.strip() for line in lines]
             for idx, line in enumerate(lines, start=0):
                 line = line.strip()
                 if line:
                     labels[line] = idx
-            # add 'None' label to last line
+            # 마지막에 "None" 추가
             labels["None"] = len(lines)
             reversed_labels = {value: key for key, value in labels.items()}
 
-        # 1. label info
+        # lebel 정보 창
         self.label1_label = QLabel(f"{reversed_labels[config['move']['home1']['label']]}", self) 
         self.label1_label.setStyleSheet("Color : white")
         self.label1_label.setAlignment(Qt.AlignRight)
-        self.label1_label.setGeometry(313, 116, 100, 30)
+        self.label1_label.setGeometry(313, 116, 100, 30)  # Adjust position and size as needed
         self.label1_x = QLabel(f"{config['move']['home1']['x']}", self)
         self.label1_x.setStyleSheet("Color : white")
         self.label1_x.setAlignment(Qt.AlignRight)
-        self.label1_x.setGeometry(412, 116, 100, 30)
+        self.label1_x.setGeometry(412, 116, 100, 30)  # Adjust position and size as needed
         self.label1_y = QLabel(f"{config['move']['home1']['y']}", self)
         self.label1_y.setStyleSheet("Color : white")
         self.label1_y.setAlignment(Qt.AlignRight)
-        self.label1_y.setGeometry(531, 116, 100, 30)
+        self.label1_y.setGeometry(531, 116, 100, 30)  # Adjust position and size as needed
         self.label1_z = QLabel(f"{config['move']['home1']['z']}", self)
         self.label1_z.setStyleSheet("Color : white")
         self.label1_z.setAlignment(Qt.AlignRight)
-        self.label1_z.setGeometry(649, 116, 100, 30)
-        # 2. label info
+        self.label1_z.setGeometry(649, 116, 100, 30)  # Adjust position and size as needed
+
         self.label2_label = QLabel(f"{reversed_labels[config['move']['home2']['label']]}", self)
         self.label2_label.setStyleSheet("Color : white")
         self.label2_label.setAlignment(Qt.AlignRight)
-        self.label2_label.setGeometry(313, 153, 100, 30)
+        self.label2_label.setGeometry(313, 153, 100, 30)  # Adjust position and size as needed
         self.label2_x = QLabel(f"{config['move']['home2']['x']}", self)
         self.label2_x.setStyleSheet("Color : white")
         self.label2_x.setAlignment(Qt.AlignRight)
-        self.label2_x.setGeometry(412, 153, 100, 30)
+        self.label2_x.setGeometry(412, 153, 100, 30)  # Adjust position and size as needed
         self.label2_y = QLabel(f"{config['move']['home2']['y']}", self)
         self.label2_y.setStyleSheet("Color : white")
         self.label2_y.setAlignment(Qt.AlignRight)
-        self.label2_y.setGeometry(531, 153, 100, 30)
+        self.label2_y.setGeometry(531, 153, 100, 30)  # Adjust position and size as needed
         self.label2_z = QLabel(f"{config['move']['home2']['z']}", self)
         self.label2_z.setStyleSheet("Color : white")
         self.label2_z.setAlignment(Qt.AlignRight)
-        self.label2_z.setGeometry(649, 153, 100, 30)
-        # 3. label info
+        self.label2_z.setGeometry(649, 153, 100, 30)  # Adjust position and size as needed
+
         self.label3_label = QLabel(f"{reversed_labels[config['move']['home3']['label']]}", self)
         self.label3_label.setStyleSheet("Color : white")
         self.label3_label.setAlignment(Qt.AlignRight)
-        self.label3_label.setGeometry(313, 189, 100, 30)
+        self.label3_label.setGeometry(313, 189, 100, 30)  # Adjust position and size as needed
         self.label3_x = QLabel(f"{config['move']['home3']['x']}", self)
         self.label3_x.setStyleSheet("Color : white")
         self.label3_x.setAlignment(Qt.AlignRight)
-        self.label3_x.setGeometry(412, 189, 100, 30)
+        self.label3_x.setGeometry(412, 189, 100, 30)  # Adjust position and size as needed
         self.label3_y = QLabel(f"{config['move']['home3']['y']}", self)
         self.label3_y.setStyleSheet("Color : white")
         self.label3_y.setAlignment(Qt.AlignRight)
-        self.label3_y.setGeometry(531, 189, 100, 30)
+        self.label3_y.setGeometry(531, 189, 100, 30)  # Adjust position and size as needed
         self.label3_z = QLabel(f"{config['move']['home3']['z']}", self)
         self.label3_z.setStyleSheet("Color : white")
         self.label3_z.setAlignment(Qt.AlignRight)
-        self.label3_z.setGeometry(649, 189, 100, 30)
-        # 4. label info
+        self.label3_z.setGeometry(649, 189, 100, 30)  # Adjust position and size as needed
+
         self.label4_label = QLabel(f"{reversed_labels[config['move']['home4']['label']]}", self)
         self.label4_label.setStyleSheet("Color : white")
         self.label4_label.setAlignment(Qt.AlignRight)
-        self.label4_label.setGeometry(313, 225, 100, 30)
+        self.label4_label.setGeometry(313, 225, 100, 30)  # Adjust position and size as needed
         self.label4_x = QLabel(f"{config['move']['home4']['x']}", self)
         self.label4_x.setStyleSheet("Color : white")
         self.label4_x.setAlignment(Qt.AlignRight)
-        self.label4_x.setGeometry(412, 225, 100, 30)
+        self.label4_x.setGeometry(412, 225, 100, 30)  # Adjust position and size as needed
         self.label4_y = QLabel(f"{config['move']['home4']['y']}", self)
         self.label4_y.setStyleSheet("Color : white")
         self.label4_y.setAlignment(Qt.AlignRight)
-        self.label4_y.setGeometry(531, 225, 100, 30)
+        self.label4_y.setGeometry(531, 225, 100, 30)  # Adjust position and size as needed
         self.label4_z = QLabel(f"{config['move']['home4']['z']}", self)
         self.label4_z.setStyleSheet("Color : white")
         self.label4_z.setAlignment(Qt.AlignRight)
-        self.label4_z.setGeometry(649, 225, 100, 30)
+        self.label4_z.setGeometry(649, 225, 100, 30)  # Adjust position and size as needed
 
         # workspace 정보
         self.workspace_x = QLabel(f"Max : {setting.x_max}", self)
         self.workspace_x.setStyleSheet("Color : white")
         self.workspace_x.setAlignment(Qt.AlignRight)
-        self.workspace_x.setGeometry(5, 360, 100, 30)
+        self.workspace_x.setGeometry(5, 360, 100, 30)  # Adjust position and size as needed
         self.workspace_xn = QLabel(f"Min : {setting.x_min}", self)
         self.workspace_xn.setStyleSheet("Color : white")
         self.workspace_xn.setAlignment(Qt.AlignRight)
-        self.workspace_xn.setGeometry(150, 360, 100, 30)
+        self.workspace_xn.setGeometry(150, 360, 100, 30)  # Adjust position and size as needed
         
         self.workspace_y = QLabel(f"Max : {setting.y_max}", self)
         self.workspace_y.setStyleSheet("Color : white")
         self.workspace_y.setAlignment(Qt.AlignRight)
-        self.workspace_y.setGeometry(70, 395, 100, 30)
+        self.workspace_y.setGeometry(70, 395, 100, 30)  # Adjust position and size as needed
         self.workspace_yn = QLabel(f"Min : {setting.y_min}", self)
         self.workspace_yn.setStyleSheet("Color : white")
         self.workspace_yn.setAlignment(Qt.AlignRight)
-        self.workspace_yn.setGeometry(110, 335, 100, 30)
+        self.workspace_yn.setGeometry(110, 335, 100, 30)  # Adjust position and size as needed
         
         self.workspace_z = QLabel(f"Max : {setting.z_max}", self)
         self.workspace_z.setStyleSheet("Color : white")
         self.workspace_z.setAlignment(Qt.AlignRight)
-        self.workspace_z.setGeometry(5, 415, 100, 30)
+        self.workspace_z.setGeometry(5, 415, 100, 30)  # Adjust position and size as needed
         self.workspace_zn = QLabel(f"Min : {setting.z_min}", self)
         self.workspace_zn.setStyleSheet("Color : white")
         self.workspace_zn.setAlignment(Qt.AlignRight)
-        self.workspace_zn.setGeometry(5, 470, 100, 30)
+        self.workspace_zn.setGeometry(5, 470, 100, 30)  # Adjust position and size as needed
         
 
         ### 직접 입력 창들
         # LineEdit for X value
         self.lineEditX = QLineEdit(self)
-        self.lineEditX.setGeometry(305, 510, 90, 25)
+        self.lineEditX.setGeometry(305, 510, 90, 25)  # Adjust position and size as needed
         self.lineEditX.setText(str(x))
         self.lineEditX.setAlignment(Qt.AlignRight) # 우측정렬
         # LineEdit for Y value
         self.lineEditY = QLineEdit(self)
-        self.lineEditY.setGeometry(460, 510, 90, 25)
+        self.lineEditY.setGeometry(460, 510, 90, 25)  # Adjust position and size as needed
         self.lineEditY.setText(str(y))
         self.lineEditY.setAlignment(Qt.AlignRight)
         # LineEdit for Z value
         self.lineEditZ = QLineEdit(self)
-        self.lineEditZ.setGeometry(615, 510, 90, 25)
+        self.lineEditZ.setGeometry(615, 510, 90, 25)  # Adjust position and size as needed
         self.lineEditZ.setText(str(z))
         self.lineEditZ.setAlignment(Qt.AlignRight)
 
         # 버튼
         # Reset Button
         self.btnReset = QPushButton('Reset', self)
-        self.btnReset.setGeometry(615, 540, 50, 30)
+        self.btnReset.setGeometry(615, 540, 50, 30)  # Adjust position and size as needed
         self.btnReset.clicked.connect(self.resetFields)
         # Update Button
         self.btnUpdate = QPushButton('Run', self)
@@ -212,7 +220,7 @@ class MyHome(QWidget):
         self.btnUpdate.clicked.connect(self.updateXYZ)
         # Listup Button
         self.btnListup = QPushButton('List Up', self)
-        self.btnListup.setGeometry(640, 480, 90, 25)
+        self.btnListup.setGeometry(640, 480, 90, 25)  # Adjust position and size as needed
         self.btnListup.clicked.connect(self.listupClicked)
 
 
@@ -221,13 +229,13 @@ class MyHome(QWidget):
 
         # 1,2,3,4 를 보여주는 콤보박스
         self.comboBox1 = QComboBox(self)
-        self.comboBox1.setGeometry(305, 480, 90, 25)
+        self.comboBox1.setGeometry(305, 480, 90, 25)  # Adjust position and size as needed
         items = ["1", "2", "3", "4"]
         self.comboBox1.addItems(items)
 
         # lable 종류 txt애서 읽어와 보여주기
         self.comboBox = QComboBox(self)
-        self.comboBox.setGeometry(460, 480, 90, 25)
+        self.comboBox.setGeometry(460, 480, 90, 25)  # Adjust position and size as needed
 
         # # Read items from the file and add them to the ComboBox
         # with open('vision/labels.txt', 'r') as file:
@@ -242,7 +250,7 @@ class MyHome(QWidget):
 
         # # Create a QTextEdit widget
         # self.textEdit = QTextEdit(self)
-        # self.textEdit.setGeometry(100, 300, 300, 100)
+        # self.textEdit.setGeometry(100, 300, 300, 100)  # Adjust position and size as needed
 
 
     # 리스트업 클릭시 보낼 정보
